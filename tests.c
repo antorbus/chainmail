@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "include/tensor.h"
-#include "include/ops.h"
+#include "backend/include/tensor.h"
 
 
-// clang -o tests tests.c -L/Users/antor/Desktop/c_project/lightlemur/backend -llightlemur
+// clang -o tests tests.c -L/Users/antor/Desktop/c_project/lightlemur/ -llightlemur
 //leaks -atExit -- ./tests
 int main(){
 
@@ -28,10 +27,10 @@ int main(){
     
     backwards(t4); 
 
-    // print_tensor(t0);
-    // print_tensor(t1);
-    // print_tensor(t2);
-    // print_tensor(t4);
+    print_tensor(t0);
+    print_tensor(t1);
+    print_tensor(t2);
+    print_tensor(t4);
 
     free_tensor(t0);
     free_tensor(t1);
