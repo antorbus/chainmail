@@ -32,10 +32,10 @@ $(TARGET): $(OBJS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-run: $(TARGET) $(TEST_BIN)
+run-tests: $(TARGET) $(TEST_BIN)
 	./$(TEST_BIN)
 
-leak-check: $(TARGET) $(TEST_BIN)
+run-tests-leak-check: $(TARGET) $(TEST_BIN)
 	$(LEAK_CHECK) ./$(TEST_BIN)
 
 $(TEST_BIN): $(TEST_SRC)

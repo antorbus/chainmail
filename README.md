@@ -16,6 +16,16 @@ make
 
 This will generate the shared library `liblightlemur.dylib` (or `.so` on Linux) in the project directory.
 
+To run tests.c do 
+```bash
+make run-tests
+```
+or 
+```bash
+make run-tests-leak-check
+```
+to run tests.c with leak checks.
+
 ---
 
 ## **Usage**
