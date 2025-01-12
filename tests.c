@@ -3,8 +3,6 @@
 #include "backend/include/tensor.h"
 
 
-// clang -o tests tests.c -L/Users/antor/Desktop/c_project/lightlemur/ -llightlemur
-//leaks -atExit -- ./tests
 int main(){
 
 
