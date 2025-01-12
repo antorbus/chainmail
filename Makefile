@@ -21,8 +21,8 @@ else
 endif
 
 TARGET = lib$(LIB_NAME).$(TARGET_EXT)
-TEST_BIN = tests
-TEST_SRC = tests.c
+TEST_BIN = tests/tests.out
+TEST_SRC = tests/tests.c
 
 all: $(TARGET)
 
