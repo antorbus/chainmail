@@ -1,0 +1,63 @@
+The Great Todo List
+
+*** python port ***
+
+*** unit tests ***
+
+*** memory leak tests ***
+
+*** u ops ***
+    - neg
+    - exp 
+    - log
+    - relu 
+    - sqrt
+    - abs
+    - sign 
+    - reciprocal
+    - sigmoid
+
+*** b ops ***
+    - add (done)
+    - mul (done)
+    - sub
+    - div
+    - pow
+    - eq
+    - neq
+    - lt
+    - gt
+    - minimum 
+    - maximum
+
+*** r ops ***
+    - sum 
+    - max
+    - mean
+    - argmax
+    - argmin
+
+*** s ops ***
+    - reshape
+    - transpose
+    - expand
+    - slice
+    - flip
+    - concat
+    - split
+    - permute
+
+*** cuda ***
+
+*** matmul op ***
+    - gpu kernel
+    - metal kernel
+
+
+*** optimizers ***
+*** models ***
+*** conv (matmul + im2col) ***
+*** lazy execution (.compile()) ***
+*** kernel fusion/compiler (.compute()) ***
+
+ 
