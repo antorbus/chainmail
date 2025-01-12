@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "ops.h"
 
 typedef struct kernel_tensor {
@@ -43,6 +44,7 @@ kernel_tensor * empty_kernel_tensor(size_t shape[5]);
 tensor * empty_tensor(size_t shape[5], bool retain_grad);
 tensor * tensor_from(kernel_tensor *k, expression *comes_from, bool requires_grad, kernel_tensor* grad);
 
+bool are_shapes_equal(size_t shape0[5], size_t shape1[5]);
 
 void print_kernel_tensor(kernel_tensor *k);
 void print_expression(expression *e);

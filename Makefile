@@ -2,7 +2,7 @@ CC     = clang
 CFLAGS = -Wall -Wextra -fPIC -Iinclude
 
 LIB_NAME = lightlemur
-SRCS     = backend/src/tensor.c backend/src/ops.c backend/src/binaryops.c
+SRCS     = backend/src/tensor.c backend/src/ops.c backend/src/binaryops.c backend/src/unaryops.c backend/src/reduceops.c backend/src/shapeops.c
 OBJS     = $(SRCS:.c=.o)
 
 UNAME_S := $(shell uname -s)

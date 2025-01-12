@@ -1,5 +1,4 @@
 #include "../include/tensor.h"
-#include <stdio.h>
 
 
 void derive(tensor *t, kernel_tensor *seed){
@@ -253,4 +252,13 @@ void print_tensor(tensor *t){
     
     printf("  grad:\n");
     print_kernel_tensor(t->grad);
+}
+
+bool are_shapes_equal(size_t shape0[5], size_t shape1[5]) {
+    for (size_t i = 0; i < 5; i++) {
+        if (shape0[i] != shape1[i]) {
+            return false; 
+        }
+    }
+    return true; 
 }

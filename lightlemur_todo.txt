@@ -10,7 +10,7 @@ The Great Todo List
     - neg
     - exp 
     - log
-    - relu 
+    - relu (done)
     - sqrt
     - abs
     - sign 

@@ -7,6 +7,7 @@ forward_func forward_func_table[] = {
     [OP_MUL] = b_op_mul_forward,
 
     //unary ops
+    [OP_RELU] = u_op_relu_forward,
 
     //reduce ops
 
@@ -19,6 +20,7 @@ backward_func backward_func_table[] = {
     [OP_MUL] = b_op_mul_backward,
 
     //unary ops
+    [OP_RELU] = u_op_relu_backward,
 
     //reduce ops
 

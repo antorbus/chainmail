@@ -51,6 +51,14 @@ kernel_tensor * b_op_mul_backward  (kernel_tensor *kr,
                                     kernel_tensor *seed,
                                     size_t idx);
 //unary ops
+tensor * unary_forward(int func, tensor * t0, bool retain_grad);
+
+void u_op_relu_forward   ( kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1);
+kernel_tensor * u_op_relu_backward (kernel_tensor *kr, 
+                                    kernel_tensor *k0, 
+                                    kernel_tensor *k1, 
+                                    kernel_tensor *seed,
+                                    size_t idx);
 
 //reduce ops
 

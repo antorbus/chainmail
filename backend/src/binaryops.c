@@ -3,7 +3,10 @@
 
 
 tensor * binary_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
-    //TODO size checks
+    if (are_shapes_equal( t0->k->shape, t1->k->shape) != true){
+        fprintf(stderr, "Error: Shapes of tensors t0 and t1 are not equal.\n");
+        return NULL;
+    }
     kernel_tensor *k = empty_contiguous_kernel_tensor_like(t0->k);
     forward_func_table[func](k, t0->k, t1->k);
     expression *comes_from = expression_from(func, t0, t1);
