@@ -1,5 +1,5 @@
 CC     = clang
-CFLAGS = -Wall -Wextra -fPIC -Iinclude
+CFLAGS = -Wall -Wextra -fPIC -O3 -march=native -ftree-vectorize -Iinclude
 
 LIB_NAME = lightlemur
 SRCS     = backend/src/tensor.c backend/src/ops.c backend/src/binaryops.c backend/src/unaryops.c backend/src/reduceops.c backend/src/shapeops.c
