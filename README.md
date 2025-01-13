@@ -39,7 +39,23 @@ clang -o my_program my_program.c -L/path/to/lightlemur -llightlemur
 ```
 
 ### **Example: Basic Tensor Operations**
+In python
 
+```python
+import lemur
+
+x = lemur.tensor([1.0], requires_grad=True)
+y = lemur.tensor([4.0], requires_grad=True)
+
+z = x + y  
+w = z * x  
+w = w.relu() 
+
+w.backward() 
+print("Result from main:", w)
+```
+
+In C 
 ```c
 #include "../include/interface.h"
 
