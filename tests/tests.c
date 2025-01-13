@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "../backend/include/tensor.h"
+#include "../backend/include/interface.h"
 
 
 int main(){
@@ -20,9 +20,9 @@ int main(){
     tensor *t2 = empty_tensor(shape, true);
     t2->k->array[0] = -15.0;
 
-    tensor *t3 = binary_forward(OP_MUL, t0, t1, false);
-    tensor *t4 = unary_forward(OP_RELU, t2, false);
-    tensor *tf = binary_forward(OP_ADD, t3, t4, false);
+    tensor *t3 = mul(t0, t1, false); //Todo update docs
+    tensor *t4 = relu(t2, false);
+    tensor *tf = add(t3, t4, false);
     
     backwards(tf); 
 

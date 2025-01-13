@@ -1,4 +1,5 @@
 #include "../include/tensor.h"
+#include "../include/interface.h"
 
 
 void derive(tensor *t, kernel_tensor *seed){

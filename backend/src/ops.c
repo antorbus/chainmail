@@ -1,5 +1,6 @@
 #include "../include/ops.h"
 #include "../include/tensor.h"
+#include "../include/interface.h"
 
 forward_func forward_func_table[] = {
     //binary ops

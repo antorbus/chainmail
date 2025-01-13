@@ -6,6 +6,8 @@ The Great Todo List
 
 *** memory leak tests ***
 
+*** contiguous optimizations ***
+
 *** u ops ***
     - neg
     - exp 

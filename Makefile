@@ -2,9 +2,15 @@ CC     = clang
 CFLAGS = -Wall -Wextra -fPIC -O3 -march=native -ftree-vectorize -Iinclude
 
 LIB_NAME = lightlemur
-SRCS     = backend/src/tensor.c backend/src/ops.c backend/src/binaryops.c backend/src/unaryops.c backend/src/reduceops.c backend/src/shapeops.c
+SRC_DIR = backend/src
+SRCS = $(SRC_DIR)/tensor.c \
+       $(SRC_DIR)/ops.c \
+       $(SRC_DIR)/binaryops.c \
+       $(SRC_DIR)/unaryops.c \
+       $(SRC_DIR)/reduceops.c \
+       $(SRC_DIR)/shapeops.c \
+       $(SRC_DIR)/interface.c
 OBJS     = $(SRCS:.c=.o)
-
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S), Linux)
