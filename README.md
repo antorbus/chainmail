@@ -41,6 +41,8 @@ clang -o my_program my_program.c -L/path/to/lightlemur -llightlemur
 ### **Example: Basic Tensor Operations**
 
 ```c
+#include "../include/interface.h"
+
 int main(){
 
     // t0 * t1 + t2 
@@ -56,8 +58,8 @@ int main(){
     tensor *t2 = empty_tensor(shape, true);
     t2->k->array[0] = -15.0;
 
-    tensor *t3 = binary_forward(OP_MUL, t0, t1, false);
-    tensor *t4 = binary_forward(OP_ADD, t3, t2, false);
+    tensor *t3 = mul(t0, t1, false);
+    tensor *t4 = add(t3, t2, false);
     
     backwards(t4); 
 
