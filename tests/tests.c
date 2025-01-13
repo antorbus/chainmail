@@ -5,41 +5,38 @@
 
 int main(){
 
+    // x = tensor([1.0], requires_grad=True)
+    // y = tensor([4.0], requires_grad=True)
 
-    // t0 * t1 + relu(t2) 
+    // z = x + y  
+    // w = z * x  
+    // v = w.relu() 
 
+    // v.backward() 
 
     size_t shape[5] = {1,1,1,1,1};
     
-    tensor *t0 = empty_tensor(shape, true);
-    t0->k->array[0] = 1;
+    tensor *x = empty_tensor(shape, true);
+    x->k->array[0] = 1.0;
 
-    tensor *t1 = empty_tensor(shape, true);
-    t1->k->array[0] = 12.0;
+    tensor *y = empty_tensor(shape, true);
+    y->k->array[0] = 4;
 
-    tensor *t2 = empty_tensor(shape, true);
-    t2->k->array[0] = -15.0;
-
-    tensor *t3 = mul(t0, t1, false); 
-    tensor *t4 = relu(t2, false);
-    tensor *tf = add(t3, t4, false);
+    tensor *z = add(x, y, false); 
+    tensor *w = mul(z, x, false);
+    tensor *v = relu(w, false);
     
-    backwards(tf); 
+    backwards(v); 
 
-    print_tensor(t0);
+    print_tensor(y);
     printf("\n");
-    print_tensor(t1);
-    printf("\n");
-    print_tensor(t2);
-    printf("\n");
-    print_tensor(tf);
+    
 
-    free_tensor(t0);
-    free_tensor(t1);
-    free_tensor(t2);
-    free_tensor(t3);
-    free_tensor(t4);
-    free_tensor(tf);
+    free_tensor(x);
+    free_tensor(y);
+    free_tensor(w);
+    free_tensor(z);
+    free_tensor(v);
 
     return 0;
 }

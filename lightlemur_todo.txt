@@ -1,6 +1,6 @@
 The Great Todo List
 
-*** python port ***
+*** python port *** (in progress)
 
 *** unit tests ***
 
@@ -62,4 +62,6 @@ The Great Todo List
 *** lazy execution (.compile()) ***
 *** kernel fusion/compiler (.compute()) ***
 
- 
+*** other ***
+
+make file clean frontend/__pycache__?

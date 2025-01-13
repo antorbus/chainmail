@@ -48,4 +48,4 @@ $(TEST_BIN): $(TEST_SRC)
 	$(CC) -o $@ $< -L$(shell pwd) -l$(LIB_NAME)
 
 clean:
-	rm -f $(OBJS) $(TARGET) $(TEST_BIN)
+	rm -f $(OBJS) $(TARGET) $(TEST_BIN) 
