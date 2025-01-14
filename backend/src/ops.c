@@ -11,6 +11,7 @@ forward_func forward_func_table[] = {
     [OP_RELU] = u_op_relu_forward,
 
     //reduce ops
+    [OP_SUM] = r_op_sum_forward,
 
     //shape ops
 };
@@ -24,6 +25,7 @@ backward_func backward_func_table[] = {
     [OP_RELU] = u_op_relu_backward,
 
     //reduce ops
+    [OP_SUM] = r_op_sum_backward,
 
     //shape ops
 };
@@ -48,6 +50,7 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
     kernel_tensor *grad = NULL;
 
     switch (type_table[func]){
+
         case TYPE_BINARY:
             if (are_shapes_equal( t0->k->shape, t1->k->shape) != true){
                 fprintf(stderr, "Error: Shapes of tensors t0 and t1 are not equal.\n");
@@ -63,6 +66,7 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             }
             forward_func_table[func](k, t0->k, t1->k);
             break;
+
         case TYPE_UNARY:
             t1 = NULL;
             if (t0->requires_grad == true){
@@ -75,14 +79,25 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             }
             forward_func_table[func](k, t0->k, t1->k);
             break;
+
         case TYPE_REDUCE: 
             // t1 will be tensor of 
             // length 5 which shape (1,1,1,1,5) 
             // and 1 the dimensions 
             // affected and 0 at the ones that stay put
-            k = NULL;
+            if (t0->requires_grad == true){
+                    requires_grad = true;
+            }
+            size_t reduced_shape[5];
+            set_reduced_shape(reduced_shape, t0->k->shape, t1->k->shape);
+            k = empty_contiguous_kernel_tensor(reduced_shape);
+            if (retain_grad == true){
+                grad = empty_contiguous_kernel_tensor_like(k);
+                memset_kernel_tensor(grad, 0.0);
+            }
             forward_func_table[func](k, t0->k, t1->k);
             break;
+
         case TYPE_SHAPE:
             k = NULL;
             forward_func_table[func](k, t0->k, t1->k);

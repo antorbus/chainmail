@@ -64,6 +64,7 @@ The Great Todo List
 
 *** other ***
 stubs for interface
-checks for binary_forward etc
+checks for forward_kernel etc
+improve print (add limits)
 using contiguous to improve binary performance
 make file clean frontend/__pycache__?

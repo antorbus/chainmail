@@ -35,29 +35,31 @@ typedef kernel_tensor * (*backward_func)(   kernel_tensor *kr,
 tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad);
 void kernel_backward(tensor *tr, kernel_tensor *seed);
 
-//binary ops
-void b_op_add_forward   ( kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1);
-kernel_tensor * b_op_add_backward  (kernel_tensor *kr, 
-                                    kernel_tensor *k0, 
-                                    kernel_tensor *k1, 
-                                    kernel_tensor *seed,
-                                    size_t idx);
+#define FORWARD_FUNC_DEF(name)            \
+    void name(kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1)
 
-void b_op_mul_forward   ( kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1);
-kernel_tensor * b_op_mul_backward  (kernel_tensor *kr, 
-                                    kernel_tensor *k0, 
-                                    kernel_tensor *k1, 
-                                    kernel_tensor *seed,
-                                    size_t idx);
+#define BACKWARD_FUNC_DEF(name)            \
+    kernel_tensor * name (kernel_tensor *kr, \
+                          kernel_tensor *k0, \
+                          kernel_tensor *k1, \
+                          kernel_tensor *seed,\
+                          size_t idx) 
+//binary ops
+FORWARD_FUNC_DEF(b_op_add_forward);
+BACKWARD_FUNC_DEF(b_op_add_backward);
+
+FORWARD_FUNC_DEF(b_op_mul_forward);
+BACKWARD_FUNC_DEF(b_op_mul_backward);
+
 //unary ops
-void u_op_relu_forward   ( kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1);
-kernel_tensor * u_op_relu_backward (kernel_tensor *kr, 
-                                    kernel_tensor *k0, 
-                                    kernel_tensor *k1, 
-                                    kernel_tensor *seed,
-                                    size_t idx);
+
+FORWARD_FUNC_DEF(u_op_relu_forward);
+BACKWARD_FUNC_DEF(u_op_relu_backward);
 
 //reduce ops
+
+FORWARD_FUNC_DEF(r_op_sum_forward);
+BACKWARD_FUNC_DEF(r_op_sum_backward);
 
 //shape ops
 
@@ -77,7 +79,7 @@ enum OPS {
   //unary ops
   OP_RELU,
   //reduce ops
-
+  OP_SUM,
   //shape ops
 
   //

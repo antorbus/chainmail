@@ -1,6 +1,7 @@
 import ctypes
 import os
 import platform
+from typing import Optional
 
 SYSTEM = platform.system()
 if SYSTEM == "Darwin":
@@ -180,7 +181,12 @@ class LemurTensor:
     __slots__ = ("_ptr", "_parents")
     #TODO make note that _parents is needed so that when doing w = w.relu() or similar, GC doesnt mess us up
 
-    def __init__(self, shape=None, requires_grad=True, _ptr=None,  _parents=None):
+    def __init__(self, 
+             shape: Optional[list[int]] = None, 
+             requires_grad: Optional[bool] = False, 
+             _ptr = None, 
+             _parents = None):
+        
         if _ptr is not None:
             self._ptr = _ptr
             self._parents = _parents or ()

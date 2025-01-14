@@ -263,3 +263,9 @@ bool are_shapes_equal(size_t shape0[5], size_t shape1[5]) {
     }
     return true; 
 }
+
+void set_reduced_shape(size_t reduced_shape[5], size_t original_shape[5], size_t dims[5]) {
+    for (size_t i = 0; i < 5; i++) {
+        reduced_shape[i] = (dims[i] != 0) ? original_shape[i] : 1;
+    }
+}

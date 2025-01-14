@@ -1,7 +1,7 @@
 #include "../include/ops.h"
 #include "../include/tensor.h"
 
-void u_op_relu_forward   ( kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1){
+FORWARD_FUNC_DEF(u_op_relu_forward){
     (void) k1;
     KERNEL_TENSOR_5D_LOOP_START(kr){
         size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
@@ -11,11 +11,7 @@ void u_op_relu_forward   ( kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *
     }
 }
 
-kernel_tensor * u_op_relu_backward (kernel_tensor *kr, 
-                                    kernel_tensor *k0, 
-                                    kernel_tensor *k1, 
-                                    kernel_tensor *seed,
-                                    size_t idx){
+BACKWARD_FUNC_DEF(u_op_relu_backward){
     (void) k0; (void) k1; (void) idx;
     kernel_tensor *next_seed = empty_kernel_tensor_like(seed);
     KERNEL_TENSOR_5D_LOOP_START(next_seed){
