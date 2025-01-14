@@ -5,19 +5,19 @@
 
 //helper macros
 #define BINARY_FUNC(name, op)            \
-    inline tensor * name(tensor *t0, tensor *t1, bool b) { \
-        return binary_forward(op, t0, t1, b);          \
+    inline tensor * name(tensor *t0, tensor *t1, bool retain_grad) { \
+        return kernel_forward(op, t0, t1, retain_grad);          \
     }
 
 #define BINARY_FUNC_DEF(name, op)            \
-    tensor * name(tensor *t0, tensor *t1, bool b); 
+    tensor * name(tensor *t0, tensor *t1, bool retain_grad); 
 
 #define UNARY_FUNC(name, op)            \
-    inline tensor * name(tensor *t0, bool b) { \
-        return unary_forward(op, t0, b);          \
+    inline tensor * name(tensor *t0, bool retain_grad) { \
+        return kernel_forward(op, t0, NULL, retain_grad);          \
     }
 #define UNARY_FUNC_DEF(name, op)            \
-    tensor * name(tensor *t0, bool b);
+    tensor * name(tensor *t0, bool retain_grad);
 
 //external functions
 

@@ -32,11 +32,10 @@ typedef kernel_tensor * (*backward_func)(   kernel_tensor *kr,
 
 
 
+tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad);
 void kernel_backward(tensor *tr, kernel_tensor *seed);
 
 //binary ops
-tensor * binary_forward(int func, tensor *t0, tensor *t1, bool retain_grad);
-
 void b_op_add_forward   ( kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1);
 kernel_tensor * b_op_add_backward  (kernel_tensor *kr, 
                                     kernel_tensor *k0, 
@@ -51,8 +50,6 @@ kernel_tensor * b_op_mul_backward  (kernel_tensor *kr,
                                     kernel_tensor *seed,
                                     size_t idx);
 //unary ops
-tensor * unary_forward(int func, tensor * t0, bool retain_grad);
-
 void u_op_relu_forward   ( kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1);
 kernel_tensor * u_op_relu_backward (kernel_tensor *kr, 
                                     kernel_tensor *k0, 
@@ -64,8 +61,15 @@ kernel_tensor * u_op_relu_backward (kernel_tensor *kr,
 
 //shape ops
 
-
 //function tables entries
+
+enum {
+    TYPE_BINARY = 0,
+    TYPE_UNARY,
+    TYPE_REDUCE,
+    TYPE_SHAPE,
+};
+
 enum OPS {
   //binary ops
   OP_ADD = 0,
@@ -80,6 +84,7 @@ enum OPS {
   TOTAL_OPS,
 };
 
+int type_table[10];
 forward_func forward_func_table[TOTAL_OPS];
 backward_func backward_func_table[TOTAL_OPS];
 

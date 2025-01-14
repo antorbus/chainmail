@@ -1,26 +1,6 @@
 #include "../include/ops.h"
 #include "../include/tensor.h"
 
-
-tensor * unary_forward(int func, tensor * t0, bool retain_grad){
-    kernel_tensor *k = empty_contiguous_kernel_tensor_like(t0->k);
-    forward_func_table[func](k, t0->k, NULL);
-    expression *comes_from = expression_from(func, t0, NULL);
-    bool requires_grad = false;
-    if (t0->requires_grad == true){
-        requires_grad = true;
-    }
-    kernel_tensor *grad;
-    if (retain_grad == false){
-        grad = NULL;
-    } else {
-       grad = empty_contiguous_kernel_tensor_like(k);
-       memset_kernel_tensor(grad, 0.0);
-    }
-    tensor *t = tensor_from(k, comes_from, requires_grad, grad);
-    return t;
-}
-
 void u_op_relu_forward   ( kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1){
     (void) k1;
     KERNEL_TENSOR_5D_LOOP_START(kr){

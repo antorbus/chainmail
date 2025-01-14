@@ -1,32 +1,6 @@
 #include "../include/ops.h"
 #include "../include/tensor.h"
 
-
-tensor * binary_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
-    if (are_shapes_equal( t0->k->shape, t1->k->shape) != true){
-        fprintf(stderr, "Error: Shapes of tensors t0 and t1 are not equal.\n");
-        return NULL;
-    }
-    kernel_tensor *k = empty_contiguous_kernel_tensor_like(t0->k);
-    forward_func_table[func](k, t0->k, t1->k);
-    expression *comes_from = expression_from(func, t0, t1);
-    bool requires_grad = false;
-    if ((t0->requires_grad == true) || (t1->requires_grad == true)){
-        requires_grad = true;
-    }
-    kernel_tensor *grad;
-    if (retain_grad == false){
-        grad = NULL;
-    } else {
-       grad = empty_contiguous_kernel_tensor_like(k);
-       memset_kernel_tensor(grad, 0.0);
-    }
-    tensor *t = tensor_from(k, comes_from, requires_grad, grad);
-    return t;
-}
-
-
-
 void b_op_add_forward(kernel_tensor *kr, kernel_tensor *k0, kernel_tensor *k1){
     KERNEL_TENSOR_5D_LOOP_START(kr){
         size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
