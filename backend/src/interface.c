@@ -1,9 +1,10 @@
 #include "../include/interface.h"
 
+//TODO stubs
 
 //binary ops
 
-BINARY_FUNC(mul, OP_MUL)
+BINARY_FUNC(mul, OP_MUL) 
 BINARY_FUNC(add, OP_ADD)
 
 //unary ops
