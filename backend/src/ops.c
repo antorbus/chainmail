@@ -14,6 +14,7 @@ forward_func forward_func_table[] = {
     [OP_SUM] = r_op_sum_forward,
 
     //shape ops
+    [OP_VIEW] = s_op_view_forward,
 };
 
 backward_func backward_func_table[] = {
@@ -28,6 +29,7 @@ backward_func backward_func_table[] = {
     [OP_SUM] = r_op_sum_backward,
 
     //shape ops
+    [OP_VIEW] = s_op_view_backward,
 };
 
 int type_table[] = { //TODO ADD TO DOCS
@@ -39,8 +41,10 @@ int type_table[] = { //TODO ADD TO DOCS
     [OP_RELU] = TYPE_UNARY,
 
     //reduce ops
+    [OP_SUM] = TYPE_REDUCE, 
 
     //shape ops
+    [OP_VIEW] = TYPE_SHAPE, 
 };
 
 tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
@@ -85,6 +89,10 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             // length 5 which shape (1,1,1,1,5) 
             // and 1 the dimensions 
             // affected and 0 at the ones that stay put
+            if (t1->k->length != 5){
+                fprintf(stderr, "Error: Shapes of t1 (a.k.a dims) is not 5.\n");
+                return NULL;
+            }
             if (t0->requires_grad == true){
                     requires_grad = true;
             }
@@ -99,7 +107,14 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             break;
 
         case TYPE_SHAPE:
-            k = NULL;
+            if (t0->requires_grad == true){
+                    requires_grad = true;
+            }
+            k = empty_kernel_tensor_like(t0->k);
+            if (retain_grad == true){
+                grad = empty_contiguous_kernel_tensor_like(k);
+                memset_kernel_tensor(grad, 0.0);
+            }
             forward_func_table[func](k, t0->k, t1->k);
             break;
         

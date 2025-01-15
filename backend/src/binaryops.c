@@ -13,7 +13,7 @@ FORWARD_FUNC_DEF(b_op_add_forward){
 BACKWARD_FUNC_DEF(b_op_add_backward){
     //TODO: Could do something like only create it for right nodes to save mallocs
     (void) kr; (void) k0; (void) k1; (void) idx;
-    kernel_tensor *next_seed = empty_kernel_tensor_like(seed); 
+    kernel_tensor *next_seed = empty_contiguous_kernel_tensor_like(seed); 
     memcpy(next_seed->array, seed->array, seed->length * sizeof(lemur_float));
     return next_seed;
 }

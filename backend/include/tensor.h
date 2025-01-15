@@ -36,6 +36,7 @@ expression * expression_from(int func, tensor *t0, tensor *t1);
 
 void memset_kernel_tensor(kernel_tensor * k, lemur_float val);
 void free_kernel_tensor(kernel_tensor *k);
+
 kernel_tensor * empty_contiguous_kernel_tensor(size_t shape[5]);
 kernel_tensor * empty_contiguous_kernel_tensor_like(kernel_tensor *k);
 kernel_tensor * empty_kernel_tensor_like(kernel_tensor *k);
@@ -44,6 +45,8 @@ tensor * tensor_from(kernel_tensor *k, expression *comes_from, bool requires_gra
 
 bool are_shapes_equal(size_t shape0[5], size_t shape1[5]);
 void set_reduced_shape(size_t reduced_shape[5], size_t original_shape[5], size_t dims[5]);
+bool is_contiguous(kernel_tensor *k);
+
 
 void print_kernel_tensor(kernel_tensor *k);
 void print_expression(expression *e);

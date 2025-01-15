@@ -14,6 +14,9 @@
 #define REDUCE_FUNC_DEF(name, op)            \
     tensor * name(tensor *t0, tensor *dims, bool retain_grad)
 
+#define SHAPE_FUNC_DEF(name, op)            \
+    tensor * name(tensor *t0, tensor *dims, bool retain_grad)
+
 //external functions
 
 #ifdef __cplusplus
@@ -29,19 +32,17 @@ void free_tensor(tensor *t);
 tensor * empty_tensor(size_t shape[5], bool retain_grad);
 
 //binary ops
-
 BINARY_FUNC_DEF(mul, OP_MUL);
 BINARY_FUNC_DEF(add, OP_ADD);
 
 //unary ops
-
 UNARY_FUNC_DEF(relu, OP_RELU);
 
 //reduce ops
-
 REDUCE_FUNC_DEF(sum, OP_SUM);
 
 //shape ops
+SHAPE_FUNC_DEF(view, OP_VIEW);
 
 #ifdef __cplusplus
 }

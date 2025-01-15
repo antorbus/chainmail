@@ -33,13 +33,15 @@ The Great Todo List
     - maximum
 
 *** r ops ***
-    - sum 
+    - sum (backward done, forward in progress)
     - max
-    - mean
+    - mean (note: could be done with sum + division)
     - argmax
     - argmin
 
 *** s ops ***
+    - view
+    - contiguous
     - reshape 
     - transpose
     - expand
@@ -63,8 +65,14 @@ The Great Todo List
 *** kernel fusion/compiler (.compute()) ***
 
 *** other ***
+update docs, specific function checks should be done in the interface
 stubs for interface
 checks for forward_kernel etc
 improve print (add limits)
 using contiguous to improve binary performance
 make file clean frontend/__pycache__?
+
+
+NOTE
+check if a new tensor has to allocate new memory per function called (i.e. immutable)
+answer: yes because when compiler fusion is done, this wont matter

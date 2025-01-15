@@ -52,16 +52,16 @@ FORWARD_FUNC_DEF(b_op_mul_forward);
 BACKWARD_FUNC_DEF(b_op_mul_backward);
 
 //unary ops
-
 FORWARD_FUNC_DEF(u_op_relu_forward);
 BACKWARD_FUNC_DEF(u_op_relu_backward);
 
 //reduce ops
-
 FORWARD_FUNC_DEF(r_op_sum_forward);
 BACKWARD_FUNC_DEF(r_op_sum_backward);
 
 //shape ops
+FORWARD_FUNC_DEF(s_op_view_forward);
+BACKWARD_FUNC_DEF(s_op_view_backward);
 
 //function tables entries
 
@@ -81,7 +81,7 @@ enum OPS {
   //reduce ops
   OP_SUM,
   //shape ops
-
+  OP_VIEW,
   //
   TOTAL_OPS,
 };

@@ -269,3 +269,21 @@ void set_reduced_shape(size_t reduced_shape[5], size_t original_shape[5], size_t
         reduced_shape[i] = (dims[i] != 0) ? original_shape[i] : 1;
     }
 }
+
+bool is_contiguous(kernel_tensor *k) {
+    size_t total_elems = get_alleged_length(k->shape);
+
+    if (k->length != total_elems) {
+        return false;
+    }
+
+    size_t expected_stride = 1;  
+    for (int d = 4; d >= 0; d--) {
+        if (k->stride[d] != (int64_t)expected_stride) {
+            return false;
+        }
+        expected_stride *= k->shape[d];
+    }
+
+    return true;  
+}

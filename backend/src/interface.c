@@ -25,3 +25,12 @@ REDUCE_FUNC_DEF(sum, OP_SUM){
 }
 
 //shape ops
+
+SHAPE_FUNC_DEF(view, OP_VIEW){
+    if(is_contiguous(t0->k) == false){
+        fprintf(stderr, "Error: View can only be perfomed on contiguous tensors, use reshape instead.\n");
+        return NULL;
+        
+    }
+    return kernel_forward(OP_VIEW, t0, dims, retain_grad); 
+}
