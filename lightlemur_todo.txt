@@ -70,8 +70,14 @@ stubs for interface
 checks for forward_kernel etc
 improve print (add limits)
 using contiguous to improve binary performance
-when making compiler, malloc/object pool all of the memory before hand so there is not dynamic allocation
 make file clean frontend/__pycache__?
+
+*** compiler ***
+- when making compiler, malloc/object pool all of the memory before hand so there is not dynamic allocation
+- compiler adds the model you are using to a file with #defines for functions with known parameters so that all the sizes
+of the loops are known beforeand and compile dynamically
+- one thread per independen leaf node/expression. Keep an "object pool" of threads, allocate as needed.
+
 
 NOTE
 check if a new tensor has to allocate new memory per function called (i.e. immutable)
