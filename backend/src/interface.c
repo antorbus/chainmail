@@ -12,6 +12,10 @@ BINARY_FUNC_DEF(add, OP_ADD){
     return kernel_forward(OP_ADD, t0, t1, retain_grad);  
 }
 
+BINARY_FUNC_DEF(division, OP_DIVISION){
+    return kernel_forward(OP_DIVISION, t0, t1, retain_grad);  
+}
+
 //unary ops
 
 UNARY_FUNC_DEF(relu, OP_RELU){

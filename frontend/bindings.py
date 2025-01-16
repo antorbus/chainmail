@@ -68,6 +68,10 @@ lib.backwards.restype  = None
 lib.mul.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.mul.restype  = ctypes.POINTER(Tensor)
 
+# tensor* division(tensor* t0, tensor* t1, bool b);
+lib.division.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.division.restype  = ctypes.POINTER(Tensor)
+
 # tensor* add(tensor* t0, tensor* t1, bool retain_grad);
 lib.add.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.add.restype  = ctypes.POINTER(Tensor)
@@ -144,6 +148,15 @@ class LemurTensor:
             raise TypeError("Can't multiply LemurTensor with non-LemurTensor.")
         c_result = lib.mul(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
+    
+    def __truediv__(self, other):
+        if not isinstance(other, LemurTensor):
+            raise TypeError("Can't divide LemurTensor with non-LemurTensor.")
+        c_result = lib.division(self._ptr, other._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self, other))
+
+    def __repr__(self):
+        return _tensor_repr(self._ptr)
     
     def sum(self, other):
         if not isinstance(other, LemurTensor):
