@@ -110,16 +110,17 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             if (t0->requires_grad == true){
                     requires_grad = true;
             }
-            k = empty_kernel_tensor_like(t0->k);
+            k = kernel_tensor_shallow_copy(t0->k);
+
             if (retain_grad == true){
-                grad = empty_contiguous_kernel_tensor_like(k);
-                memset_kernel_tensor(grad, 0.0);
+                fprintf(stderr, "Error: Shape operations cannot retain grad as they point to parent's memory, call deepcopy instead.\n");
+                return NULL;
             }
             forward_func_table[func](k, t0->k, t1->k);
             break;
         
         default:
-            fprintf(stderr, "Error: unknown op type not in type table\n");
+            fprintf(stderr, "Error: unknown operation type not in type table.\n");
             return NULL;
     }
 
@@ -140,14 +141,21 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
 
     kernel_tensor *next_seed0 = backward_func_table[func](kr, k0, k1, seed, 0); 
     kernel_tensor *next_seed1;
-    if (t1 != NULL){
+    if (type_table[func] == TYPE_BINARY){ 
         next_seed1 = backward_func_table[func](kr, k0, k1, seed, 1);
     }
 
-    free_kernel_tensor(seed);
+    if (next_seed0 != seed){ //shape ops do not make a new gradient
+        free_kernel_tensor(seed); 
+    } else {
+        if (type_table[func] == TYPE_SHAPE){
+            fprintf(stderr, "backwards kernel returns seed for shape op\n");
+            return NULL;
+        }
+    }
 
     derive(t0, next_seed0);
-    if (t1 != NULL){
+    if (type_table[func] == TYPE_BINARY){
         derive(t1, next_seed1);
     }
 

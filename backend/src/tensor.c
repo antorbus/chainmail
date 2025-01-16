@@ -9,7 +9,7 @@ void derive(tensor *t, kernel_tensor *seed){
     if (t->comes_from != NULL){
         kernel_backward(t, seed);
     } else {
-        free_kernel_tensor(seed);
+        free_kernel_tensor(seed); //frees leaf gradients
     }
     
 }
@@ -96,6 +96,15 @@ kernel_tensor * empty_contiguous_kernel_tensor_like(kernel_tensor *k){
 kernel_tensor * empty_kernel_tensor_like(kernel_tensor *k){
     kernel_tensor *k1 = (kernel_tensor *)malloc(sizeof(kernel_tensor));
     k1->array = (lemur_float *)malloc(k->length*sizeof(lemur_float));
+    k1->length = k->length;
+    memcpy(k1->shape, k->shape, 5 * sizeof(size_t));
+    memcpy(k1->stride, k->stride, 5 * sizeof(size_t));
+    return k1;
+}
+
+kernel_tensor * kernel_tensor_shallow_copy(kernel_tensor *k){
+    kernel_tensor *k1 = (kernel_tensor *)malloc(sizeof(kernel_tensor));
+    k1->array = k->array;
     k1->length = k->length;
     memcpy(k1->shape, k->shape, 5 * sizeof(size_t));
     memcpy(k1->stride, k->stride, 5 * sizeof(size_t));

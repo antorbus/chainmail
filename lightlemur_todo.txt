@@ -8,6 +8,7 @@ The Great Todo List
 
 *** contiguous optimizations ***
 
+
 *** u ops ***
     - neg
     - exp 
@@ -38,18 +39,14 @@ The Great Todo List
     - mean (note: could be done with sum + division)
     - argmax
     - argmin
-
+    
 *** s ops ***
     - view
-    - contiguous
-    - reshape 
-    - transpose
+    - permute
     - expand
     - slice
     - flip
-    - concat
-    - split
-    - permute
+    
 
 *** cuda ***
 
@@ -57,6 +54,11 @@ The Great Todo List
     - gpu kernel
     - metal kernel
 
+*** deepcopy op*** a.deepcopy() -> b
+*** contiguous op*** a.contiguous() ->
+*** concat *** cat(a,b) -> c
+*** split ***  split(a, size, dims) -> b,c,...
+*** index ***  a[idx] -> b
 
 *** optimizers ***
 *** models ***
@@ -65,6 +67,7 @@ The Great Todo List
 *** kernel fusion/compiler (.compute()) ***
 
 *** other ***
+update docs, unary, binary, reduce all create new memory. Shape ops do not.
 update docs, specific function checks should be done in the interface
 stubs for interface
 checks for forward_kernel etc

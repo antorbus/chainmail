@@ -31,9 +31,15 @@ class KernelTensor(ctypes.Structure):
         ("computed", ctypes.c_bool),
     ]
 
-class Expression(ctypes.Structure): #TODO
+class Tensor(ctypes.Structure):
     pass 
 
+class Expression(ctypes.Structure):
+    _fields_ = [
+        ("t0",    ctypes.POINTER(Tensor)),  
+        ("t1",    ctypes.POINTER(Tensor)),
+        ("backward_func", ctypes.c_int),            
+    ] 
 
 class Tensor(ctypes.Structure):
     _fields_ = [
