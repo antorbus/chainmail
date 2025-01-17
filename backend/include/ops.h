@@ -63,6 +63,12 @@ BACKWARD_FUNC_DEF(r_op_sum_backward);
 FORWARD_FUNC_DEF(s_op_view_forward);
 BACKWARD_FUNC_DEF(s_op_view_backward);
 
+FORWARD_FUNC_DEF(s_op_expand_forward);
+BACKWARD_FUNC_DEF(s_op_expand_backward);
+
+FORWARD_FUNC_DEF(s_op_permute_forward);
+BACKWARD_FUNC_DEF(s_op_permute_backward);
+
 //function tables entries
 
 enum {
@@ -82,11 +88,13 @@ enum OPS {
   OP_SUM,
   //shape ops
   OP_VIEW,
+  OP_EXPAND,
+  OP_PERMUTE,
   //
   TOTAL_OPS,
 };
 
-int type_table[10];
+int type_table[TOTAL_OPS];
 forward_func forward_func_table[TOTAL_OPS];
 backward_func backward_func_table[TOTAL_OPS];
 

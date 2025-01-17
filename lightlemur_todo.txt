@@ -36,16 +36,19 @@ The Great Todo List
 *** r ops ***
     - sum (backward done, forward in progress)
     - max
-    - mean (note: could be done with sum + division)
-    - argmax
+    - min
+    - mean (done with sum + division)
+    - argmax 
     - argmin
     
 *** s ops ***
     - view
     - permute
-    - expand
-    - slice
-    - flip
+    - expand 
+    - slice (further down the line)
+    - flip  (further down the line)
+    - as_strided (further down the line)
+    - add more
     
 
 *** cuda ***
@@ -67,7 +70,8 @@ The Great Todo List
 *** kernel fusion/compiler (.compute()) ***
 
 *** other ***
-update docs, unary, binary, reduce all create new memory. Shape ops do not.
+update docs, next_seed0 MUST BE REUSED as seed. next_seed1 must be created
+update docs, unary, binary, reduce all create new memory. Shape ops do not (caveat).
 update docs, specific function checks should be done in the interface
 stubs for interface
 checks for forward_kernel etc
@@ -83,5 +87,16 @@ of the loops are known beforeand and compile dynamically
 
 
 NOTE
-check if a new tensor has to allocate new memory per function called (i.e. immutable)
+- check if a new tensor has to allocate new memory per function called (i.e. immutable)
 answer: yes because when compiler fusion is done, this wont matter
+- all B, O, R forward kernels all return contiguous tensors
+- all B, O, backward kernels all return contiguous tensors
+
+fwd
+unary ops   :   cont/con't -> cont 
+binary ops  :   cont/con't, cont/con't -> cont 
+reduce ops  :   cont/con't -> cont 
+shape       :   
+                view    cont -> cont 
+                expand  cont/con't -> con't
+                permute cont/con't -> con't

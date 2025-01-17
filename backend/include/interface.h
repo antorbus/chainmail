@@ -12,10 +12,10 @@
     tensor * name(tensor *t0, bool retain_grad)
 
 #define REDUCE_FUNC_DEF(name, op)            \
-    tensor * name(tensor *t0, tensor *dims, bool retain_grad)
+    tensor * name(tensor *t0, tensor *dim_data, bool retain_grad)
 
 #define SHAPE_FUNC_DEF(name, op)            \
-    tensor * name(tensor *t0, tensor *dims, bool retain_grad)
+    tensor * name(tensor *t0, tensor *dim_data)
 
 //external functions
 

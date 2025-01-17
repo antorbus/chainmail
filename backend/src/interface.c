@@ -21,16 +21,16 @@ UNARY_FUNC_DEF(relu, OP_RELU){
 //reduce ops
 
 REDUCE_FUNC_DEF(sum, OP_SUM){
-    return kernel_forward(OP_SUM, t0, dims, retain_grad); 
+    return kernel_forward(OP_SUM, t0, dim_data, retain_grad); 
 }
 
 //shape ops
 
 SHAPE_FUNC_DEF(view, OP_VIEW){
     if(is_contiguous(t0->k) == false){
-        fprintf(stderr, "Error: View can only be perfomed on contiguous tensors, use reshape instead.\n");
+        fprintf(stderr, "Error: View can only be perfomed on contiguous tensors.\n");
         return NULL;
         
-    }
-    return kernel_forward(OP_VIEW, t0, dims, retain_grad); 
+    }//todo add check
+    return kernel_forward(OP_VIEW, t0, dim_data, false); 
 }

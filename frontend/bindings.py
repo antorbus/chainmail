@@ -63,18 +63,21 @@ lib.free_tensor.restype  = None
 lib.backwards.argtypes = [ctypes.POINTER(Tensor)]
 lib.backwards.restype  = None
 
-# tensor* mul(tensor* t0, tensor* t1, bool b);
+# tensor* mul(tensor* t0, tensor* t1, bool retain_grad);
 lib.mul.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.mul.restype  = ctypes.POINTER(Tensor)
 
-# tensor* add(tensor* t0, tensor* t1, bool b);
+# tensor* add(tensor* t0, tensor* t1, bool retain_grad);
 lib.add.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.add.restype  = ctypes.POINTER(Tensor)
 
-# tensor* relu(tensor* t0, bool b);
+# tensor* relu(tensor* t0, bool retain_grad);
 lib.relu.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.relu.restype  = ctypes.POINTER(Tensor)
 
+#tensor * sum(tensor *t0, tensor *dim_data, bool retain_grad)
+lib.sum.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.sum.restype  = ctypes.POINTER(Tensor)
 
 #print
 
@@ -234,16 +237,22 @@ class LemurTensor:
 
     def __repr__(self):
         return _tensor_repr(self._ptr)
+    
+    def sum(self, other):
+        c_result = lib.sum(self._ptr, other._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
 
 
 
-def tensor(data, requires_grad=True):
+def tensor(data, shape = None, requires_grad=False):
     """
     Creates a new LemurTensor with shape=(1,1,1,1, len(data)).
     """
-    arr_len = len(data)
-    shape = (1, 1, 1, 1, arr_len)
-    t = LemurTensor(shape=shape, requires_grad=requires_grad)
+    
+    _shape = shape
+    if not shape:
+        _shape = (1, 1, 1, 1, len(data))
+    t = LemurTensor(shape=_shape, requires_grad=requires_grad)
 
     k_ptr = t._ptr.contents.k
     c_arr = k_ptr.contents.array 

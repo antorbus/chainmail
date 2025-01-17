@@ -15,6 +15,8 @@ forward_func forward_func_table[] = {
 
     //shape ops
     [OP_VIEW] = s_op_view_forward,
+    [OP_EXPAND] = s_op_expand_forward,
+    [OP_PERMUTE] = s_op_permute_forward,
 };
 
 backward_func backward_func_table[] = {
@@ -30,6 +32,8 @@ backward_func backward_func_table[] = {
 
     //shape ops
     [OP_VIEW] = s_op_view_backward,
+    [OP_EXPAND] = s_op_expand_backward,
+    [OP_PERMUTE] = s_op_permute_backward,
 };
 
 int type_table[] = { //TODO ADD TO DOCS
@@ -45,6 +49,8 @@ int type_table[] = { //TODO ADD TO DOCS
 
     //shape ops
     [OP_VIEW] = TYPE_SHAPE, 
+    [OP_EXPAND] = TYPE_SHAPE,
+    [OP_PERMUTE] = TYPE_SHAPE,
 };
 
 tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
@@ -97,7 +103,7 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
                     requires_grad = true;
             }
             size_t reduced_shape[5];
-            set_reduced_shape(reduced_shape, t0->k->shape, t1->k->shape);
+            set_reduced_shape(reduced_shape, t0->k->shape, t1->k->array);
             k = empty_contiguous_kernel_tensor(reduced_shape);
             if (retain_grad == true){
                 grad = empty_contiguous_kernel_tensor_like(k);
@@ -140,22 +146,26 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     int func = tr->comes_from->backward_func;
 
     kernel_tensor *next_seed0 = backward_func_table[func](kr, k0, k1, seed, 0); 
-    kernel_tensor *next_seed1;
+    kernel_tensor *next_seed1 = NULL;
     if (type_table[func] == TYPE_BINARY){ 
         next_seed1 = backward_func_table[func](kr, k0, k1, seed, 1);
     }
-
-    if (next_seed0 != seed){ //shape ops do not make a new gradient
-        free_kernel_tensor(seed); 
-    } else {
-        if (type_table[func] == TYPE_SHAPE){
-            fprintf(stderr, "backwards kernel returns seed for shape op\n");
-            return NULL;
-        }
+    if (next_seed1 == seed){
+        fprintf(stderr, "next seed1 cannot be seed\n");
+        return;
     }
+
+    if (next_seed0 != seed){ //some ops do not make a new gradient for next_seed0. one is always made for next_seed1
+        free_kernel_tensor(seed); 
+    } 
 
     derive(t0, next_seed0);
     if (type_table[func] == TYPE_BINARY){
+        if (next_seed1 == NULL){
+            fprintf(stderr, "binary backwards kernel returns null seed1\n");
+            return;
+        }
+
         derive(t1, next_seed1);
     }
 

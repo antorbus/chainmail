@@ -55,8 +55,12 @@ void backwards(tensor * t){     //TODO: change name???
 }
 
 void free_kernel_tensor(kernel_tensor *k){
-    free(k->array);
-    free(k);
+    if (k != NULL){
+        if (k->array != NULL){
+            free(k->array);
+        }
+        free(k);
+    }
 }
 
 void free_tensor(tensor *t){
@@ -136,6 +140,24 @@ tensor * tensor_from(kernel_tensor *k, expression *comes_from, bool requires_gra
     t->k = k;
     return t;
 }
+
+kernel_tensor * dim_kernel_tensor_from(size_t shape[5]){
+    kernel_tensor *k = (kernel_tensor *)malloc(sizeof(kernel_tensor));
+    memcpy(k->shape, shape, 5 * sizeof(size_t));
+    k->length = 0;
+    k->array = NULL;
+    for (size_t i =0; i<5; i++){
+        k->stride[i] = 0;
+    }
+    k->computed = false;
+    return k;
+}
+
+tensor * dim_tensor_from(size_t shape[5]){
+    kernel_tensor *k = dim_kernel_tensor_from(shape);
+    return tensor_from(k, NULL, false, NULL);
+}
+
 
 expression * expression_from(int func, tensor *t0, tensor *t1){
     expression *e = (expression *)malloc(sizeof(expression));
@@ -273,9 +295,10 @@ bool are_shapes_equal(size_t shape0[5], size_t shape1[5]) {
     return true; 
 }
 
-void set_reduced_shape(size_t reduced_shape[5], size_t original_shape[5], size_t dims[5]) {
+void set_reduced_shape(size_t reduced_shape[5], size_t original_shape[5], lemur_float dims[5]) {
     for (size_t i = 0; i < 5; i++) {
-        reduced_shape[i] = (dims[i] != 0) ? original_shape[i] : 1;
+        size_t d = (size_t)dims[i];
+        reduced_shape[i] = (d == 1) ? original_shape[i] : 1;
     }
 }
 
@@ -296,3 +319,8 @@ bool is_contiguous(kernel_tensor *k) {
 
     return true;  
 }
+
+//todo
+// tensor * contiguous(tensor *t){
+    
+// }

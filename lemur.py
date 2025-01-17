@@ -5,15 +5,21 @@ __version__ = "0.0.1"
 def main():
     print(f"LightLemur Version: {__version__}")
 
-    x = tensor([1.0], requires_grad=True)
-    y = tensor([4.0], requires_grad=True)
+    x = tensor([i for i in range(1,33)], (2,2,2,2,2),  requires_grad=True)
+    y = x.sum(tensor([0,0,1,0,0])) 
+    print(y)
+    # y = tensor([4.0], requires_grad=True)
 
-    z = x + y  
-    w = z * x  
-    w = w.relu() 
+    # z = x + y  
+    # w = z * x  
+    # w = w.relu() 
 
-    w.backward() 
-    print("Result from main:", w)
+    # w.backward() 
+    # print(w)
+    # print()
+    # print(x)
+
+
 
 if __name__ == "__main__":
     main()
