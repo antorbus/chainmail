@@ -34,14 +34,10 @@ BACKWARD_FUNC_DEF(s_op_expand_backward){
 
 //permute literally permutes strides
 FORWARD_FUNC_DEF(s_op_permute_forward){
-    size_t temp_shape[5];
-    uint64_t temp_stride[5];
-    memcpy(temp_shape, k0->shape, 5 * sizeof(size_t));
-    memcpy(temp_stride, k0->stride, 5 * sizeof(uint64_t));
     for (size_t i = 0; i < 5; i++){
         size_t idx = (size_t) k1->array[i];
-        kr->shape[idx] = temp_shape[i];
-        kr->stride[idx] = temp_stride[i];
+        kr->shape[idx] = k0->shape[i];
+        kr->stride[idx] = k0->stride[i];
     }
 }
 

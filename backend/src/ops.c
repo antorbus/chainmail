@@ -116,13 +116,16 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             if (t0->requires_grad == true){
                     requires_grad = true;
             }
+            printf("b shallow copied\n");
             k = kernel_tensor_shallow_copy(t0->k);
+            printf("a shallow copied\n");
 
             if (retain_grad == true){
                 fprintf(stderr, "Error: Shape operations cannot retain grad as they point to parent's memory, call deepcopy instead.\n");
                 return NULL;
             }
             forward_func_table[func](k, t0->k, t1->k);
+            printf("a call\n");
             break;
         
         default:

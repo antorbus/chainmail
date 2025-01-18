@@ -1,21 +1,24 @@
 import ctypes
 
-def _format_kernel_tensor(k_ptr):
+LEMUR_VERBOSE = True
+
+def _format_kernel_tensor(k_ptr, verbose=LEMUR_VERBOSE):
     if not k_ptr:
-        return "  [NULL kernel_tensor]\n"
+        return "[NULL kernel_tensor]\n"
 
     k = k_ptr.contents
     lines = []
-    lines.append(f"  kernel_tensor: 0x{ctypes.addressof(k):x}\n")
-    lines.append(f"    length     = {k.length}\n")
-
-    shape = [k.shape[i] for i in range(5)]
-    lines.append("    shape      = [" + ", ".join(str(s) for s in shape) + "]\n")
 
     stride = [k.stride[i] for i in range(5)]
-    lines.append("    stride     = [" + ", ".join(str(s) for s in stride) + "]\n")
+    shape = [k.shape[i] for i in range(5)]
+    
+    if verbose:
+        lines.append(f"kernel_tensor @ 0x{ctypes.addressof(k):x} with length = {k.length} \n")
+        
+        lines.append("stride = [" + ", ".join(str(s) for s in stride) + "]\n")
+        lines.append(f"computed = {str(k.computed).lower()}\n")
 
-    lines.append(f"    computed   = {str(k.computed).lower()}\n")
+    
 
     data_str = []
     data_str.append("tensor([")
@@ -50,57 +53,52 @@ def _format_kernel_tensor(k_ptr):
         data_str.append("]")
         if d0 < shape[0] - 1:
             data_str.append(",")
-    data_str.append("])")
-
+    data_str.append("])\n")
     data_str = "".join(data_str)
+    lines.append(data_str)
 
-    lines.append("    data:\n")
-    lines.append(f"      {data_str}\n")
+    lines.append("shape = [" + ", ".join(str(s) for s in shape) + "]\n")
 
     return "".join(lines)
 
 
-def _format_expression(e_ptr):
+def _format_expression(e_ptr, verbose=LEMUR_VERBOSE):
     if not e_ptr:
-        return "  [NULL expression]\n"
+        return "[NULL expression]\n"
     e = e_ptr.contents
     lines = []
-    lines.append("  expression:\n")
-    lines.append(f"    backward_func = {e.backward_func}\n")
+    lines.append(f"backward_func = {e.backward_func}")
 
     if e.t0:
-        lines.append(f"    t0:      0x{ctypes.addressof(e.t0.contents):x}\n")
+        lines.append(f"    t0 @ 0x{ctypes.addressof(e.t0.contents):x}")
     else:
-        lines.append("    t0:      [NULL tensor]\n")
+        lines.append("    t0 @ [NULL tensor]")
 
     if e.t1:
-        lines.append(f"    t1:      0x{ctypes.addressof(e.t1.contents):x}\n")
+        lines.append(f"    t1 @ 0x{ctypes.addressof(e.t1.contents):x}")
     else:
-        lines.append("    t1:      [NULL tensor]\n")
-
+        lines.append("    t1 @ [NULL tensor]")
+    lines.append("\n")
     return "".join(lines)
 
 
-def _tensor_repr(t_ptr):
-    """
-    Builds the multi-line string replicating print_tensor().
-    """
+def _tensor_repr(t_ptr, verbose=LEMUR_VERBOSE):
     if not t_ptr:
         return "[NULL tensor]"
 
     t = t_ptr.contents
     lines = []
-    lines.append(f"tensor: 0x{ctypes.addressof(t):x}\n")
-    lines.append(f"  requires_grad = {str(t.requires_grad).lower()}\n")
-
-    lines.append("  comes_from:\n")
-    lines.append(_format_expression(t.comes_from))
-
-    lines.append("  k:\n")
+    if verbose:
+        lines.append(f"tensor @ 0x{ctypes.addressof(t):x}\n")
+        lines.append("comes_from: ")
+        lines.append(_format_expression(t.comes_from))
+   
+    lines.append("k:\n")
     lines.append(_format_kernel_tensor(t.k))
 
-    lines.append("  grad:\n")
-    lines.append(_format_kernel_tensor(t.grad))
+    if t.requires_grad:
+        lines.append("grad:\n")
+        lines.append(_format_kernel_tensor(t.grad))
 
     return "".join(lines)
 

@@ -128,8 +128,6 @@ class LemurTensor:
         lib.backwards(self._ptr)
 
     def relu(self):
-        if not isinstance(other, LemurTensor):
-            raise TypeError("Can't add LemurTensor with non-LemurTensor.")
         c_result = lib.relu(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
 
@@ -147,25 +145,26 @@ class LemurTensor:
     
     def sum(self, other):
         if not isinstance(other, LemurTensor):
-            raise TypeError("Can't add LemurTensor with non-LemurTensor.")
+            raise TypeError("Can't sum LemurTensor with non-LemurTensor dim.")
         c_result = lib.sum(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
     def view(self, other):
         if not isinstance(other, LemurTensor):
-            raise TypeError("Can't add LemurTensor with non-LemurTensor.")
+            raise TypeError("Can't view LemurTensor with non-LemurTensor.")
         c_result = lib.view(self._ptr, other._ptr)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
     def expand(self, other):
         if not isinstance(other, LemurTensor):
-            raise TypeError("Can't add LemurTensor with non-LemurTensor.")
+            raise TypeError("Can't expand LemurTensor with non-LemurTensor.")
         c_result = lib.expand(self._ptr, other._ptr)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
     def permute(self, other):
         if not isinstance(other, LemurTensor):
-            raise TypeError("Can't add LemurTensor with non-LemurTensor.")
+            raise TypeError("Can't permute LemurTensor with non-LemurTensor.")
+        print("call")
         c_result = lib.permute(self._ptr, other._ptr)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
