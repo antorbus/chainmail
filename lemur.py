@@ -6,8 +6,10 @@ def main():
     print(f"LightLemur Version: {__version__}")
 
     x = tensor([i for i in range(1,33)], (2,2,2,2,2),  requires_grad=True)
-    y = x.sum(tensor([0,0,1,0,0])) 
-    print(y)
+    s = tensor([0,0,0,0,0]) 
+    y = x.sum(s)
+    y.backward() 
+    print(x)
     # y = tensor([4.0], requires_grad=True)
 
     # z = x + y  

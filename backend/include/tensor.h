@@ -44,7 +44,8 @@ kernel_tensor * empty_kernel_tensor(size_t shape[5]);
 tensor * tensor_from(kernel_tensor *k, expression *comes_from, bool requires_grad, kernel_tensor* grad);
 kernel_tensor * kernel_tensor_shallow_copy(kernel_tensor *k);
 tensor * dim_tensor_from(size_t shape[5]);
-//tensor * contiguous(tensor *t); todo
+void inplace_contiguous_kernel_tensor(kernel_tensor *k); 
+kernel_tensor * contiguous_deepcopy_kernel_tensor(kernel_tensor *k); 
 
 
 bool are_shapes_equal(size_t shape0[5], size_t shape1[5]);

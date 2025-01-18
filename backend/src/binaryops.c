@@ -17,8 +17,7 @@ BACKWARD_FUNC_DEF(b_op_add_backward){
         next_seed = seed;
     }
     else{
-        next_seed = empty_contiguous_kernel_tensor_like(seed); 
-        memcpy(next_seed->array, seed->array, seed->length * sizeof(lemur_float));
+        next_seed = contiguous_deepcopy_kernel_tensor(seed);
     }
     return next_seed;
 }
@@ -41,8 +40,7 @@ BACKWARD_FUNC_DEF(b_op_mul_backward){
         k = k1;
     }
     else{
-        next_seed = empty_contiguous_kernel_tensor_like(seed); 
-        memcpy(next_seed->array, seed->array, seed->length * sizeof(lemur_float));
+        next_seed = contiguous_deepcopy_kernel_tensor(seed);
         k = k0;
     }
     KERNEL_TENSOR_5D_LOOP_START(next_seed){
@@ -51,5 +49,6 @@ BACKWARD_FUNC_DEF(b_op_mul_backward){
         size_t offset_k = KERNEL_TENSOR_GET_OFFSET(k);
         next_seed->array[offset_next_seed] = seed->array[offset_seed] * k->array[offset_k];
     }
+
     return next_seed;
 }

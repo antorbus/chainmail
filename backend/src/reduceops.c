@@ -35,10 +35,11 @@ FORWARD_FUNC_DEF(r_op_sum_forward){
 BACKWARD_FUNC_DEF(r_op_sum_backward){
     (void) kr; (void) idx; 
     for (size_t i = 0; i < 5; i++) {
-        if (k1->array[i] !=0 ){
-            seed->shape[i] = k0->shape[i];
+        if ( (size_t) k1->array[i] == 0 ){ //todo this is an expand to the size of k0
             seed->stride[i] = 0;
+            seed->shape[i] = k0->shape[i];
         }
     } 
+    inplace_contiguous_kernel_tensor(seed);
     return seed;
 }

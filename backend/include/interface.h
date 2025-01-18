@@ -43,6 +43,8 @@ REDUCE_FUNC_DEF(sum, OP_SUM);
 
 //shape ops
 SHAPE_FUNC_DEF(view, OP_VIEW);
+SHAPE_FUNC_DEF(expand, OP_EXPAND);
+SHAPE_FUNC_DEF(permute, OP_PERMUTE);
 
 #ifdef __cplusplus
 }

@@ -320,7 +320,33 @@ bool is_contiguous(kernel_tensor *k) {
     return true;  
 }
 
-//todo
-// tensor * contiguous(tensor *t){
-    
-// }
+void inplace_contiguous_kernel_tensor(kernel_tensor *k){
+    if (is_contiguous(k)){
+        return;
+    }
+    lemur_float* prev_array = k->array;
+    int64_t prev_stride[5];
+    memcpy(prev_stride, k->stride, 5 * sizeof(int64_t));
+    set_contiguous_stride(k);
+    k->length = get_alleged_length(k->shape);
+    k->array = (lemur_float *)malloc(k->length*sizeof(lemur_float));
+
+    KERNEL_TENSOR_5D_LOOP_START(k){
+        size_t offset_k = KERNEL_TENSOR_GET_OFFSET(k);
+        size_t offset_prev_k = d0*prev_stride[0] + d1*prev_stride[1] 
+                             + d2*prev_stride[2] + d3*prev_stride[3] + d4*prev_stride[4];
+        k->array[offset_k] = prev_array[offset_prev_k];
+    }
+
+    free(prev_array);
+}
+
+kernel_tensor * contiguous_deepcopy_kernel_tensor(kernel_tensor *k){
+    kernel_tensor *kc = empty_contiguous_kernel_tensor_like(k);
+    KERNEL_TENSOR_5D_LOOP_START(kc){
+        size_t offset_kc = KERNEL_TENSOR_GET_OFFSET(kc);
+        size_t offset_k= KERNEL_TENSOR_GET_OFFSET(k);
+        kc->array[offset_kc] =  k->array[offset_k];
+    }
+    return kc;
+}

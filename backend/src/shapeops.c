@@ -21,11 +21,12 @@ BACKWARD_FUNC_DEF(s_op_view_backward){
     return seed;
 }
 
-//expand (the dimension that was expanded get reduced with a sum!) so next_seed has same shape
 FORWARD_FUNC_DEF(s_op_expand_forward){
     (void) kr;  (void) k0;  (void) k1;
+
 }
 
+//expand (the dimension that was expanded get reduced with a sum!) so next_seed has same shape
 BACKWARD_FUNC_DEF(s_op_expand_backward){
     (void) kr;  (void) k0;  (void) k1;  (void) seed;   (void) idx;
     return NULL;
@@ -47,8 +48,9 @@ FORWARD_FUNC_DEF(s_op_permute_forward){
 BACKWARD_FUNC_DEF(s_op_permute_backward){
     (void) kr;  (void) k1;  (void) idx;
     for (size_t i = 0; i < 5; i++){
-        seed->shape[i] = k0->shape[i];
-        seed->stride[i] = k0->stride[i];
+        size_t idx = (size_t) k1->array[i];
+        seed->shape[i] = k0->shape[idx];
+        seed->stride[i] = k0->stride[idx];
     }
     return seed;
 }

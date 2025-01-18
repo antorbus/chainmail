@@ -26,11 +26,58 @@ REDUCE_FUNC_DEF(sum, OP_SUM){
 
 //shape ops
 
+//todo add checks, like view positive dimensions, length is the same, etc
 SHAPE_FUNC_DEF(view, OP_VIEW){
     if(is_contiguous(t0->k) == false){
         fprintf(stderr, "Error: View can only be perfomed on contiguous tensors.\n");
         return NULL;
         
-    }//todo add check
+    }
+    if (dim_data->k->length != 5){
+        fprintf(stderr, "Error: View dimensions must be 5.\n");
+        return NULL;
+    }
     return kernel_forward(OP_VIEW, t0, dim_data, false); 
+}
+SHAPE_FUNC_DEF(expand, OP_EXPAND){
+    if (dim_data->k->length != 5){
+        fprintf(stderr, "Error: Expand dimensions must be 5.\n");
+        return NULL;
+    }
+    for (size_t i = 0; i<5; i++){
+        if((t0->k->shape[i] != 1) && ((size_t) dim_data->k->array[i] != t0->k->shape[i])){
+            fprintf(stderr, "Error: Can only expand singleton dimensions.\n");
+            return NULL;
+        }
+    }
+    return kernel_forward(OP_EXPAND, t0, dim_data, false); 
+}
+
+SHAPE_FUNC_DEF(permute, OP_PERMUTE){
+
+    if (dim_data->k->length != 5){
+        fprintf(stderr, "Error: Permute dimensions must be 5.\n");
+        return NULL;
+    }
+    int valid_perm_counter = 0;
+    bool perm_tracker[5] = {false, false, false, false, false};
+    for (size_t i = 0; i<5; i++){
+        size_t perm_idx = (size_t) dim_data->k->array[i];
+        if(( perm_idx > 4) || (perm_idx < 0)){
+            break;
+        }
+        else{
+            if (perm_tracker[perm_idx] == false){
+                perm_tracker[perm_idx] = true;
+            } else{
+                break;
+            }
+            valid_perm_counter++;
+        }
+    }
+    if (valid_perm_counter != 5){
+        fprintf(stderr, "Error: Invalid permutation.\n");
+        return NULL;
+    }
+    return kernel_forward(OP_PERMUTE, t0, dim_data, false); 
 }

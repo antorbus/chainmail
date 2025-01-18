@@ -143,15 +143,20 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     kernel_tensor *kr = tr->k;
     kernel_tensor *k0 = t0->k;
     kernel_tensor *k1 = (t1 != NULL) ? t1->k : NULL;
+
     int func = tr->comes_from->backward_func;
 
-    kernel_tensor *next_seed0 = backward_func_table[func](kr, k0, k1, seed, 0); 
     kernel_tensor *next_seed1 = NULL;
     if (type_table[func] == TYPE_BINARY){ 
         next_seed1 = backward_func_table[func](kr, k0, k1, seed, 1);
     }
+    //TODO fix this
+    //next_seed0 must be calculated AFTER next_seed1 since next_seed0 could be seed itself 
+    //making the calculation of next_seed1 incorrect 
+    kernel_tensor *next_seed0 = backward_func_table[func](kr, k0, k1, seed, 0); 
+
     if (next_seed1 == seed){
-        fprintf(stderr, "next seed1 cannot be seed\n");
+        fprintf(stderr, "next_seed1 cannot be seed\n");
         return;
     }
 
