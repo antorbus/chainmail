@@ -28,6 +28,7 @@ venv/
 env/
 .venv/
 .python-version
+.ipynb_checkpoints/
 
 .vscode/
 .idea/
