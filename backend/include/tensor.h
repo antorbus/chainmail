@@ -12,6 +12,7 @@ typedef struct kernel_tensor {
     size_t shape[5]; 
     int64_t stride[5];
     bool computed; 
+    bool shallow;
 } kernel_tensor;
 
 

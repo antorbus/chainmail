@@ -30,6 +30,7 @@ class KernelTensor(ctypes.Structure):
         ("shape",    ctypes.c_size_t * 5),            
         ("stride",   ctypes.c_int64  * 5),            
         ("computed", ctypes.c_bool),
+        ("shallow",       ctypes.c_bool),  
     ]
 
 class Tensor(ctypes.Structure):

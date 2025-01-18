@@ -31,6 +31,7 @@ kernel_tensor * create_seed_kernel_tensor(){
     set_contiguous_stride(seed);
     seed->computed = true;
     seed->array[0] = 1.0;
+    seed->shallow = false;
     return seed;
 }
 
@@ -56,7 +57,7 @@ void backwards(tensor * t){     //TODO: change name???
 
 void free_kernel_tensor(kernel_tensor *k){
     if (k != NULL){
-        if (k->array != NULL){
+        if ((k->array != NULL) && (k->shallow == false)){
             free(k->array);
         }
         free(k);
@@ -64,7 +65,9 @@ void free_kernel_tensor(kernel_tensor *k){
 }
 
 void free_tensor(tensor *t){
-    free_kernel_tensor(t->k);
+    if (t->k != NULL){
+        free_kernel_tensor(t->k);
+    }
     if (t->grad != NULL){
         free_kernel_tensor(t->grad);
     }
@@ -89,6 +92,7 @@ kernel_tensor * empty_contiguous_kernel_tensor(size_t shape[5]){
     k->array = (lemur_float *)malloc(k->length * sizeof(lemur_float));
     set_contiguous_stride(k);
     k->computed = false;
+    k->shallow = false;
     return k;
 }
 
@@ -103,6 +107,7 @@ kernel_tensor * empty_kernel_tensor_like(kernel_tensor *k){
     k1->length = k->length;
     memcpy(k1->shape, k->shape, 5 * sizeof(size_t));
     memcpy(k1->stride, k->stride, 5 * sizeof(size_t));
+    k1->shallow = false;
     return k1;
 }
 
@@ -110,6 +115,7 @@ kernel_tensor * kernel_tensor_shallow_copy(kernel_tensor *k){
     kernel_tensor *k1 = (kernel_tensor *)malloc(sizeof(kernel_tensor));
     k1->array = k->array;
     k1->length = k->length;
+    k1->shallow = true;
     memcpy(k1->shape, k->shape, 5 * sizeof(size_t));
     memcpy(k1->stride, k->stride, 5 * sizeof(size_t));
     return k1;
@@ -337,8 +343,10 @@ void inplace_contiguous_kernel_tensor(kernel_tensor *k){
                              + d2*prev_stride[2] + d3*prev_stride[3] + d4*prev_stride[4];
         k->array[offset_k] = prev_array[offset_prev_k];
     }
-
-    free(prev_array);
+    if (k->shallow == false){
+        free(prev_array);
+    }
+    k->shallow = false;
 }
 
 kernel_tensor * contiguous_deepcopy_kernel_tensor(kernel_tensor *k){
