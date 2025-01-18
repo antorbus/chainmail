@@ -24,7 +24,7 @@ The Great Todo List
     - add (done)
     - mul (done)
     - sub
-    - div
+    - div (done)
     - pow
     - eq
     - neq

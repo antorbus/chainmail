@@ -80,7 +80,7 @@ BACKWARD_FUNC_DEF(b_op_division_backward){
             next_seed->array[offset_next_seed] = seed->array[offset_seed] / k1->array[offset_k1];
         }
         else {
-            next_seed->array[offset_next_seed] = -1 * seed->array[offset_seed] * (kr->array[offset_kr] / (k1->array[offset_k1]));
+            next_seed->array[offset_next_seed] = -1.0 * seed->array[offset_seed] * (kr->array[offset_kr] / (k1->array[offset_k1]));
         }
     }
     return next_seed;
