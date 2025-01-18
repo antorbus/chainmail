@@ -51,6 +51,9 @@ BACKWARD_FUNC_DEF(b_op_add_backward);
 FORWARD_FUNC_DEF(b_op_mul_forward);
 BACKWARD_FUNC_DEF(b_op_mul_backward);
 
+FORWARD_FUNC_DEF(b_op_division_forward);
+BACKWARD_FUNC_DEF(b_op_division_backward);
+
 //unary ops
 FORWARD_FUNC_DEF(u_op_relu_forward);
 BACKWARD_FUNC_DEF(u_op_relu_backward);
@@ -82,6 +85,7 @@ enum OPS {
   //binary ops
   OP_ADD = 0,
   OP_MUL,
+  OP_DIVISION,
   //unary ops
   OP_RELU,
   //reduce ops
