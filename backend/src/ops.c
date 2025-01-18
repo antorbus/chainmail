@@ -6,6 +6,7 @@ forward_func forward_func_table[] = {
     //binary ops
     [OP_ADD] = b_op_add_forward,
     [OP_MUL] = b_op_mul_forward,
+    [OP_DIVISION] = b_op_division_forward,
 
     //unary ops
     [OP_RELU] = u_op_relu_forward,
@@ -23,6 +24,7 @@ backward_func backward_func_table[] = {
     //binary ops
     [OP_ADD] = b_op_add_backward,
     [OP_MUL] = b_op_mul_backward,
+    [OP_DIVISION] = b_op_division_backward,
 
     //unary ops
     [OP_RELU] = u_op_relu_backward,
@@ -40,6 +42,7 @@ int type_table[] = { //TODO ADD TO DOCS
     //binary ops
     [OP_ADD] = TYPE_BINARY,
     [OP_MUL] = TYPE_BINARY,
+    [OP_DIVISION] = TYPE_BINARY,
 
     //unary ops
     [OP_RELU] = TYPE_UNARY,
