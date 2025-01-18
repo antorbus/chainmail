@@ -64,7 +64,13 @@ FORWARD_FUNC_DEF(b_op_division_forward){
 
 BACKWARD_FUNC_DEF(b_op_division_backward){
     (void) k0;
-    kernel_tensor *next_seed = empty_contiguous_kernel_tensor_like(seed);
+    kernel_tensor *next_seed;
+    if (idx == 0) {
+        next_seed = seed;
+    }
+    else {
+        next_seed = contiguous_deepcopy_kernel_tensor(seed);
+    }
     KERNEL_TENSOR_5D_LOOP_START(next_seed){
         size_t offset_next_seed = KERNEL_TENSOR_GET_OFFSET(next_seed);
         size_t offset_seed = KERNEL_TENSOR_GET_OFFSET(seed);
