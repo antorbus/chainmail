@@ -81,6 +81,10 @@ lib.add.restype  = ctypes.POINTER(Tensor)
 lib.relu.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.relu.restype  = ctypes.POINTER(Tensor)
 
+# tensor* sigmoid(tensor* t0, bool retain_grad);
+lib.sigmoid.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.sigmoid.restype  = ctypes.POINTER(Tensor)
+
 #tensor * sum(tensor *t0, tensor *dim_data, bool retain_grad)
 lib.sum.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.sum.restype  = ctypes.POINTER(Tensor)
@@ -134,6 +138,10 @@ class LemurTensor:
 
     def relu(self):
         c_result = lib.relu(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
+    
+    def sigmoid(self):
+        c_result = lib.sigmoid(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
 
     def __add__(self, other):

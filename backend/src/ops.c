@@ -10,6 +10,7 @@ forward_func forward_func_table[] = {
 
     //unary ops
     [OP_RELU] = u_op_relu_forward,
+    [OP_SIGMOID] = u_op_sigmoid_forward,
 
     //reduce ops
     [OP_SUM] = r_op_sum_forward,
@@ -28,7 +29,7 @@ backward_func backward_func_table[] = {
 
     //unary ops
     [OP_RELU] = u_op_relu_backward,
-
+    [OP_SIGMOID] = u_op_sigmoid_backward,
     //reduce ops
     [OP_SUM] = r_op_sum_backward,
 
@@ -46,6 +47,7 @@ int type_table[] = { //TODO ADD TO DOCS
 
     //unary ops
     [OP_RELU] = TYPE_UNARY,
+    [OP_SIGMOID] = TYPE_UNARY,
 
     //reduce ops
     [OP_SUM] = TYPE_REDUCE, 

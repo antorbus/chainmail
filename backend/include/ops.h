@@ -58,6 +58,9 @@ BACKWARD_FUNC_DEF(b_op_division_backward);
 FORWARD_FUNC_DEF(u_op_relu_forward);
 BACKWARD_FUNC_DEF(u_op_relu_backward);
 
+FORWARD_FUNC_DEF(u_op_sigmoid_forward);
+BACKWARD_FUNC_DEF(u_op_sigmoid_backward);
+
 //reduce ops
 FORWARD_FUNC_DEF(r_op_sum_forward);
 BACKWARD_FUNC_DEF(r_op_sum_backward);
@@ -88,6 +91,7 @@ enum OPS {
   OP_DIVISION,
   //unary ops
   OP_RELU,
+  OP_SIGMOID,
   //reduce ops
   OP_SUM,
   //shape ops
