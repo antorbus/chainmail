@@ -18,7 +18,7 @@ The Great Todo List
     - abs
     - sign 
     - reciprocal
-    - sigmoid
+    - sigmoid (done)
 
 *** b ops ***
     - add (done)
