@@ -33,10 +33,10 @@ FORWARD_FUNC_DEF(u_op_sigmoid_forward){
 }
 
 BACKWARD_FUNC_DEF(u_op_sigmoid_backward){
-    (void) k1; (void) idx;
+    (void) k1; (void) k0; (void) idx;
     KERNEL_TENSOR_5D_LOOP_START(seed){
         size_t offset_seed = KERNEL_TENSOR_GET_OFFSET(seed);
-        size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(k0);
+        size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
         lemur_float sigmoid_val = kr->array[offset_kr];
         seed->array[offset_seed] = sigmoid_val * (1.0 - sigmoid_val);
     }
