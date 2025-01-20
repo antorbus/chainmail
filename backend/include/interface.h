@@ -31,6 +31,9 @@ void free_tensor(tensor *t);
 
 tensor * empty_tensor(size_t shape[5], bool retain_grad);
 
+char* op_map[TOTAL_OPS];
+char* get_op_name(int op_id);
+
 //binary ops
 BINARY_FUNC_DEF(mul, OP_MUL);
 BINARY_FUNC_DEF(add, OP_ADD);
