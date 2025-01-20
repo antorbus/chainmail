@@ -90,6 +90,9 @@ class LemurTensor:
     def graph(self):
         return reprutils.plot_tensor_graph_parents(self)
 
+    def sigmoid(self):
+        c_result = lib.sigmoid(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
 
 def tensor(data, shape = None, requires_grad=False):
     """

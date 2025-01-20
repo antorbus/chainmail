@@ -14,6 +14,7 @@ char* op_map[TOTAL_OPS] ={
 [OP_DIVISION] = "div",
 //unary ops
 [OP_RELU] = "relu",
+[OP_SIGMOID] = "sigmoid",
 //reduce ops
 [OP_SUM] = "sum",
 //shape ops
