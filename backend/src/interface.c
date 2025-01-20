@@ -1,6 +1,32 @@
 #include "../include/interface.h"
 
 //TODO stubs
+char* get_op_name(int op_id) {
+    if(op_id >= 0 && op_id < TOTAL_OPS) {
+        return op_map[op_id];
+    }
+    return "unknown_op";
+}
+
+char* op_map[TOTAL_OPS] ={
+//binary ops
+[OP_ADD] = "add",
+[OP_MUL] = "mul",
+[OP_DIVISION] = "div",
+//unary ops
+[OP_RELU] = "relu",
+[OP_SIGMOID] = "sigmoid",
+//reduce ops
+[OP_SUM] = "sum",
+//shape ops
+[OP_VIEW] = "view",
+[OP_EXPAND]= "expand",
+[OP_PERMUTE]= "permute",
+};
+
+void fill_kernel_tensor(kernel_tensor * k, lemur_float val){
+    memset_kernel_tensor(k, val);
+}
 
 //binary ops
 
@@ -32,6 +58,10 @@ BINARY_FUNC_DEF(power, OP_POW){  // Implemented as unary op
 
 UNARY_FUNC_DEF(relu, OP_RELU){
     return kernel_forward(OP_RELU, t0, NULL, retain_grad);  
+}
+
+UNARY_FUNC_DEF(sigmoid, OP_SIGMOID){
+    return kernel_forward(OP_SIGMOID, t0, NULL, retain_grad);  
 }
 
 //reduce ops

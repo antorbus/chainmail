@@ -30,6 +30,10 @@ void backwards(tensor * t);
 void free_tensor(tensor *t);
 
 tensor * empty_tensor(size_t shape[5], bool retain_grad);
+void fill_kernel_tensor(kernel_tensor * k, lemur_float val);
+
+extern char* op_map[TOTAL_OPS];
+char* get_op_name(int op_id);
 
 //binary ops
 BINARY_FUNC_DEF(mul, OP_MUL);
@@ -40,6 +44,7 @@ BINARY_FUNC_DEF(division, OP_DIVISION);
 UNARY_FUNC_DEF(exponential, OP_EXP);
 BINARY_FUNC_DEF(power, OP_POW);  // Implemented as unary op
 UNARY_FUNC_DEF(relu, OP_RELU);
+UNARY_FUNC_DEF(sigmoid, OP_SIGMOID);
 
 //reduce ops
 REDUCE_FUNC_DEF(sum, OP_SUM);

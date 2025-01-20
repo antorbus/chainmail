@@ -63,6 +63,9 @@ BACKWARD_FUNC_DEF(u_op_pow_backward);
 FORWARD_FUNC_DEF(u_op_relu_forward);
 BACKWARD_FUNC_DEF(u_op_relu_backward);
 
+FORWARD_FUNC_DEF(u_op_sigmoid_forward);
+BACKWARD_FUNC_DEF(u_op_sigmoid_backward);
+
 //reduce ops
 FORWARD_FUNC_DEF(r_op_sum_forward);
 BACKWARD_FUNC_DEF(r_op_sum_backward);
@@ -95,6 +98,7 @@ enum OPS {
   OP_EXP,
   OP_POW,
   OP_RELU,
+  OP_SIGMOID,
   //reduce ops
   OP_SUM,
   //shape ops
@@ -105,9 +109,9 @@ enum OPS {
   TOTAL_OPS,
 };
 
-int type_table[TOTAL_OPS];
-forward_func forward_func_table[TOTAL_OPS];
-backward_func backward_func_table[TOTAL_OPS];
+extern int type_table[TOTAL_OPS];
+extern forward_func forward_func_table[TOTAL_OPS];
+extern backward_func backward_func_table[TOTAL_OPS];
 
 //helper macros
 

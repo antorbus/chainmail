@@ -1,6 +1,11 @@
 import ctypes
+from frontend.bindings import lib
 
 LEMUR_VERBOSE = True
+LEMUR_SCI_PRINT = False
+
+def get_op_name(i):
+    return lib.get_op_name(i)
 
 def _format_kernel_tensor(k_ptr, verbose=LEMUR_VERBOSE):
     if not k_ptr:
@@ -17,6 +22,7 @@ def _format_kernel_tensor(k_ptr, verbose=LEMUR_VERBOSE):
         
         lines.append("stride = [" + ", ".join(str(s) for s in stride) + "]\n")
         lines.append(f"computed = {str(k.computed).lower()}\n")
+        lines.append(f"shallow = {str(k.shallow).lower()}\n")
 
     
 
@@ -38,21 +44,24 @@ def _format_kernel_tensor(k_ptr, verbose=LEMUR_VERBOSE):
                                d3 * stride[3] +
                                d4 * stride[4])
                         val = float(arr[idx].value)  # a lemur_float
-                        data_str.append(f"{val:.4f}")
+                        if LEMUR_SCI_PRINT:
+                            data_str.append(f"{val:6.2e}")
+                        else:
+                            data_str.append(f"{val:6.2f}")
                         if d4 < shape[4] - 1:
                             data_str.append(", ")
                     data_str.append("]")
                     if d3 < shape[3] - 1:
-                        data_str.append(",")
+                        data_str.append(",\n\t   ")
                 data_str.append("]")
                 if d2 < shape[2] - 1:
-                    data_str.append(",")
+                    data_str.append(",\n\n\t  ")
             data_str.append("]")
             if d1 < shape[1] - 1:
-                data_str.append(",")
+                data_str.append(",\n\n\n\t ")
         data_str.append("]")
         if d0 < shape[0] - 1:
-            data_str.append(",")
+            data_str.append(",\n\n\n\n\t")
     data_str.append("])\n")
     data_str = "".join(data_str)
     lines.append(data_str)
@@ -102,3 +111,77 @@ def _tensor_repr(t_ptr, verbose=LEMUR_VERBOSE):
 
     return "".join(lines)
 
+def _short_label(t):
+    ptr = getattr(t, "_ptr", None)
+    addr_str = f"0x{id(t):x}"
+    shape_str = ""
+
+    if ptr:
+        c_tensor = ptr.contents
+        addr_str = f"0x{ctypes.addressof(c_tensor):x}"  
+        if c_tensor.k:
+            k_obj = c_tensor.k.contents
+            dims = [k_obj.shape[i] for i in range(5)]
+            non1 = [str(d) for d in dims if d > 1]
+            if non1:
+                shape_str = f"(shape=[{', '.join(non1)}])"
+    return f"LemurTensor @ {addr_str} {shape_str}"
+
+
+def _build_ascii_lines(t, prefix="", is_last=True, visited=None):
+    if visited is None:
+        visited = set()
+
+    lines = []
+    if t is None:
+        connector = "└── " if is_last else "├── "
+        lines.append(prefix + connector + "[NULL LemurTensor]")
+        return lines
+
+    if id(t) in visited:
+        connector = "└── " if is_last else "├── "
+        lines.append(prefix + connector + f"[repeated] {_short_label(t)}")
+        return lines
+    visited.add(id(t))
+
+    connector = "└── " if is_last else "├── "
+    lines.append(prefix + connector + _short_label(t))
+
+    child_prefix = prefix + ("    " if is_last else "│   ")
+
+   
+    op_name = None
+    ptr = getattr(t, "_ptr", None)
+    if ptr:
+        c_tensor = ptr.contents
+        expr_ptr = c_tensor.comes_from
+        if expr_ptr:
+            bf = expr_ptr.contents.backward_func
+            raw_op_name = get_op_name(bf)  # returns a c_char_p
+            op_name = raw_op_name.decode("utf-8") if raw_op_name else "unknown_op"
+
+   
+    parents = getattr(t, "_parents", [])
+    if op_name:
+        lines.append(child_prefix + f"└── [{op_name}]")
+        op_prefix = child_prefix + "    "
+        for i, p in enumerate(parents):
+            parent_is_last = (i == len(parents) - 1)
+            lines.extend(_build_ascii_lines(p, 
+                                            prefix=op_prefix, 
+                                            is_last=parent_is_last,
+                                            visited=visited))
+    else:
+        for i, p in enumerate(parents):
+            parent_is_last = (i == len(parents) - 1)
+            lines.extend(_build_ascii_lines(p, 
+                                            prefix=child_prefix, 
+                                            is_last=parent_is_last,
+                                            visited=visited))
+
+    return lines
+
+
+def plot_tensor_graph_parents(t):
+    lines = _build_ascii_lines(t)
+    return "\n".join(lines)

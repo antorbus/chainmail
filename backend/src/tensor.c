@@ -190,7 +190,7 @@ if (!k) {
     
     printf("    stride     = [");
     for (int i = 0; i < 5; i++) {
-        printf("%lld", k->stride[i]);
+        printf("%ld", (long) k->stride[i]);
         if (i < 4) printf(", ");
     }
     printf("]\n");

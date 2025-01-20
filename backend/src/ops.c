@@ -12,6 +12,7 @@ forward_func forward_func_table[] = {
     [OP_EXP] = u_op_exp_forward,
     [OP_POW] = u_op_pow_forward,
     [OP_RELU] = u_op_relu_forward,
+    [OP_SIGMOID] = u_op_sigmoid_forward,
 
     //reduce ops
     [OP_SUM] = r_op_sum_forward,
@@ -32,7 +33,7 @@ backward_func backward_func_table[] = {
     [OP_EXP] = u_op_exp_backward,
     [OP_POW] = u_op_pow_backward,
     [OP_RELU] = u_op_relu_backward,
-
+    [OP_SIGMOID] = u_op_sigmoid_backward,
     //reduce ops
     [OP_SUM] = r_op_sum_backward,
 
@@ -52,6 +53,7 @@ int type_table[] = { //TODO ADD TO DOCS
     [OP_EXP] = TYPE_UNARY,
     [OP_POW] = TYPE_BINARY,
     [OP_RELU] = TYPE_UNARY,
+    [OP_SIGMOID] = TYPE_UNARY,
 
     //reduce ops
     [OP_SUM] = TYPE_REDUCE, 
