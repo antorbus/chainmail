@@ -1,4 +1,4 @@
-from frontend.bindings import LemurTensor, tensor
+from frontend.ptensor import LemurTensor, tensor
 
 __version__ = "0.0.1"
 

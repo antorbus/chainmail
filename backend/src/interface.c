@@ -1,6 +1,26 @@
 #include "../include/interface.h"
 
 //TODO stubs
+char* get_op_name(int op_id) {
+    if(op_id >= 0 && op_id < TOTAL_OPS) {
+        return op_map[op_id];
+    }
+    return "unknown_op";
+}
+char* op_map[TOTAL_OPS] ={
+//binary ops
+[OP_ADD] = "add",
+[OP_MUL] = "mul",
+[OP_DIVISION] = "div",
+//unary ops
+[OP_RELU] = "relu",
+//reduce ops
+[OP_SUM] = "sum",
+//shape ops
+[OP_VIEW] = "view",
+[OP_EXPAND]= "expand",
+[OP_PERMUTE]= "permute",
+};
 
 //binary ops
 
