@@ -102,9 +102,9 @@ enum OPS {
   TOTAL_OPS,
 };
 
-int type_table[TOTAL_OPS];
-forward_func forward_func_table[TOTAL_OPS];
-backward_func backward_func_table[TOTAL_OPS];
+extern int type_table[TOTAL_OPS];
+extern forward_func forward_func_table[TOTAL_OPS];
+extern backward_func backward_func_table[TOTAL_OPS];
 
 //helper macros
 
