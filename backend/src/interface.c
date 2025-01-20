@@ -42,6 +42,10 @@ UNARY_FUNC_DEF(relu, OP_RELU){
     return kernel_forward(OP_RELU, t0, NULL, retain_grad);  
 }
 
+UNARY_FUNC_DEF(sigmoid, OP_SIGMOID){
+    return kernel_forward(OP_SIGMOID, t0, NULL, retain_grad);  
+}
+
 //reduce ops
 
 REDUCE_FUNC_DEF(sum, OP_SUM){

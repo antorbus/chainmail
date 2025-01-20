@@ -18,7 +18,7 @@ The Great Todo List
     - abs
     - sign 
     - reciprocal
-    - sigmoid
+    - sigmoid (done)
 
 *** b ops ***
     - add (done)
@@ -100,4 +100,5 @@ shape       :
                 view    cont -> cont 
                 expand  cont/con't -> con't
                 permute cont/con't -> con't
+
 
