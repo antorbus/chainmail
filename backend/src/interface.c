@@ -7,6 +7,7 @@ char* get_op_name(int op_id) {
     }
     return "unknown_op";
 }
+
 char* op_map[TOTAL_OPS] ={
 //binary ops
 [OP_ADD] = "add",
@@ -22,6 +23,10 @@ char* op_map[TOTAL_OPS] ={
 [OP_EXPAND]= "expand",
 [OP_PERMUTE]= "permute",
 };
+
+void fill_kernel_tensor(kernel_tensor * k, lemur_float val){
+    memset_kernel_tensor(k, val);
+}
 
 //binary ops
 

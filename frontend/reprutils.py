@@ -45,9 +45,9 @@ def _format_kernel_tensor(k_ptr, verbose=LEMUR_VERBOSE):
                                d4 * stride[4])
                         val = float(arr[idx].value)  # a lemur_float
                         if LEMUR_SCI_PRINT:
-                            data_str.append(f"{val:.2e}")
+                            data_str.append(f"{val:6.2e}")
                         else:
-                            data_str.append(f"{val:.2f}")
+                            data_str.append(f"{val:6.2f}")
                         if d4 < shape[4] - 1:
                             data_str.append(", ")
                     data_str.append("]")

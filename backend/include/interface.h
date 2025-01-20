@@ -30,6 +30,7 @@ void backwards(tensor * t);
 void free_tensor(tensor *t);
 
 tensor * empty_tensor(size_t shape[5], bool retain_grad);
+void fill_kernel_tensor(kernel_tensor * k, lemur_float val);
 
 char* op_map[TOTAL_OPS];
 char* get_op_name(int op_id);
