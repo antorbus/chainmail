@@ -2,6 +2,7 @@ import ctypes
 from frontend.bindings import lib
 
 LEMUR_VERBOSE = True
+LEMUR_SCI_PRINT = False
 
 def get_op_name(i):
     return lib.get_op_name(i)
@@ -43,21 +44,24 @@ def _format_kernel_tensor(k_ptr, verbose=LEMUR_VERBOSE):
                                d3 * stride[3] +
                                d4 * stride[4])
                         val = float(arr[idx].value)  # a lemur_float
-                        data_str.append(f"{val:.4f}")
+                        if LEMUR_SCI_PRINT:
+                            data_str.append(f"{val:.2e}")
+                        else:
+                            data_str.append(f"{val:.2f}")
                         if d4 < shape[4] - 1:
                             data_str.append(", ")
                     data_str.append("]")
                     if d3 < shape[3] - 1:
-                        data_str.append(",")
+                        data_str.append(",\n\t   ")
                 data_str.append("]")
                 if d2 < shape[2] - 1:
-                    data_str.append(",")
+                    data_str.append(",\n\n\t  ")
             data_str.append("]")
             if d1 < shape[1] - 1:
-                data_str.append(",")
+                data_str.append(",\n\n\n\t ")
         data_str.append("]")
         if d0 < shape[0] - 1:
-            data_str.append(",")
+            data_str.append(",\n\n\n\n\t")
     data_str.append("])\n")
     data_str = "".join(data_str)
     lines.append(data_str)
