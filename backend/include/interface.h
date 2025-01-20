@@ -34,9 +34,11 @@ tensor * empty_tensor(size_t shape[5], bool retain_grad);
 //binary ops
 BINARY_FUNC_DEF(mul, OP_MUL);
 BINARY_FUNC_DEF(add, OP_ADD);
-BINARY_FUNC_DEF(division, OP_ADD);
+BINARY_FUNC_DEF(division, OP_DIVISION);
 
 //unary ops
+UNARY_FUNC_DEF(exponential, OP_EXP);
+BINARY_FUNC_DEF(power, OP_POW);  // Implemented as unary op
 UNARY_FUNC_DEF(relu, OP_RELU);
 
 //reduce ops

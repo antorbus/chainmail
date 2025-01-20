@@ -81,6 +81,14 @@ lib.add.restype  = ctypes.POINTER(Tensor)
 lib.relu.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.relu.restype  = ctypes.POINTER(Tensor)
 
+# tensor* exponential(tensor* t0, bool retain_grad);
+lib.exponential.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.exponential.restype  = ctypes.POINTER(Tensor)
+
+# tensor* power(tensor* t0, tensor* t1, bool retain_grad);
+lib.power.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.power.restype  = ctypes.POINTER(Tensor)
+
 #tensor * sum(tensor *t0, tensor *dim_data, bool retain_grad)
 lib.sum.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.sum.restype  = ctypes.POINTER(Tensor)
@@ -135,6 +143,19 @@ class LemurTensor:
     def relu(self):
         c_result = lib.relu(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
+    
+    def exp(self):
+        c_result = lib.exponential(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
+    
+    def pow(self, other):
+        if not isinstance(other, LemurTensor):
+            if isinstance(other, float):
+                other = tensor([other])
+            else:
+                raise TypeError("Can't take LemurTensor to non-float or non-LemurTensor exponent.")
+        c_result = lib.power(self._ptr, other._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self))
 
     def __add__(self, other):
         if not isinstance(other, LemurTensor):
