@@ -122,7 +122,9 @@ kernel_tensor * kernel_tensor_shallow_copy(kernel_tensor *k){
 }
 
 void memset_kernel_tensor(kernel_tensor * k, lemur_float val){
-    memset(k->array, *(int*)&val, k->length * sizeof(lemur_float)); 
+    for (size_t i = 0; i < k->length; i++){
+        k->array[i] = val;
+    }
 } 
 
 tensor * empty_tensor(size_t shape[5], bool retain_grad){

@@ -153,7 +153,7 @@ def tensor(data, requires_grad=False):
 
 def full(shape, fill_value, requires_grad=False):
     t = empty(shape, requires_grad=requires_grad)
-    lib.fill_kernel_tensor(t._ptr.contents.k, ctypes.c_float(fill_value))
+    lib.memset_kernel_tensor(t._ptr.contents.k, ctypes.c_float(fill_value))
     return t
 
 def arange(end, start=0, step=1, requires_grad=False):
