@@ -49,6 +49,34 @@ UNARY_FUNC_DEF(sigmoid, OP_SIGMOID){
     return kernel_forward(OP_SIGMOID, t0, NULL, retain_grad);  
 }
 
+UNARY_FUNC_DEF(exponential, OP_EXP){
+    return kernel_forward(OP_EXP, t0, NULL, retain_grad);  
+}
+
+UNARY_FUNC_DEF(logarithm, OP_LOG){
+    return kernel_forward(OP_LOG, t0, NULL, retain_grad);  
+}
+
+UNARY_FUNC_DEF(neg, OP_NEG){
+    return kernel_forward(OP_NEG, t0, NULL, retain_grad);  
+}
+
+UNARY_FUNC_DEF(square_root, OP_SQRT){
+    return kernel_forward(OP_SQRT, t0, NULL, retain_grad);  
+}
+
+UNARY_FUNC_DEF(absolute, OP_ABS){
+    return kernel_forward(OP_ABS, t0, NULL, retain_grad);  
+}
+
+UNARY_FUNC_DEF(sign, OP_SIGN){
+    return kernel_forward(OP_SIGN, t0, NULL, retain_grad);  
+}
+
+UNARY_FUNC_DEF(reciprocal, OP_RECIPROCAL){
+    return kernel_forward(OP_RECIPROCAL, t0, NULL, retain_grad);  
+}
+
 //reduce ops
 
 REDUCE_FUNC_DEF(sum, OP_SUM){

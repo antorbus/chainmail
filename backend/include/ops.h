@@ -61,6 +61,27 @@ BACKWARD_FUNC_DEF(u_op_relu_backward);
 FORWARD_FUNC_DEF(u_op_sigmoid_forward);
 BACKWARD_FUNC_DEF(u_op_sigmoid_backward);
 
+FORWARD_FUNC_DEF(u_op_exp_forward);
+BACKWARD_FUNC_DEF(u_op_exp_backward);
+
+FORWARD_FUNC_DEF(u_op_log_forward);
+BACKWARD_FUNC_DEF(u_op_log_backward);
+
+FORWARD_FUNC_DEF(u_op_neg_forward);
+BACKWARD_FUNC_DEF(u_op_neg_backward);
+
+FORWARD_FUNC_DEF(u_op_sqrt_forward);
+BACKWARD_FUNC_DEF(u_op_sqrt_backward);
+
+FORWARD_FUNC_DEF(u_op_abs_forward);
+BACKWARD_FUNC_DEF(u_op_abs_backward);
+
+FORWARD_FUNC_DEF(u_op_sign_forward);
+BACKWARD_FUNC_DEF(u_op_sign_backward);
+
+FORWARD_FUNC_DEF(u_op_reciprocal_forward);
+BACKWARD_FUNC_DEF(u_op_reciprocal_backward);
+
 //reduce ops
 FORWARD_FUNC_DEF(r_op_sum_forward);
 BACKWARD_FUNC_DEF(r_op_sum_backward);
@@ -92,6 +113,13 @@ enum OPS {
   //unary ops
   OP_RELU,
   OP_SIGMOID,
+  OP_EXP,
+  OP_LOG,
+  OP_NEG,
+  OP_SQRT,
+  OP_ABS,
+  OP_SIGN,
+  OP_RECIPROCAL,
   //reduce ops
   OP_SUM,
   //shape ops

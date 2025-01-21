@@ -43,6 +43,13 @@ BINARY_FUNC_DEF(division, OP_DIVISION);
 //unary ops
 UNARY_FUNC_DEF(relu, OP_RELU);
 UNARY_FUNC_DEF(sigmoid, OP_SIGMOID);
+UNARY_FUNC_DEF(exponential, OP_EXP);
+UNARY_FUNC_DEF(logarithm, OP_LOG);
+UNARY_FUNC_DEF(neg, OP_NEG);
+UNARY_FUNC_DEF(square_root, OP_SQRT);
+UNARY_FUNC_DEF(absolute, OP_ABS);
+UNARY_FUNC_DEF(sign, OP_SIGN);
+UNARY_FUNC_DEF(reciprocal, OP_RECIPROCAL);
 
 //reduce ops
 REDUCE_FUNC_DEF(sum, OP_SUM);
