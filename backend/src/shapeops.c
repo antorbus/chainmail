@@ -51,8 +51,8 @@ BACKWARD_FUNC_DEF(s_op_permute_backward){
     memcpy(temp_stride, seed->stride, 5*sizeof(int64_t));
     for (size_t i = 0; i < 5; i++){
         size_t idx = (size_t) k1->array[i];
-        seed->shape[idx] = temp_shape[i];
-        seed->stride[idx] = temp_stride[i];
+        seed->shape[i] = temp_shape[idx];
+        seed->stride[i] = temp_stride[idx];
     }
     inplace_contiguous_kernel_tensor(seed); 
     return seed;
