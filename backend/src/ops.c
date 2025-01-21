@@ -64,8 +64,6 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
     bool requires_grad = false;
     kernel_tensor *grad = NULL;
 
-    inplace_contiguous_kernel_tensor(t0->k); //guarantee that tensors are always contiguous
-    inplace_contiguous_kernel_tensor(t1->k);
 
     switch (type_table[func]){
 
