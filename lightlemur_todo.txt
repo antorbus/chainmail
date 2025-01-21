@@ -78,6 +78,7 @@ checks for forward_kernel etc
 improve print (add limits)
 using contiguous to improve binary performance
 make file clean frontend/__pycache__?
+add a small print of elements to the graph
 
 *** compiler ***
 - when making compiler, malloc/object pool all of the memory before hand so there is not dynamic allocation
