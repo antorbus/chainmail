@@ -168,9 +168,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     if (next_seed0 != seed){ //some ops do not make a new gradient for next_seed0. one is always made for next_seed1
         free_kernel_tensor(seed); 
     } 
-    printf("%s\n",get_op_name(func));
-    print_kernel_tensor(next_seed0);
-    printf("\n");
+
     derive(t0, next_seed0);
     if (type_table[func] == TYPE_BINARY){
         if (next_seed1 == NULL){
