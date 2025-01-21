@@ -102,3 +102,10 @@ shape       :
                 permute cont/con't -> con't
 
 
+todo:
+think - is it worth it to make every operation contiguous? maybe yes because if not GPU tensors 
+will be accessing non contiguous tensors all the way
+
+answer:
+did some tests, torch linear automatically makes tensor (linear) contiguous for GPU always 
+because if not the model is A LOT SLOWER
