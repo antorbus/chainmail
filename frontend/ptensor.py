@@ -38,6 +38,10 @@ class LemurTensor:
     def backward(self):
         lib.backwards(self._ptr)
 
+    @property
+    def grad(self):
+        print(reprutils._format_kernel_tensor(self._ptr.contents.grad))
+
     def relu(self):
         c_result = lib.relu(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
@@ -100,8 +104,9 @@ class LemurTensor:
     def __repr__(self):
         return reprutils._tensor_repr(self._ptr)
     
+    @property
     def graph(self):
-        return reprutils.plot_tensor_graph_parents(self)
+        print(reprutils.plot_tensor_graph_parents(self))
 
     def sigmoid(self):
         c_result = lib.sigmoid(self._ptr, False)
@@ -166,7 +171,7 @@ def tensor(data, requires_grad=False):
 
 def full(shape, fill_value, requires_grad=False):
     t = empty(shape, requires_grad=requires_grad)
-    lib.fill_kernel_tensor(t._ptr.contents.k, ctypes.c_float(fill_value))
+    lib.memset_kernel_tensor(t._ptr.contents.k, ctypes.c_float(fill_value))
     return t
 
 def arange(end, start=0, step=1, requires_grad=False):
@@ -193,3 +198,8 @@ def zeros(shape, requires_grad=False):
 
 def ones(shape, requires_grad=False):
     return full(shape, 1.0, requires_grad=requires_grad)
+
+def rand(shape, low=0.0, high=1.0, requires_grad=False):
+    t = empty(shape, requires_grad=requires_grad)
+    lib.init_random_uniform_kernel_tensor(t._ptr.contents.k, ctypes.c_float(low), ctypes.c_float(high))
+    return t

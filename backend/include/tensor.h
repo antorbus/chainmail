@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include "ops.h"
 
 typedef struct kernel_tensor {
@@ -31,7 +32,7 @@ typedef struct expression {
     int backward_func;
 } expression;
 
-
+bool is_initialized_random;
 
 expression * expression_from(int func, tensor *t0, tensor *t1);
 
@@ -47,6 +48,7 @@ kernel_tensor * kernel_tensor_shallow_copy(kernel_tensor *k);
 tensor * dim_tensor_from(size_t shape[5]);
 void inplace_contiguous_kernel_tensor(kernel_tensor *k); 
 kernel_tensor * contiguous_deepcopy_kernel_tensor(kernel_tensor *k); 
+void init_random_uniform_kernel_tensor(kernel_tensor * k, lemur_float min, lemur_float max);
 
 
 bool are_shapes_equal(size_t shape0[5], size_t shape1[5]);

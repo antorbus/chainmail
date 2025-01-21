@@ -1,30 +1,35 @@
 import ctypes
 from frontend.bindings import lib
 
-LEMUR_VERBOSE = True
+LEMUR_VERBOSE = False
 LEMUR_SCI_PRINT = False
+
+def set_verbose_print(value):
+    global LEMUR_VERBOSE
+    LEMUR_VERBOSE = value
+
+def set_sci_print(value):
+    global LEMUR_SCI_PRINT
+    LEMUR_SCI_PRINT = value
 
 def get_op_name(i):
     return lib.get_op_name(i)
 
-def _format_kernel_tensor(k_ptr, verbose=LEMUR_VERBOSE):
+def _format_kernel_tensor(k_ptr, postfix = ""):
     if not k_ptr:
         return "[NULL kernel_tensor]\n"
 
     k = k_ptr.contents
     lines = []
-
+    vlines = []
     stride = [k.stride[i] for i in range(5)]
     shape = [k.shape[i] for i in range(5)]
     
-    if verbose:
+    if LEMUR_VERBOSE:
         lines.append(f"kernel_tensor @ 0x{ctypes.addressof(k):x} with length = {k.length} \n")
-        
-        lines.append("stride = [" + ", ".join(str(s) for s in stride) + "]\n")
-        lines.append(f"computed = {str(k.computed).lower()}\n")
-        lines.append(f"shallow = {str(k.shallow).lower()}\n")
-
-    
+        vlines.append(", stride=[" + ", ".join(str(s) for s in stride) + "]")
+        vlines.append(f", computed={str(k.computed).lower()}")
+        vlines.append(f", shallow={str(k.shallow).lower()}")
 
     data_str = []
     data_str.append("tensor([")
@@ -45,9 +50,9 @@ def _format_kernel_tensor(k_ptr, verbose=LEMUR_VERBOSE):
                                d4 * stride[4])
                         val = float(arr[idx].value)  # a lemur_float
                         if LEMUR_SCI_PRINT:
-                            data_str.append(f"{val:6.2e}")
+                            data_str.append(f"{val:6.3e}")
                         else:
-                            data_str.append(f"{val:6.2f}")
+                            data_str.append(f"{val:6.4f}")
                         if d4 < shape[4] - 1:
                             data_str.append(", ")
                     data_str.append("]")
@@ -62,21 +67,22 @@ def _format_kernel_tensor(k_ptr, verbose=LEMUR_VERBOSE):
         data_str.append("]")
         if d0 < shape[0] - 1:
             data_str.append(",\n\n\n\n\t")
-    data_str.append("])\n")
+
+    data_str.append("], shape=[" + ", ".join(str(s) for s in shape) + "]"+ "".join(vlines) + postfix + ")")
     data_str = "".join(data_str)
     lines.append(data_str)
-
-    lines.append("shape = [" + ", ".join(str(s) for s in shape) + "]\n")
 
     return "".join(lines)
 
 
-def _format_expression(e_ptr, verbose=LEMUR_VERBOSE):
+def _format_expression(e_ptr):
     if not e_ptr:
         return "[NULL expression]\n"
     e = e_ptr.contents
     lines = []
-    lines.append(f"backward_func = {e.backward_func}")
+    raw_op_name = get_op_name(e.backward_func)
+    op_name = raw_op_name.decode("utf-8") if raw_op_name else "unknown_op"
+    lines.append(f"backward_func=[{op_name}]")
 
     if e.t0:
         lines.append(f"    t0 @ 0x{ctypes.addressof(e.t0.contents):x}")
@@ -91,23 +97,27 @@ def _format_expression(e_ptr, verbose=LEMUR_VERBOSE):
     return "".join(lines)
 
 
-def _tensor_repr(t_ptr, verbose=LEMUR_VERBOSE):
+def _tensor_repr(t_ptr):
     if not t_ptr:
         return "[NULL tensor]"
 
     t = t_ptr.contents
     lines = []
-    if verbose:
+    if LEMUR_VERBOSE:
         lines.append(f"tensor @ 0x{ctypes.addressof(t):x}\n")
         lines.append("comes_from: ")
         lines.append(_format_expression(t.comes_from))
-   
-    lines.append("k:\n")
-    lines.append(_format_kernel_tensor(t.k))
+    
+    if t.requires_grad and t.comes_from and not LEMUR_VERBOSE:
+            raw_op_name = get_op_name(t.comes_from.contents.backward_func)
+            op_name = raw_op_name.decode("utf-8") if raw_op_name else "unknown_op"
+            postfix = f", comes_from=[{op_name}]"
+    else:
+        postfix = ""
+    lines.append(_format_kernel_tensor(t.k, postfix=postfix))
 
-    if t.requires_grad:
-        lines.append("grad:\n")
-        lines.append(_format_kernel_tensor(t.grad))
+    if t.requires_grad and LEMUR_VERBOSE:
+        lines.append("\ngrad:\n"+_format_kernel_tensor(t.grad))
 
     return "".join(lines)
 
@@ -122,7 +132,7 @@ def _short_label(t):
         if c_tensor.k:
             k_obj = c_tensor.k.contents
             dims = [k_obj.shape[i] for i in range(5)]
-            non1 = [str(d) for d in dims if d > 1]
+            non1 = [str(d) for d in dims]
             if non1:
                 shape_str = f"(shape=[{', '.join(non1)}])"
     return f"LemurTensor @ {addr_str} {shape_str}"
@@ -184,4 +194,4 @@ def _build_ascii_lines(t, prefix="", is_last=True, visited=None):
 
 def plot_tensor_graph_parents(t):
     lines = _build_ascii_lines(t)
-    return "\n".join(lines)
+    return "self\n"+"\n".join(lines)
