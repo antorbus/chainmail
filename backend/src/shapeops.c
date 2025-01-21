@@ -54,6 +54,7 @@ BACKWARD_FUNC_DEF(s_op_permute_backward){
         seed->shape[idx] = temp_shape[i];
         seed->stride[idx] = temp_stride[i];
     }
+    inplace_contiguous_kernel_tensor(seed); 
     return seed;
 }
 
