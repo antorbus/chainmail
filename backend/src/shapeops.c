@@ -5,6 +5,7 @@
 
 // view takes in contiguous tensors and outputs contiguous tensors only
 FORWARD_FUNC_DEF(s_op_view_forward){
+    //view only works for contiguous tensors
     (void) k0;
     for (size_t i = 0; i < 5; i++){
         kr->shape[i] = (size_t) k1->array[i];
@@ -14,6 +15,7 @@ FORWARD_FUNC_DEF(s_op_view_forward){
 
 BACKWARD_FUNC_DEF(s_op_view_backward){
     (void) k1; (void) kr; (void) idx;
+    inplace_contiguous_kernel_tensor(seed); 
     for (size_t i = 0; i < 5; i++){
         seed->shape[i] = (size_t) k0->shape[i];
     }
@@ -42,11 +44,15 @@ FORWARD_FUNC_DEF(s_op_permute_forward){
 }
 
 BACKWARD_FUNC_DEF(s_op_permute_backward){
-    (void) kr;  (void) k1;  (void) idx;
+    (void) k0; (void) idx; (void) kr;
+    size_t temp_shape[5];
+    memcpy(temp_shape, seed->shape, 5*sizeof(size_t));
+    int64_t temp_stride[5];
+    memcpy(temp_stride, seed->stride, 5*sizeof(int64_t));
     for (size_t i = 0; i < 5; i++){
         size_t idx = (size_t) k1->array[i];
-        seed->shape[i] = k0->shape[idx];
-        seed->stride[i] = k0->stride[idx];
+        seed->shape[idx] = temp_shape[i];
+        seed->stride[idx] = temp_stride[i];
     }
     return seed;
 }

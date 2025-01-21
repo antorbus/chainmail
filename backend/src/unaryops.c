@@ -28,7 +28,7 @@ FORWARD_FUNC_DEF(u_op_sigmoid_forward){
     KERNEL_TENSOR_5D_LOOP_START(kr){
         size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
         size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        kr->array[offset_kr] = 1.0 / (1.0 + exp(-1.0 * k0->array[offset_k0]));
+        kr->array[offset_kr] = 1.0 / (1.0 + expf(-1.0 * k0->array[offset_k0]));
     }
 }
 

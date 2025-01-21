@@ -2,7 +2,7 @@ import ctypes
 from frontend.bindings import lib
 
 LEMUR_VERBOSE = True
-LEMUR_SCI_PRINT = False
+LEMUR_SCI_PRINT = True
 
 def get_op_name(i):
     return lib.get_op_name(i)
