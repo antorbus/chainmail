@@ -32,7 +32,7 @@ typedef struct expression {
     int backward_func;
 } expression;
 
-bool is_initialized_random;
+extern bool is_initialize_random;
 
 expression * expression_from(int func, tensor *t0, tensor *t1);
 

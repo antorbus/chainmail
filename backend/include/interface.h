@@ -43,7 +43,7 @@ BINARY_FUNC_DEF(division, OP_DIVISION);
 
 //unary ops
 UNARY_FUNC_DEF(exponential, OP_EXP);
-BINARY_FUNC_DEF(power, OP_POW);  // Implemented as unary op
+tensor * power(tensor *t0, tensor *t1, _Bool retain_grad);  // implemented as unary op in 
 UNARY_FUNC_DEF(relu, OP_RELU);
 UNARY_FUNC_DEF(sigmoid, OP_SIGMOID);
 

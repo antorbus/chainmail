@@ -51,7 +51,7 @@ int type_table[] = { //TODO ADD TO DOCS
 
     //unary ops
     [OP_EXP] = TYPE_UNARY,
-    [OP_POW] = TYPE_BINARY,
+    [OP_POW] = TYPE_UNARY,  // (implemented as unary op, but takes two tensor inputs)
     [OP_RELU] = TYPE_UNARY,
     [OP_SIGMOID] = TYPE_UNARY,
 
@@ -90,7 +90,7 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             break;
 
         case TYPE_UNARY:
-            t1 = NULL;
+            t1 = (func == OP_POW) ? t1 : NULL;    // null except scalar tensor from power op.
             if (t0->requires_grad == true){
                     requires_grad = true;
             }
@@ -99,7 +99,9 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
                 grad = empty_contiguous_kernel_tensor_like(k);
                 memset_kernel_tensor(grad, 0.0);
             }
-            forward_func_table[func](k, t0->k, t1->k);
+            if (t1 == NULL) forward_func_table[func](k, t0->k, NULL);
+            else forward_func_table[func](k, t0->k, t1->k);
+
             break;
 
         case TYPE_REDUCE: 

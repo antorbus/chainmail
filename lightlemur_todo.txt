@@ -11,7 +11,7 @@ The Great Todo List
 
 *** u ops ***
     - neg
-    - exp 
+    - exp (done)
     - log
     - relu (done)
     - sqrt
@@ -25,7 +25,7 @@ The Great Todo List
     - mul (done)
     - sub
     - div (done)
-    - pow
+    - pow (done)
     - eq
     - neq
     - lt

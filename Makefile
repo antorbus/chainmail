@@ -45,7 +45,7 @@ run-tests-leak-check: $(TARGET) $(TEST_BIN)
 	$(LEAK_CHECK) ./$(TEST_BIN)
 
 $(TEST_BIN): $(TEST_SRC)
-	$(CC) -o $@ $< -L$(shell pwd) -l$(LIB_NAME)
+	$(CC) -o $@ $< -L$(shell pwd) -l$(LIB_NAME) -lm
 
 clean:
 	rm -f $(OBJS) $(TARGET) $(TEST_BIN) 
