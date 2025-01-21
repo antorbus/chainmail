@@ -40,6 +40,5 @@ BACKWARD_FUNC_DEF(r_op_sum_backward){
             seed->shape[i] = k0->shape[i];
         }
     } 
-    inplace_contiguous_kernel_tensor(seed);
     return seed;
 }

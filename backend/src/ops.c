@@ -64,6 +64,7 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
     bool requires_grad = false;
     kernel_tensor *grad = NULL;
 
+
     switch (type_table[func]){
 
         case TYPE_BINARY:
@@ -135,8 +136,11 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             return NULL;
     }
 
+    inplace_contiguous_kernel_tensor(k);
+
     expression *comes_from = expression_from(func, t0, t1);
     tensor *t = tensor_from(k, comes_from, requires_grad, grad);
+
     return t;
 }
 
@@ -151,14 +155,18 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
 
     int func = tr->comes_from->backward_func;
 
+    // inplace_contiguous_kernel_tensor(seed); not needed
+
     kernel_tensor *next_seed1 = NULL;
     if (type_table[func] == TYPE_BINARY){ 
         next_seed1 = backward_func_table[func](kr, k0, k1, seed, 1);
+        inplace_contiguous_kernel_tensor(next_seed1);
     }
     //TODO fix this
     //next_seed0 must be calculated AFTER next_seed1 since next_seed0 could be seed itself 
     //making the calculation of next_seed1 incorrect 
     kernel_tensor *next_seed0 = backward_func_table[func](kr, k0, k1, seed, 0); 
+    inplace_contiguous_kernel_tensor(next_seed0);
 
     if (next_seed1 == seed){
         fprintf(stderr, "next_seed1 cannot be seed\n");

@@ -15,7 +15,6 @@ FORWARD_FUNC_DEF(s_op_view_forward){
 
 BACKWARD_FUNC_DEF(s_op_view_backward){
     (void) k1; (void) kr; (void) idx;
-    inplace_contiguous_kernel_tensor(seed); 
     for (size_t i = 0; i < 5; i++){
         seed->shape[i] = (size_t) k0->shape[i];
     }
@@ -54,7 +53,6 @@ BACKWARD_FUNC_DEF(s_op_permute_backward){
         seed->shape[i] = temp_shape[idx];
         seed->stride[i] = temp_stride[idx];
     }
-    inplace_contiguous_kernel_tensor(seed); 
     return seed;
 }
 
