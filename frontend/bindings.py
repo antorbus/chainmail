@@ -52,6 +52,9 @@ class Tensor(ctypes.Structure):
 
 #from interface.h
 
+lib.init_random_uniform_kernel_tensor.argtypes = [ctypes.POINTER(KernelTensor), ctypes.c_float, ctypes.c_float] #lemur_float
+lib.init_random_uniform_kernel_tensor.restype = None 
+
 lib.memset_kernel_tensor.argtypes = [ctypes.POINTER(KernelTensor), ctypes.c_float] #lemur_float
 lib.memset_kernel_tensor.restype = None 
 

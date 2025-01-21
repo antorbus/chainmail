@@ -185,3 +185,8 @@ def zeros(shape, requires_grad=False):
 
 def ones(shape, requires_grad=False):
     return full(shape, 1.0, requires_grad=requires_grad)
+
+def rand(shape, low=0.0, high=1.0, requires_grad=False):
+    t = empty(shape, requires_grad=requires_grad)
+    lib.init_random_uniform_kernel_tensor(t._ptr.contents.k, ctypes.c_float(low), ctypes.c_float(high))
+    return t

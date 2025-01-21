@@ -360,3 +360,16 @@ kernel_tensor * contiguous_deepcopy_kernel_tensor(kernel_tensor *k){
     }
     return kc;
 }
+
+
+static bool is_initialize_random = false;
+void init_random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_float max) {
+    if (!is_initialize_random) {
+        srand(time(NULL));
+        is_initialize_random = true;
+    }
+    for (size_t i = 0; i < k->length; i++) {
+        k->array[i] = min + (lemur_float)rand() / (lemur_float)RAND_MAX * (max - min);
+    }
+}
+

@@ -1,4 +1,4 @@
-from frontend.ptensor import tensor, empty, full, arange, linspace, zeros, ones
+from frontend.ptensor import tensor, empty, full, arange, linspace, zeros, ones, rand
 from frontend.reprutils import set_verbose_print, set_sci_print
 
 __version__ = "0.0.1"
