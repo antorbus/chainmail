@@ -10,14 +10,14 @@ The Great Todo List
 
 
 *** u ops ***
-    - neg
-    - exp 
-    - log
+    - neg (done)
+    - exp (done)
+    - log (done)
     - relu (done)
-    - sqrt
-    - abs
-    - sign 
-    - reciprocal
+    - sqrt (done)
+    - abs (done)
+    - sign (done)
+    - reciprocal (done)
     - sigmoid (done)
 
 *** b ops ***
