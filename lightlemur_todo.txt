@@ -112,4 +112,4 @@ answer:
 did some tests, torch linear automatically makes tensor (linear) contiguous for GPU always 
 because if not the model is A LOT SLOWER. true for permute and expand
 
-TODO fix python definitions of shape ops to take in a few numbers instead
+make readme better, improve DOCS

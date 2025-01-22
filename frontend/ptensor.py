@@ -34,7 +34,7 @@ class LemurTensor:
         if getattr(self, "_ptr", None) is not None:
             lib.free_tensor(self._ptr)
             self._ptr = None
-            
+
     @staticmethod
     def _convert_to_tensor(obj):
         if isinstance(obj, (tuple, list)):
@@ -90,9 +90,8 @@ class LemurTensor:
         c_result = lib.power(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
-    def sum(self, other):
-        if not isinstance(other, LemurTensor):
-            raise TypeError("Can't sum LemurTensor with non-LemurTensor dim.")
+    def sum(self, *args):
+        other = self._process_args(*args)
         c_result = lib.sum(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,other))
     
