@@ -29,25 +29,25 @@ char* op_map[TOTAL_OPS] ={
 
 //binary ops
 
-BINARY_FUNC_DEF(mul, OP_MUL){
+DOUBLE_INPUT_FUNC_DEF(mul){
     return kernel_forward(OP_MUL, t0, t1, retain_grad);  
 }
 
-BINARY_FUNC_DEF(add, OP_ADD){
+DOUBLE_INPUT_FUNC_DEF(add){
     return kernel_forward(OP_ADD, t0, t1, retain_grad);  
 }
 
-BINARY_FUNC_DEF(division, OP_DIVISION){
+DOUBLE_INPUT_FUNC_DEF(division){
     return kernel_forward(OP_DIVISION, t0, t1, retain_grad);  
 }
 
 //unary ops
 
-UNARY_FUNC_DEF(exponential, OP_EXP){
+SINGLE_INPUT_FUNC_DEF(exponential){
     return kernel_forward(OP_EXP, t0, NULL, retain_grad);
 }
 
-BINARY_FUNC_DEF(power, OP_POW){ 
+DOUBLE_INPUT_FUNC_DEF(power){ 
     if (is_tensor_scalar(t1) == false){
         fprintf(stderr, "Error: Exponent of tensor must be a scalar.\n");
         return NULL;
@@ -55,58 +55,60 @@ BINARY_FUNC_DEF(power, OP_POW){
     return kernel_forward(OP_POW, t0, t1, retain_grad);
 }
 
-UNARY_FUNC_DEF(relu, OP_RELU){
+SINGLE_INPUT_FUNC_DEF(relu){
     return kernel_forward(OP_RELU, t0, NULL, retain_grad);  
 }
 
-UNARY_FUNC_DEF(sigmoid, OP_SIGMOID){
+SINGLE_INPUT_FUNC_DEF(sigmoid){
     return kernel_forward(OP_SIGMOID, t0, NULL, retain_grad);  
 }
 
 //reduce ops
 
-REDUCE_FUNC_DEF(sum, OP_SUM){
-    return kernel_forward(OP_SUM, t0, dim_data, retain_grad); 
+DOUBLE_INPUT_FUNC_DEF(sum){
+    return kernel_forward(OP_SUM, t0, t1, retain_grad); 
 }
 
 //shape ops
 
 //todo add checks, like view positive dimensions, length is the same, etc
-SHAPE_FUNC_DEF(view, OP_VIEW){
+DOUBLE_INPUT_FUNC_DEF(view){
+    (void) retain_grad;
     if(is_contiguous(t0->k) == false){
         fprintf(stderr, "Error: View can only be perfomed on contiguous tensors.\n");
         return NULL;
     }
-    if (dim_data->k->length != 5){
+    if (t1->k->length != 5){
         fprintf(stderr, "Error: View dimensions must be 5.\n");
         return NULL;
     }
-    return kernel_forward(OP_VIEW, t0, dim_data, false); 
+    return kernel_forward(OP_VIEW, t0, t1, false); 
 }
-SHAPE_FUNC_DEF(expand, OP_EXPAND){
-    if (dim_data->k->length != 5){
+DOUBLE_INPUT_FUNC_DEF(expand){
+    (void) retain_grad;
+    if (t1->k->length != 5){
         fprintf(stderr, "Error: Expand dimensions must be 5.\n");
         return NULL;
     }
     for (size_t i = 0; i<5; i++){
-        if((t0->k->shape[i] != 1) && ((size_t) dim_data->k->array[i] != t0->k->shape[i])){
+        if((t0->k->shape[i] != 1) && ((size_t) t1->k->array[i] != t0->k->shape[i])){
             fprintf(stderr, "Error: Can only expand singleton dimensions.\n");
             return NULL;
         }
     }
-    return kernel_forward(OP_EXPAND, t0, dim_data, false); 
+    return kernel_forward(OP_EXPAND, t0, t1, false); 
 }
 
-SHAPE_FUNC_DEF(permute, OP_PERMUTE){
-
-    if (dim_data->k->length != 5){
+DOUBLE_INPUT_FUNC_DEF(permute){
+    (void) retain_grad;
+    if (t1->k->length != 5){
         fprintf(stderr, "Error: Permute dimensions must be 5.\n");
         return NULL;
     }
     int valid_perm_counter = 0;
     bool perm_tracker[5] = {false, false, false, false, false};
     for (size_t i = 0; i<5; i++){
-        size_t perm_idx = (size_t) dim_data->k->array[i];
+        size_t perm_idx = (size_t) t1->k->array[i];
         if(( perm_idx > 4) || (perm_idx < 0)){
             break;
         }
@@ -123,5 +125,5 @@ SHAPE_FUNC_DEF(permute, OP_PERMUTE){
         fprintf(stderr, "Error: Invalid permutation.\n");
         return NULL;
     }
-    return kernel_forward(OP_PERMUTE, t0, dim_data, false); 
+    return kernel_forward(OP_PERMUTE, t0, t1, false); 
 }

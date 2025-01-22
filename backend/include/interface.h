@@ -5,17 +5,12 @@
 
 //helper macros
 
-#define BINARY_FUNC_DEF(name, op)            \
-    tensor * name(tensor *t0, tensor *t1, bool retain_grad) 
-
-#define UNARY_FUNC_DEF(name, op)            \
+#define SINGLE_INPUT_FUNC_DEF(name)     \
     tensor * name(tensor *t0, bool retain_grad)
 
-#define REDUCE_FUNC_DEF(name, op)            \
-    tensor * name(tensor *t0, tensor *dim_data, bool retain_grad)
+#define DOUBLE_INPUT_FUNC_DEF(name)      \
+    tensor * name(tensor *t0, tensor *t1, bool retain_grad) 
 
-#define SHAPE_FUNC_DEF(name, op)            \
-    tensor * name(tensor *t0, tensor *dim_data)
 
 //external functions
 
@@ -37,23 +32,23 @@ extern char* op_map[TOTAL_OPS];
 char* get_op_name(int op_id);
 
 //binary ops
-BINARY_FUNC_DEF(mul, OP_MUL);
-BINARY_FUNC_DEF(add, OP_ADD);
-BINARY_FUNC_DEF(division, OP_DIVISION);
+DOUBLE_INPUT_FUNC_DEF(mul);
+DOUBLE_INPUT_FUNC_DEF(add);
+DOUBLE_INPUT_FUNC_DEF(division);
 
 //unary ops
-UNARY_FUNC_DEF(exponential, OP_EXP);
-BINARY_FUNC_DEF(power, OP_POW); // implemented as unary op
-UNARY_FUNC_DEF(relu, OP_RELU);
-UNARY_FUNC_DEF(sigmoid, OP_SIGMOID);
+SINGLE_INPUT_FUNC_DEF(exponential);
+DOUBLE_INPUT_FUNC_DEF(power); 
+SINGLE_INPUT_FUNC_DEF(relu);
+SINGLE_INPUT_FUNC_DEF(sigmoid);
 
 //reduce ops
-REDUCE_FUNC_DEF(sum, OP_SUM);
+DOUBLE_INPUT_FUNC_DEF(sum);
 
 //shape ops
-SHAPE_FUNC_DEF(view, OP_VIEW);
-SHAPE_FUNC_DEF(expand, OP_EXPAND);
-SHAPE_FUNC_DEF(permute, OP_PERMUTE);
+DOUBLE_INPUT_FUNC_DEF(view);
+DOUBLE_INPUT_FUNC_DEF(expand);
+DOUBLE_INPUT_FUNC_DEF(permute);
 
 #ifdef __cplusplus
 }
