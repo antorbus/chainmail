@@ -12,7 +12,7 @@ def main():
     y.backward() 
     print(x)
     print()
-    print(y.graph)
+    y.graph
     print()
 
 
