@@ -195,3 +195,31 @@ def _build_ascii_lines(t, prefix="", is_last=True, visited=None):
 def plot_tensor_graph_parents(t):
     lines = _build_ascii_lines(t)
     return "self\n"+"\n".join(lines)
+
+def print_lemur_version(version):
+    white_text = "\033[37m"  
+    yellow_text = "\033[33m"  
+    reset_style = "\033[0m"  
+
+    lines = [
+        " __          ",
+        "/l/\\         ",
+        "\\e\\ \\        ",
+        " \\m\\ \\       ",
+        "  \\u\\ \\____  ",
+        "   \\r\\/___/\\ ",
+        "    \\_____\\/ ",
+        "              "
+    ]
+
+    for line in lines:
+        colored_line = ""
+        for char in line:
+            if char.lower() in "lemur":  
+                colored_line += f"{yellow_text}{char}{reset_style}"
+            elif char.isalpha():  
+                colored_line += f"{white_text}{char}{reset_style}"
+            else: 
+                colored_line += char
+        print(f"{colored_line}{reset_style}")
+    print(f"LightLemur Version: {version}")
