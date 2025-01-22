@@ -136,6 +136,12 @@ extern backward_func backward_func_table[TOTAL_OPS];
       d3*(k)->stride[3] +    \
       d4*(k)->stride[4] )
 
-
+#define BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, k1, operation) \
+    do {                                                                   \
+        _Pragma("omp parallel for simd")                                   \
+        for (size_t _i = 0; _i < (kr)->length; _i++) {                      \
+            (kr)->array[_i] = (k0)->array[_i] operation (k1)->array[_i];   \
+        }                                                                  \
+    } while (0)
 
 #endif 

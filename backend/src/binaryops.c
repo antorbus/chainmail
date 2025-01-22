@@ -2,11 +2,16 @@
 #include "../include/tensor.h"
 
 FORWARD_FUNC_DEF(b_op_add_forward){
-    KERNEL_TENSOR_5D_LOOP_START(kr){
-        size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
-        size_t offset_k1 = KERNEL_TENSOR_GET_OFFSET(k1);
-        size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        kr->array[offset_kr] = k0->array[offset_k0] + k1->array[offset_k1];
+    if ((is_contiguous(k0) == true) && (is_contiguous(k1)==true)){
+        BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr,k0,k1,+);
+    }
+    else{
+        KERNEL_TENSOR_5D_LOOP_START(kr){
+            size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
+            size_t offset_k1 = KERNEL_TENSOR_GET_OFFSET(k1);
+            size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
+            kr->array[offset_kr] = k0->array[offset_k0] + k1->array[offset_k1];
+        }
     }
 }
 
