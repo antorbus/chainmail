@@ -51,6 +51,26 @@ class LemurTensor:
     def backward(self):
         lib.backwards(self._ptr)
 
+    def stride(self):
+        return [self._ptr.contents.k.contents.stride[i] for i in range(5)]
+    
+    @property
+    def shape(self):
+        return [self._ptr.contents.k.contents.shape[i] for i in range(5)]
+
+    def numel(self):
+        shape = self.shape
+        return shape[0] * shape[1] * shape[2] * shape[3] * shape[4]
+    
+    def ndimension(self):  
+        return 5
+    
+    def flatten(self, dim=4):
+        total_elements = self.numel()
+        view_dim = [1,1,1,1,1]
+        view_dim[dim] = total_elements
+        return self.view(view_dim)
+
     @property
     def grad(self):
         print(reprutils._format_kernel_tensor(self._ptr.contents.grad))

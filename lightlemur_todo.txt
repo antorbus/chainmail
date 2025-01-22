@@ -113,3 +113,4 @@ did some tests, torch linear automatically makes tensor (linear) contiguous for 
 because if not the model is A LOT SLOWER. true for permute and expand
 
 make readme better, improve DOCS
+add all methods torch has for tensor, like is_contiguous etc, update print to use these functions
