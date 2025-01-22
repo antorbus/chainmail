@@ -34,7 +34,20 @@ class LemurTensor:
         if getattr(self, "_ptr", None) is not None:
             lib.free_tensor(self._ptr)
             self._ptr = None
-
+            
+    @staticmethod
+    def _convert_to_tensor(obj):
+        if isinstance(obj, (tuple, list)):
+            obj = tensor(obj)
+        if not isinstance(obj, LemurTensor):
+            raise TypeError("Input must be a LemurTensor, tuple, or list.")
+        return obj
+    
+    def _process_args(self, *args):
+        if len(args) == 1 and isinstance(args[0], (tuple, list, LemurTensor)):
+            return self._convert_to_tensor(args[0])
+        return self._convert_to_tensor(list(args))
+    
     def backward(self):
         lib.backwards(self._ptr)
 
@@ -83,21 +96,18 @@ class LemurTensor:
         c_result = lib.sum(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,other))
     
-    def view(self, other):
-        if not isinstance(other, LemurTensor):
-            raise TypeError("Can't view LemurTensor with non-LemurTensor.")
+    def view(self, *args):
+        other = self._process_args(*args)
         c_result = lib.view(self._ptr, other._ptr)
-        return LemurTensor(_ptr=c_result, _parents=(self,other))
-    
-    def expand(self, other):
-        if not isinstance(other, LemurTensor):
-            raise TypeError("Can't expand LemurTensor with non-LemurTensor.")
+        return LemurTensor(_ptr=c_result, _parents=(self, other))
+
+    def expand(self, *args):
+        other = self._process_args(*args)
         c_result = lib.expand(self._ptr, other._ptr)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
-    
-    def permute(self, other):
-        if not isinstance(other, LemurTensor):
-            raise TypeError("Can't permute LemurTensor with non-LemurTensor.")
+
+    def permute(self, *args):
+        other = self._process_args(*args)
         c_result = lib.permute(self._ptr, other._ptr)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     

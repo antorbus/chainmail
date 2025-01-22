@@ -52,7 +52,7 @@ w = z * x
 w = w.relu() 
 
 w.backward() 
-print("Result from main:", w)
+print(w)
 ```
 
 In C 
