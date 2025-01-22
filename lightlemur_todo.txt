@@ -7,7 +7,7 @@ The Great Todo List
 *** memory leak tests ***
 
 *** contiguous optimizations ***
-
+TODO kernel forwards contiguous all the time, does not work for shape ops
 
 *** u ops ***
     - neg
@@ -34,17 +34,17 @@ The Great Todo List
     - maximum
 
 *** r ops ***
-    - sum (backward done, forward in progress)
+    - sum (done)
     - max
     - min
-    - mean (done with sum + division)
+    - mean (TODO must be done with sum + division)
     - argmax 
     - argmin
     
 *** s ops ***
     - view
     - permute
-    - expand 
+    - expand (not done)
     - slice (further down the line)
     - flip  (further down the line)
     - as_strided (further down the line)
@@ -111,4 +111,4 @@ answer:
 did some tests, torch linear automatically makes tensor (linear) contiguous for GPU always 
 because if not the model is A LOT SLOWER. true for permute and expand
 
-TODO permute still not working
+TODO fix python definitions of shape ops to take in a few numbers instead
