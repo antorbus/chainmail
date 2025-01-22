@@ -47,7 +47,7 @@ UNARY_FUNC_DEF(exponential, OP_EXP){
     return kernel_forward(OP_EXP, t0, NULL, retain_grad);
 }
 
-tensor * power(tensor *t0, tensor *t1, _Bool retain_grad){  // implemented as unary op
+BINARY_FUNC_DEF(power, OP_POW){ 
     if (is_tensor_scalar(t1) == false){
         fprintf(stderr, "Error: Exponent of tensor must be a scalar.\n");
         return NULL;
