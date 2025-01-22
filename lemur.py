@@ -8,7 +8,7 @@ def main():
     print()
     print()
     x = arange(32, requires_grad=True).view(tensor([1,1,2,4,4]))
-    y = x.sum(tensor([0,0,0,0,0]))
+    y = x.sum()
     y.backward() 
     print(x)
     print()
