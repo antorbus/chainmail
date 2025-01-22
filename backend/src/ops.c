@@ -123,7 +123,10 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
 
     int func = tr->comes_from->backward_func;
 
-    // inplace_contiguous_kernel_tensor(seed); not needed
+    if (is_contiguous(seed) == false){
+        fprintf(stderr, "seed (kernel_backward %s call) is non-contiguous, aborting backwards\n", get_op_name(func));
+        return;
+    }
 
     kernel_tensor *next_seed1 = NULL;
     if (type_table[func] == TYPE_BINARY){ 
