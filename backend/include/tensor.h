@@ -30,10 +30,14 @@ typedef struct expression {
 
 extern bool is_initialize_random;
 
+void backward(tensor * t);
+
 expression * expression_from(int func, tensor *t0, tensor *t1);
 
+tensor * empty_tensor(size_t shape[5], bool retain_grad);
 void memset_kernel_tensor(kernel_tensor * k, lemur_float val);
 void free_kernel_tensor(kernel_tensor *k);
+void free_tensor(tensor *t);
 
 kernel_tensor * empty_contiguous_kernel_tensor(size_t shape[5]);
 kernel_tensor * empty_contiguous_kernel_tensor_like(kernel_tensor *k);
