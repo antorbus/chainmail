@@ -1,7 +1,5 @@
-#include <math.h> // Relocate import?
 #include "../include/ops.h"
 #include "../include/tensor.h"
-#include <math.h>
 
 FORWARD_FUNC_DEF(u_op_exp_forward){
     (void) k1;
