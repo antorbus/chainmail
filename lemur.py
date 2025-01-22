@@ -1,4 +1,4 @@
-from frontend.ptensor import tensor, empty, full, arange, linspace, zeros, ones, rand
+from frontend.ptensor import tensor, empty, full, arange, linspace, zeros, ones, rand, randn, init_seed
 from frontend.reprutils import set_verbose_print, set_sci_print, print_lemur_version
 from frontend.version import __version__
 

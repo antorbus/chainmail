@@ -237,3 +237,12 @@ def rand(shape, low=0.0, high=1.0, requires_grad=False):
     t = empty(shape, requires_grad=requires_grad)
     lib.init_random_uniform_kernel_tensor(t._ptr.contents.k, ctypes.c_float(low), ctypes.c_float(high))
     return t
+
+def randn(shape, mean = 0.0, std = 1.0, requires_grad=False):
+    t = empty(shape, requires_grad=requires_grad)
+    lib.init_random_normal_kernel_tensor(t._ptr.contents.k, ctypes.c_float(mean), ctypes.c_float(std))
+    return t
+
+def init_seed(seed):
+    lib.init_seed(ctypes.c_uint(seed))
+    
