@@ -106,7 +106,7 @@ class LemurTensor:
     
     @property
     def graph(self):
-        print(reprutils.plot_tensor_graph_parents(self))
+        return reprutils.plot_tensor_graph_parents(self)
 
     def sigmoid(self):
         c_result = lib.sigmoid(self._ptr, False)
