@@ -14,8 +14,8 @@ char* op_map[TOTAL_OPS] ={
 [OP_MUL] = "mul",
 [OP_DIVISION] = "div",
 //unary ops
-[OP_EXP] = "exponential",
-[OP_POW] = "power",
+[OP_EXP] = "exp",
+[OP_POW] = "pow",
 [OP_RELU] = "relu",
 [OP_SIGMOID] = "sigmoid",
 //reduce ops
