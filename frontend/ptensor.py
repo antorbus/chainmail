@@ -111,7 +111,13 @@ class LemurTensor:
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
     def sum(self, *args):
-        other = self._process_args(*args)
+        if not args: 
+            dims = [0,0,0,0,0]
+        else:
+            dims = [1,1,1,1,1]
+        for d in args:
+            dims[d] = 0
+        other = self._convert_to_tensor(dims)
         c_result = lib.sum(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,other))
     
