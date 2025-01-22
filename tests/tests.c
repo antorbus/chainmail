@@ -23,7 +23,7 @@ int test_basic_add_mul(){
     tensor *w = mul(z, x, true);
     tensor *v = relu(w, true);
 
-    backwards(v); 
+    backward(v); 
     
     if (v->grad->array[0] != 1.0) i+= 1;
     if (w->grad->array[0] != 1.0) i+= 2;

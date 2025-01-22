@@ -101,7 +101,10 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             return NULL;
     }
 
-    inplace_contiguous_kernel_tensor(k);
+    if (is_contiguous(k) == false){
+        fprintf(stderr, "%s returned non-contiguous kernel tesnsor in forward\n", get_op_name(func));
+        return NULL;
+    }
 
     expression *comes_from = expression_from(func, t0, t1);
     tensor *t = tensor_from(k, comes_from, requires_grad, grad);
@@ -142,14 +145,32 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
         free_kernel_tensor(seed); 
     } 
 
-    derive(t0, next_seed0);
+    //derive(t0, next_seed0);
+    if (t0->grad != NULL){
+        b_op_add_forward(t0->grad, t0->grad, next_seed0);
+    }
+    if (t0->comes_from != NULL){
+        kernel_backward(t0, next_seed0);
+    } else {
+        free_kernel_tensor(next_seed0); //frees leaf gradients
+    }
+
     if (type_table[func] == TYPE_BINARY){
         if (next_seed1 == NULL){
             fprintf(stderr, "binary backwards kernel returns null seed1\n");
             return;
         }
 
-        derive(t1, next_seed1);
+        //derive(t1, next_seed1);
+        if (t1->grad != NULL){
+            b_op_add_forward(t1->grad, t1->grad, next_seed1);
+        }
+        if (t1->comes_from != NULL){
+            kernel_backward(t1, next_seed1);
+        } else {
+            free_kernel_tensor(next_seed1); //frees leaf gradients
+        }
+        
     }
 
 }

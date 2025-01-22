@@ -2,17 +2,7 @@
 #include "../include/interface.h"
 
 
-void derive(tensor *t, kernel_tensor *seed){
-    if (t->grad != NULL){
-        b_op_add_forward(t->grad, t->grad, seed);
-    }
-    if (t->comes_from != NULL){
-        kernel_backward(t, seed);
-    } else {
-        free_kernel_tensor(seed); //frees leaf gradients
-    }
-    
-}
+
 
 void set_contiguous_stride(kernel_tensor * k){
     k->stride[4] = 1;
@@ -47,10 +37,18 @@ bool is_tensor_scalar(tensor *t){
     return false;
 }
 
-void backwards(tensor * t){     //TODO: change name???
+void backward(tensor * t){     //TODO: change name???
     if (is_tensor_scalar(t) == true){
         kernel_tensor *seed = create_seed_kernel_tensor();
-        derive(t, seed);
+        //derive(t, seed);
+        if (t->grad != NULL){
+            b_op_add_forward(t->grad, t->grad, seed);
+        }
+        if (t->comes_from != NULL){
+            kernel_backward(t, seed);
+        } else {
+            free_kernel_tensor(seed); //frees leaf gradients
+        }
     } else{
         fprintf(stderr, "backwards can only be called on a leaf tensor\n");
     }

@@ -77,7 +77,7 @@ int main(){
     tensor *t3 = mul(t0, t1, false);
     tensor *t4 = add(t3, t2, false);
     
-    backwards(t4); 
+    backward(t4); 
 
     print_tensor(t0);
     print_tensor(t1);

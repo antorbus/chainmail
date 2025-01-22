@@ -18,9 +18,7 @@
 extern "C" {
 #endif
 
-void derive(tensor * t, kernel_tensor * seed);
-
-void backwards(tensor * t);
+void backward(tensor * t);
 
 void free_tensor(tensor *t);
 

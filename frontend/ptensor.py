@@ -48,7 +48,7 @@ class LemurTensor:
         return self._convert_to_tensor(list(args))
     
     def backward(self):
-        lib.backwards(self._ptr)
+        lib.backward(self._ptr)
 
     def stride(self):
         return [self._ptr.contents.k.contents.stride[i] for i in range(5)]
