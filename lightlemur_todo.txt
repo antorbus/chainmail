@@ -8,6 +8,7 @@ The Great Todo List
 
 *** contiguous optimizations ***
 TODO kernel forwards contiguous all the time, does not work for shape ops
+once that is done, can make special kernels optimized for contiguous
 
 *** u ops ***
     - neg
