@@ -4,7 +4,6 @@ from frontend.bindings import lib
 import frontend.reprutils as reprutils
 
 
-
 class LemurTensor:
     __slots__ = ("_ptr", "_parents")
     #TODO make note that _parents is needed so that when doing w = w.relu() or similar, GC doesnt mess us up

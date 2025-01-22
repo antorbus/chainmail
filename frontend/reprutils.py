@@ -1,5 +1,6 @@
 import ctypes
 from frontend.bindings import lib
+from frontend.version import __version__
 
 LEMUR_VERBOSE = False
 LEMUR_SCI_PRINT = False
@@ -196,7 +197,7 @@ def plot_tensor_graph_parents(t):
     lines = _build_ascii_lines(t)
     return "self\n"+"\n".join(lines)
 
-def print_lemur_version(version):
+def print_lemur_version():
     white_text = "\033[37m"  
     yellow_text = "\033[33m"  
     reset_style = "\033[0m"  
@@ -222,4 +223,4 @@ def print_lemur_version(version):
             else: 
                 colored_line += char
         print(f"{colored_line}{reset_style}")
-    print(f"LightLemur Version: {version}")
+    print(f"LightLemur Version: {__version__}")
