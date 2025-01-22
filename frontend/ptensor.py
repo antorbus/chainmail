@@ -53,6 +53,16 @@ class LemurTensor:
     def stride(self):
         return [self._ptr.contents.k.contents.stride[i] for i in range(5)]
     
+    def is_shallow(self):
+        return self._ptr.contents.k.contents.shallow
+
+    def is_contiguous(self):
+        return lib.is_contiguous(self._ptr.contents.k)
+    
+    @property
+    def memory_length(self):
+        return self._ptr.contents.k.contents.length
+    
     @property
     def shape(self):
         return [self._ptr.contents.k.contents.shape[i] for i in range(5)]

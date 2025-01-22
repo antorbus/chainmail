@@ -43,8 +43,8 @@ once that is done, can make special kernels optimized for contiguous
     - argmin
     
 *** s ops ***
-    - view
-    - permute
+    - view  (done) NOTE add to docs, this is the only one which returns a shallow copy
+    - permute (done)
     - expand (not done)
     - slice (further down the line)
     - flip  (further down the line)

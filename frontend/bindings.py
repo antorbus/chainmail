@@ -51,6 +51,8 @@ class Tensor(ctypes.Structure):
     ]
 
 #from interface.h
+lib.is_contiguous.argtypes = [ctypes.POINTER(KernelTensor)] 
+lib.is_contiguous.restype = ctypes.c_bool 
 
 lib.init_random_uniform_kernel_tensor.argtypes = [ctypes.POINTER(KernelTensor), ctypes.c_float, ctypes.c_float] #lemur_float
 lib.init_random_uniform_kernel_tensor.restype = None 
