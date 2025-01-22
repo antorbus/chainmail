@@ -1,5 +1,6 @@
 CC     = clang
-CFLAGS = -Wall -Wextra -fPIC -O3 -march=native -ftree-vectorize -Iinclude
+CFLAGS = -Wall -Wextra -fPIC -O3 -march=native -ftree-vectorize -fopenmp -Iinclude $(CPPFLAGS)
+LDFLAGS = -L/opt/homebrew/opt/libomp/lib -lomp
 
 LIB_NAME = lightlemur
 SRC_DIR = backend/src
@@ -19,6 +20,7 @@ ifeq ($(UNAME_S), Linux)
 else ifeq ($(UNAME_S), Darwin)
     TARGET_EXT = dylib
     LEAK_CHECK = leaks -atExit --
+    CPPFLAGS += -I/opt/homebrew/opt/libomp/include
 else ifeq ($(OS), Windows_NT)
     TARGET_EXT = dll
     LEAK_CHECK = echo "Memory leak checking is not supported on Windows."
@@ -33,7 +35,7 @@ TEST_SRC = tests/tests.c
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) -shared -o $@ $^
+	$(CC) -shared -o $@ $^ $(LDFLAGS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -45,7 +47,7 @@ run-tests-leak-check: $(TARGET) $(TEST_BIN)
 	$(LEAK_CHECK) ./$(TEST_BIN)
 
 $(TEST_BIN): $(TEST_SRC)
-	$(CC) -o $@ $< -L$(shell pwd) -l$(LIB_NAME) -lm
+	$(CC) -o $@ $< -L$(shell pwd) -l$(LIB_NAME) -lm $(LDFLAGS)
 
 clean:
-	rm -f $(OBJS) $(TARGET) $(TEST_BIN) 
+	rm -f $(OBJS) $(TARGET) $(TEST_BIN)

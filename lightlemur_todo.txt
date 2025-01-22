@@ -114,3 +114,5 @@ because if not the model is A LOT SLOWER. true for permute and expand
 
 make readme better, improve DOCS
 add all methods torch has for tensor, like is_contiguous etc, update print to use these functions
+
+add openmp to readme and to makefile for easy install and to docs

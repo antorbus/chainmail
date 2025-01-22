@@ -4,6 +4,12 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
+#include <math.h>
+#include <omp.h>
 
 
 #if defined(__FLT32_MANT_DIG__) 
