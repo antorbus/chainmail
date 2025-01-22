@@ -126,7 +126,6 @@ enum OPS {
   OP_MUL,
   OP_DIVISION,
   //unary ops
-  OP_EXP,
   OP_POW,
   OP_RELU,
   OP_SIGMOID,

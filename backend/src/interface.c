@@ -19,6 +19,12 @@ char* op_map[TOTAL_OPS] ={
 [OP_POW] = "pow",
 [OP_RELU] = "relu",
 [OP_SIGMOID] = "sigmoid",
+[OP_LOG] = "log",
+[OP_NEG] = "neg",
+[OP_SQRT] = "sqrt",
+[OP_ABS] = "abs",
+[OP_SIGN] = "sign",
+[OP_RECIPROCAL] = "reciprocal",
 //reduce ops
 [OP_SUM] = "sum",
 //shape ops
@@ -68,31 +74,27 @@ SINGLE_INPUT_FUNC_DEF(sigmoid){
     return kernel_forward(OP_SIGMOID, t0, NULL, retain_grad);  
 }
 
-UNARY_FUNC_DEF(exponential, OP_EXP){
-    return kernel_forward(OP_EXP, t0, NULL, retain_grad);  
-}
-
-UNARY_FUNC_DEF(logarithm, OP_LOG){
+SINGLE_INPUT_FUNC_DEF(logarithm){
     return kernel_forward(OP_LOG, t0, NULL, retain_grad);  
 }
 
-UNARY_FUNC_DEF(neg, OP_NEG){
+SINGLE_INPUT_FUNC_DEF(neg){
     return kernel_forward(OP_NEG, t0, NULL, retain_grad);  
 }
 
-UNARY_FUNC_DEF(square_root, OP_SQRT){
+SINGLE_INPUT_FUNC_DEF(square_root){
     return kernel_forward(OP_SQRT, t0, NULL, retain_grad);  
 }
 
-UNARY_FUNC_DEF(absolute, OP_ABS){
+SINGLE_INPUT_FUNC_DEF(absolute){
     return kernel_forward(OP_ABS, t0, NULL, retain_grad);  
 }
 
-UNARY_FUNC_DEF(sign, OP_SIGN){
+SINGLE_INPUT_FUNC_DEF(sign){
     return kernel_forward(OP_SIGN, t0, NULL, retain_grad);  
 }
 
-UNARY_FUNC_DEF(reciprocal, OP_RECIPROCAL){
+SINGLE_INPUT_FUNC_DEF(reciprocal){
     return kernel_forward(OP_RECIPROCAL, t0, NULL, retain_grad);  
 }
 
