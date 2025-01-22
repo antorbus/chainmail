@@ -90,7 +90,6 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             break;
 
         case TYPE_UNARY:
-            t1 = (func == OP_POW) ? t1 : NULL;    // null except scalar tensor from power op.
             if (t0->requires_grad == true){
                     requires_grad = true;
             }
@@ -99,7 +98,7 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
                 grad = empty_contiguous_kernel_tensor_like(k);
                 memset_kernel_tensor(grad, 0.0);
             }
-            if (t1 == NULL) forward_func_table[func](k, t0->k, NULL);
+            if (t1 == NULL) forward_func_table[func](k, t0->k, NULL); //power
             else forward_func_table[func](k, t0->k, t1->k);
 
             break;
