@@ -36,6 +36,7 @@ kernel_tensor * create_seed_kernel_tensor(){
 }
 
 bool is_tensor_scalar(tensor *t){
+    if (t == NULL) return false;
     if ((t->k->shape[0] == 1) && 
         (t->k->shape[1] == 1) && 
         (t->k->shape[2] == 1) && 
@@ -362,7 +363,7 @@ kernel_tensor * contiguous_deepcopy_kernel_tensor(kernel_tensor *k){
 }
 
 
-static bool is_initialize_random = false;
+bool is_initialize_random = false;
 void init_random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_float max) {
     if (!is_initialize_random) {
         srand(time(NULL));

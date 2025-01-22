@@ -64,6 +64,19 @@ class LemurTensor:
         c_result = lib.division(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
+    def exp(self):
+        c_result = lib.exponential(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
+    
+    def pow(self, other):
+        if not isinstance(other, LemurTensor):
+            if isinstance(other, float) or isinstance(other, int):
+                other = tensor([float(other)])
+            else:
+                raise TypeError("Can't take LemurTensor to non-float or non-LemurTensor exponent.")
+        c_result = lib.power(self._ptr, other._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self, other))
+    
     def sum(self, other):
         if not isinstance(other, LemurTensor):
             raise TypeError("Can't sum LemurTensor with non-LemurTensor dim.")

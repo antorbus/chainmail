@@ -89,6 +89,14 @@ lib.add.restype  = ctypes.POINTER(Tensor)
 lib.relu.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.relu.restype  = ctypes.POINTER(Tensor)
 
+# tensor* exponential(tensor* t0, bool retain_grad);
+lib.exponential.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.exponential.restype  = ctypes.POINTER(Tensor)
+
+# tensor* power(tensor* t0, tensor* t1, bool retain_grad);
+lib.power.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.power.restype  = ctypes.POINTER(Tensor)
+
 # tensor* sigmoid(tensor* t0, bool retain_grad);
 lib.sigmoid.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.sigmoid.restype  = ctypes.POINTER(Tensor)

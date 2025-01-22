@@ -9,6 +9,8 @@ forward_func forward_func_table[] = {
     [OP_DIVISION] = b_op_division_forward,
 
     //unary ops
+    [OP_EXP] = u_op_exp_forward,
+    [OP_POW] = u_op_pow_forward,
     [OP_RELU] = u_op_relu_forward,
     [OP_SIGMOID] = u_op_sigmoid_forward,
 
@@ -28,6 +30,8 @@ backward_func backward_func_table[] = {
     [OP_DIVISION] = b_op_division_backward,
 
     //unary ops
+    [OP_EXP] = u_op_exp_backward,
+    [OP_POW] = u_op_pow_backward,
     [OP_RELU] = u_op_relu_backward,
     [OP_SIGMOID] = u_op_sigmoid_backward,
     //reduce ops
@@ -46,6 +50,8 @@ int type_table[] = { //TODO ADD TO DOCS
     [OP_DIVISION] = TYPE_BINARY,
 
     //unary ops
+    [OP_EXP] = TYPE_UNARY,
+    [OP_POW] = TYPE_UNARY,  // (implemented as unary op, but takes two tensor inputs)
     [OP_RELU] = TYPE_UNARY,
     [OP_SIGMOID] = TYPE_UNARY,
 
@@ -84,7 +90,6 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             break;
 
         case TYPE_UNARY:
-            t1 = NULL;
             if (t0->requires_grad == true){
                     requires_grad = true;
             }
@@ -93,7 +98,9 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
                 grad = empty_contiguous_kernel_tensor_like(k);
                 memset_kernel_tensor(grad, 0.0);
             }
-            forward_func_table[func](k, t0->k, t1->k);
+            if (t1 == NULL) forward_func_table[func](k, t0->k, NULL); //power
+            else forward_func_table[func](k, t0->k, t1->k);
+
             break;
 
         case TYPE_REDUCE: 

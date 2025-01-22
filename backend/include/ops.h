@@ -1,4 +1,3 @@
-
 #ifndef OPS_H
 #define OPS_H
 
@@ -55,6 +54,12 @@ FORWARD_FUNC_DEF(b_op_division_forward);
 BACKWARD_FUNC_DEF(b_op_division_backward);
 
 //unary ops
+FORWARD_FUNC_DEF(u_op_exp_forward);
+BACKWARD_FUNC_DEF(u_op_exp_backward);
+
+FORWARD_FUNC_DEF(u_op_pow_forward);
+BACKWARD_FUNC_DEF(u_op_pow_backward);
+
 FORWARD_FUNC_DEF(u_op_relu_forward);
 BACKWARD_FUNC_DEF(u_op_relu_backward);
 
@@ -90,6 +95,8 @@ enum OPS {
   OP_MUL,
   OP_DIVISION,
   //unary ops
+  OP_EXP,
+  OP_POW,
   OP_RELU,
   OP_SIGMOID,
   //reduce ops

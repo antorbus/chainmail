@@ -14,6 +14,8 @@ char* op_map[TOTAL_OPS] ={
 [OP_MUL] = "mul",
 [OP_DIVISION] = "div",
 //unary ops
+[OP_EXP] = "exponential",
+[OP_POW] = "power",
 [OP_RELU] = "relu",
 [OP_SIGMOID] = "sigmoid",
 //reduce ops
@@ -41,6 +43,18 @@ BINARY_FUNC_DEF(division, OP_DIVISION){
 
 //unary ops
 
+UNARY_FUNC_DEF(exponential, OP_EXP){
+    return kernel_forward(OP_EXP, t0, NULL, retain_grad);
+}
+
+BINARY_FUNC_DEF(power, OP_POW){ 
+    if (is_tensor_scalar(t1) == false){
+        fprintf(stderr, "Error: Exponent of tensor must be a scalar.\n");
+        return NULL;
+    }
+    return kernel_forward(OP_POW, t0, t1, retain_grad);
+}
+
 UNARY_FUNC_DEF(relu, OP_RELU){
     return kernel_forward(OP_RELU, t0, NULL, retain_grad);  
 }
@@ -62,7 +76,6 @@ SHAPE_FUNC_DEF(view, OP_VIEW){
     if(is_contiguous(t0->k) == false){
         fprintf(stderr, "Error: View can only be perfomed on contiguous tensors.\n");
         return NULL;
-        
     }
     if (dim_data->k->length != 5){
         fprintf(stderr, "Error: View dimensions must be 5.\n");
