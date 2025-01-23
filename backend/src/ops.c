@@ -192,6 +192,12 @@ forward_func forward_func_table[] = {
     [OP_POW] = u_op_pow_forward,
     [OP_RELU] = u_op_relu_forward,
     [OP_SIGMOID] = u_op_sigmoid_forward,
+    [OP_LOG] = u_op_log_forward,
+    [OP_NEG] = u_op_neg_forward,
+    [OP_SQRT] = u_op_sqrt_forward,
+    [OP_ABS] = u_op_abs_forward,
+    [OP_SIGN] = u_op_sign_forward,
+    [OP_RECIPROCAL] = u_op_reciprocal_forward,
 
     //reduce ops
     [OP_SUM] = r_op_sum_forward,
@@ -214,6 +220,13 @@ backward_func backward_func_table[] = {
     [OP_POW] = u_op_pow_backward,
     [OP_RELU] = u_op_relu_backward,
     [OP_SIGMOID] = u_op_sigmoid_backward,
+    [OP_LOG] = u_op_log_backward,
+    [OP_NEG] = u_op_neg_backward,
+    [OP_SQRT] = u_op_sqrt_backward,
+    [OP_ABS] = u_op_abs_backward,
+    [OP_SIGN] = u_op_sign_backward,
+    [OP_RECIPROCAL] = u_op_reciprocal_backward,
+
     //reduce ops
     [OP_SUM] = r_op_sum_backward,
 
@@ -235,6 +248,12 @@ int type_table[] = { //TODO ADD TO DOCS
     [OP_POW] = TYPE_UNARY,  // (implemented as unary op, but takes two tensor inputs)
     [OP_RELU] = TYPE_UNARY,
     [OP_SIGMOID] = TYPE_UNARY,
+    [OP_LOG] = TYPE_UNARY,
+    [OP_NEG] = TYPE_UNARY,
+    [OP_SQRT] = TYPE_UNARY,
+    [OP_ABS] = TYPE_UNARY,
+    [OP_SIGN] = TYPE_UNARY,
+    [OP_RECIPROCAL] = TYPE_UNARY,
 
     //reduce ops
     [OP_SUM] = TYPE_REDUCE, 
