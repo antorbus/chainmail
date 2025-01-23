@@ -11,6 +11,7 @@ char* get_op_name(int op_id) {
 char* op_map[TOTAL_OPS] ={
 //binary ops
 [OP_ADD] = "add",
+[OP_SUB] = "sub",
 [OP_MUL] = "mul",
 [OP_DIVISION] = "div",
 //unary ops
@@ -29,12 +30,16 @@ char* op_map[TOTAL_OPS] ={
 
 //binary ops
 
-DOUBLE_INPUT_FUNC_DEF(mul){
-    return kernel_forward(OP_MUL, t0, t1, retain_grad);  
-}
-
 DOUBLE_INPUT_FUNC_DEF(add){
     return kernel_forward(OP_ADD, t0, t1, retain_grad);  
+}
+
+DOUBLE_INPUT_FUNC_DEF(sub){
+    return kernel_forward(OP_SUB, t0, t1, retain_grad);  
+}
+
+DOUBLE_INPUT_FUNC_DEF(mul){
+    return kernel_forward(OP_MUL, t0, t1, retain_grad);  
 }
 
 DOUBLE_INPUT_FUNC_DEF(division){

@@ -1,92 +1,68 @@
 #include "../include/ops.h"
 #include "../include/tensor.h"
 
+#define _add(a, b) a + b
+#define _mul(a, b) a * b
+#define _sub(a, b) a - b
+#define _div(a, b) a / b
+#define _neg(a) -1.0 * a
+
 FORWARD_FUNC_DEF(b_op_add_forward){
-    if ((is_contiguous(k0) == true) && (is_contiguous(k1)==true)){
-        BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr,k0,k1,+);
-    }
-    else{
-        KERNEL_TENSOR_5D_LOOP_START(kr){
-            size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
-            size_t offset_k1 = KERNEL_TENSOR_GET_OFFSET(k1);
-            size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-            kr->array[offset_kr] = k0->array[offset_k0] + k1->array[offset_k1];
-        }
-    }
+    BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, k1, _add);
 }
 
 BACKWARD_FUNC_DEF(b_op_add_backward){
-    (void) kr; (void) k0; (void) k1; 
-    kernel_tensor *next_seed;
-    if (idx == 0){
-        next_seed = seed;
-    }
-    else{
-        next_seed = contiguous_deepcopy_kernel_tensor(seed);
-    }
-    return next_seed;
+    (void) kr; (void) k0; (void) k1; (void) idx;
+    return seed;
 }
 
 FORWARD_FUNC_DEF(b_op_mul_forward){
-    KERNEL_TENSOR_5D_LOOP_START(kr){
-        size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
-        size_t offset_k1 = KERNEL_TENSOR_GET_OFFSET(k1);
-        size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        kr->array[offset_kr] = k0->array[offset_k0] * k1->array[offset_k1];
-    }
+    BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, k1, _mul);
 }
 
 BACKWARD_FUNC_DEF(b_op_mul_backward){
     (void) kr;
-    kernel_tensor *next_seed;
     kernel_tensor *k;
     if (idx == 0){
-        next_seed = seed;
         k = k1;
     }
     else{
-        next_seed = contiguous_deepcopy_kernel_tensor(seed);
         k = k0;
     }
-    KERNEL_TENSOR_5D_LOOP_START(next_seed){
-        size_t offset_next_seed = KERNEL_TENSOR_GET_OFFSET(next_seed);
-        size_t offset_seed = KERNEL_TENSOR_GET_OFFSET(seed);
-        size_t offset_k = KERNEL_TENSOR_GET_OFFSET(k);
-        next_seed->array[offset_next_seed] = seed->array[offset_seed] * k->array[offset_k];
-    }
-
-    return next_seed;
+    BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(seed, seed, k, _mul);
+    return seed;
 }
 
-FORWARD_FUNC_DEF(b_op_division_forward){
-    KERNEL_TENSOR_5D_LOOP_START(kr){
-        size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
-        size_t offset_k1 = KERNEL_TENSOR_GET_OFFSET(k1);
-        size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        kr->array[offset_kr] = k0->array[offset_k0] / k1->array[offset_k1];
+FORWARD_FUNC_DEF(b_op_sub_forward){
+    BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, k1, _sub);
+}
+
+BACKWARD_FUNC_DEF(b_op_sub_backward){
+    (void) kr; (void) k0; (void) k1;
+    if (idx == 0){
+        //nothing
     }
+    else{
+       UNARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(seed, seed, _neg);
+    }
+    return seed;
+}
+
+
+FORWARD_FUNC_DEF(b_op_division_forward){
+    BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, k1, _div);
 }
 
 BACKWARD_FUNC_DEF(b_op_division_backward){
     (void) k0;
-    kernel_tensor *next_seed;
     if (idx == 0) {
-        next_seed = seed;
+        BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(seed, seed, k1, _div);
     }
     else {
-        next_seed = contiguous_deepcopy_kernel_tensor(seed);
-    }
-    KERNEL_TENSOR_5D_LOOP_START(next_seed){
-        size_t offset_next_seed = KERNEL_TENSOR_GET_OFFSET(next_seed);
-        size_t offset_seed = KERNEL_TENSOR_GET_OFFSET(seed);
-        size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        size_t offset_k1 = KERNEL_TENSOR_GET_OFFSET(k1);
-        if (idx == 0) {
-            next_seed->array[offset_next_seed] = seed->array[offset_seed] / k1->array[offset_k1];
-        }
-        else {
-            next_seed->array[offset_next_seed] = -1.0 * seed->array[offset_seed] * (kr->array[offset_kr] / (k1->array[offset_k1]));
+        #pragma omp parallel for simd
+        for (size_t _i = 0; _i < kr->length; _i++) {                     
+          seed->array[_i] = -1.0 * seed->array[_i] * (kr->array[_i] / (k1->array[_i]));
         }
     }
-    return next_seed;
+    return seed;
 }

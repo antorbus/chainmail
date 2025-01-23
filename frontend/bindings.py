@@ -82,6 +82,10 @@ lib.free_tensor.restype  = None
 lib.backward.argtypes = [ctypes.POINTER(Tensor)]
 lib.backward.restype  = None
 
+# tensor* sub(tensor* t0, tensor* t1, bool retain_grad);
+lib.sub.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.sub.restype  = ctypes.POINTER(Tensor)
+
 # tensor* mul(tensor* t0, tensor* t1, bool retain_grad);
 lib.mul.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.mul.restype  = ctypes.POINTER(Tensor)

@@ -93,6 +93,12 @@ class LemurTensor:
             raise TypeError("Can't add LemurTensor with non-LemurTensor.")
         c_result = lib.add(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
+    
+    def __sub__(self, other):
+        if not isinstance(other, LemurTensor):
+            raise TypeError("Can't subtract LemurTensor with non-LemurTensor.")
+        c_result = lib.sub(self._ptr, other._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self, other))
 
     def __mul__(self, other):
         if not isinstance(other, LemurTensor):

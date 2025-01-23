@@ -130,8 +130,9 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
 
     kernel_tensor *next_seed1 = NULL;
     if (type_table[func] == TYPE_BINARY){ 
-        next_seed1 = backward_func_table[func](kr, k0, k1, seed, 1);
-        inplace_contiguous_kernel_tensor(next_seed1);
+        kernel_tensor *deepcopy_seed = contiguous_deepcopy_kernel_tensor(seed);
+        //binary backward should return deepcopy_seed, therefore this is safe and there are no leaks
+        next_seed1 = backward_func_table[func](kr, k0, k1, deepcopy_seed, 1);
     }
     //TODO fix this
     //next_seed0 must be calculated AFTER next_seed1 since next_seed0 could be seed itself 
@@ -182,6 +183,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
 forward_func forward_func_table[] = {
     //binary ops
     [OP_ADD] = b_op_add_forward,
+    [OP_SUB] = b_op_sub_forward,
     [OP_MUL] = b_op_mul_forward,
     [OP_DIVISION] = b_op_division_forward,
 
@@ -203,6 +205,7 @@ forward_func forward_func_table[] = {
 backward_func backward_func_table[] = {
     //binary ops
     [OP_ADD] = b_op_add_backward,
+    [OP_SUB] = b_op_sub_backward,
     [OP_MUL] = b_op_mul_backward,
     [OP_DIVISION] = b_op_division_backward,
 
@@ -223,6 +226,7 @@ backward_func backward_func_table[] = {
 int type_table[] = { //TODO ADD TO DOCS
     //binary ops
     [OP_ADD] = TYPE_BINARY,
+    [OP_SUB] = TYPE_BINARY,
     [OP_MUL] = TYPE_BINARY,
     [OP_DIVISION] = TYPE_BINARY,
 

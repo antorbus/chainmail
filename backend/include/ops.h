@@ -53,6 +53,9 @@ void kernel_backward(tensor *tr, kernel_tensor *seed);
 FORWARD_FUNC_DEF(b_op_add_forward);
 BACKWARD_FUNC_DEF(b_op_add_backward);
 
+FORWARD_FUNC_DEF(b_op_sub_forward);
+BACKWARD_FUNC_DEF(b_op_sub_backward);
+
 FORWARD_FUNC_DEF(b_op_mul_forward);
 BACKWARD_FUNC_DEF(b_op_mul_backward);
 
@@ -98,6 +101,7 @@ enum {
 enum OPS {
   //binary ops
   OP_ADD = 0,
+  OP_SUB,
   OP_MUL,
   OP_DIVISION,
   //unary ops
@@ -139,9 +143,18 @@ extern backward_func backward_func_table[TOTAL_OPS];
 #define BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, k1, operation) \
     do {                                                                   \
         _Pragma("omp parallel for simd")                                   \
-        for (size_t _i = 0; _i < (kr)->length; _i++) {                      \
-            (kr)->array[_i] = (k0)->array[_i] operation (k1)->array[_i];   \
+        for (size_t _i = 0; _i < (kr)->length; _i++) {                     \
+          (kr)->array[_i] = operation((k0)->array[_i], (k1)->array[_i]); \
         }                                                                  \
     } while (0)
+
+#define UNARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, operation) \
+    do {                                                                   \
+        _Pragma("omp parallel for simd")                                   \
+        for (size_t _i = 0; _i < (kr)->length; _i++) {                     \
+          (kr)->array[_i] = operation((k0)->array[_i]);                  \
+        }                                                                  \
+    } while (0)
+
 
 #endif 

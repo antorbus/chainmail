@@ -35,8 +35,9 @@ extern char* op_map[TOTAL_OPS];
 char* get_op_name(int op_id);
 
 //binary ops
-DOUBLE_INPUT_FUNC_DEF(mul);
 DOUBLE_INPUT_FUNC_DEF(add);
+DOUBLE_INPUT_FUNC_DEF(sub);
+DOUBLE_INPUT_FUNC_DEF(mul);
 DOUBLE_INPUT_FUNC_DEF(division);
 
 //unary ops

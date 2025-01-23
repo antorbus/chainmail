@@ -24,7 +24,7 @@ once that is done, can make special kernels optimized for contiguous
 *** b ops ***
     - add (done)
     - mul (done)
-    - sub
+    - sub (done)
     - div (done)
     - pow (done)
     - eq
