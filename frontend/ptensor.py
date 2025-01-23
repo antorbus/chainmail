@@ -82,7 +82,7 @@ class LemurTensor:
 
     @property
     def grad(self):
-        print(reprutils._format_kernel_tensor(self._ptr.contents.grad))
+        return reprutils._format_kernel_tensor(self._ptr.contents.grad)
 
     def relu(self):
         c_result = lib.relu(self._ptr, False)
