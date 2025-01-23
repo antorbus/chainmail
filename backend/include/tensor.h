@@ -61,6 +61,4 @@ void print_kernel_tensor(kernel_tensor *k);
 void print_expression(expression *e);
 void print_tensor(tensor *t);
 
-
-
 #endif 
