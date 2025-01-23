@@ -122,3 +122,5 @@ TODO fix call backward on tensors that does not require grad
 TODO DETERMINE THREADS FOR OMP (one per core)
 
 TODO grad should return a tensor! not a print
+
+TODO aligned allocation for even faster performance
