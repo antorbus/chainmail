@@ -1,6 +1,8 @@
-from frontend.ptensor import tensor, empty, full, arange, linspace, zeros, ones, rand, randn, init_seed
+from frontend.ptensor import tensor, empty
 from frontend.reprutils import set_verbose_print, set_sci_print, print_lemur_version
 from frontend.version import __version__
+from frontend.loss import MSELoss
+from frontend.tensor_creation import *
 
 def main():
     print_lemur_version()

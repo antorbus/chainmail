@@ -116,7 +116,7 @@ class LemurTensor:
         c_result = lib.exponential(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
-    def pow(self, other):
+    def __pow__(self, other):
         if not isinstance(other, LemurTensor):
             if isinstance(other, float) or isinstance(other, int):
                 other = tensor([float(other)])
@@ -218,47 +218,3 @@ def tensor(data, requires_grad=False):
         c_arr[i] = val
 
     return t
-
-def full(shape, fill_value, requires_grad=False):
-    t = empty(shape, requires_grad=requires_grad)
-    lib.memset_kernel_tensor(t._ptr.contents.k, ctypes.c_float(fill_value))
-    return t
-
-def arange(end, start=0, step=1, requires_grad=False):
-    if step == 0:
-        raise ValueError("Step must not be zero.")
-
-    steps = int((end - 1 - start) / step + 1)
-
-    return linspace(start, start + (steps - 1) * step, steps, requires_grad=requires_grad)
-
-def linspace(start, end, steps, requires_grad=False):
-    if steps <= 0:
-        raise ValueError("Steps must be a positive integer.")
-
-    if steps == 1:
-        data = [start]
-    else:
-        step_size = (end - start) / (steps - 1)
-        data = [start + i * step_size for i in range(steps)]
-    return tensor(data, requires_grad=requires_grad)
-
-def zeros(shape, requires_grad=False):
-    return full(shape, 0.0, requires_grad=requires_grad) 
-
-def ones(shape, requires_grad=False):
-    return full(shape, 1.0, requires_grad=requires_grad)
-
-def rand(shape, low=0.0, high=1.0, requires_grad=False):
-    t = empty(shape, requires_grad=requires_grad)
-    lib.init_random_uniform_kernel_tensor(t._ptr.contents.k, ctypes.c_float(low), ctypes.c_float(high))
-    return t
-
-def randn(shape, mean = 0.0, std = 1.0, requires_grad=False):
-    t = empty(shape, requires_grad=requires_grad)
-    lib.init_random_normal_kernel_tensor(t._ptr.contents.k, ctypes.c_float(mean), ctypes.c_float(std))
-    return t
-
-def init_seed(seed):
-    lib.init_seed(ctypes.c_uint(seed))
-    
