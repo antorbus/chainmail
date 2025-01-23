@@ -93,14 +93,7 @@ FORWARD_FUNC_DEF(u_op_log_forward){
 
 BACKWARD_FUNC_DEF(u_op_log_backward) {
     (void) idx; (void) k1; (void) kr;
-    kernel_tensor *reciprocal_result = empty_kernel_tensor_like(seed);
-    u_op_reciprocal_forward(reciprocal_result, k0, NULL);
-    KERNEL_TENSOR_5D_LOOP_START(seed) {
-        size_t offset_seed = KERNEL_TENSOR_GET_OFFSET(seed);
-        size_t offset_reciprocal = KERNEL_TENSOR_GET_OFFSET(reciprocal_result);
-        seed->array[offset_seed] *= reciprocal_result->array[offset_reciprocal];
-    }
-    free_kernel_tensor(reciprocal_result);
+    b_op_division_forward(seed, seed, k0);
     return seed;
 }
 
