@@ -28,7 +28,7 @@ typedef struct expression {
     int backward_func;
 } expression;
 
-extern bool is_initialize_random;
+void init_seed(unsigned int seed);
 
 void backward(tensor * t);
 
@@ -49,7 +49,7 @@ tensor * dim_tensor_from(size_t shape[5]);
 void inplace_contiguous_kernel_tensor(kernel_tensor *k); 
 kernel_tensor * contiguous_deepcopy_kernel_tensor(kernel_tensor *k); 
 void init_random_uniform_kernel_tensor(kernel_tensor * k, lemur_float min, lemur_float max);
-
+void init_random_normal_kernel_tensor(kernel_tensor * k, lemur_float mean, lemur_float std);
 
 bool are_shapes_equal(size_t shape0[5], size_t shape1[5]);
 void set_reduced_shape(size_t reduced_shape[5], size_t original_shape[5], lemur_float dims[5]);

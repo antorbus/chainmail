@@ -57,6 +57,13 @@ lib.is_contiguous.restype = ctypes.c_bool
 lib.init_random_uniform_kernel_tensor.argtypes = [ctypes.POINTER(KernelTensor), ctypes.c_float, ctypes.c_float] #lemur_float
 lib.init_random_uniform_kernel_tensor.restype = None 
 
+lib.init_random_normal_kernel_tensor.argtypes = [ctypes.POINTER(KernelTensor), ctypes.c_float, ctypes.c_float] #lemur_float
+lib.init_random_normal_kernel_tensor.restype = None
+
+#void init_seed(unsigned int seed);
+lib.init_seed.argtypes = [ctypes.c_uint]
+lib.init_seed.restype = None
+
 lib.memset_kernel_tensor.argtypes = [ctypes.POINTER(KernelTensor), ctypes.c_float] #lemur_float
 lib.memset_kernel_tensor.restype = None 
 

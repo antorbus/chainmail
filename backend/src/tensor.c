@@ -362,13 +362,37 @@ kernel_tensor * contiguous_deepcopy_kernel_tensor(kernel_tensor *k){
 
 
 bool is_initialize_random = false;
-void init_random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_float max) {
-    if (!is_initialize_random) {
-        srand(time(NULL));
-        is_initialize_random = true;
+unsigned int _seed = 0;
+void init_seed(unsigned int seed){
+    if (seed == 0){
+            _seed = time(NULL);
+        } else {
+            _seed = seed;
+        }
+    srand(_seed);
+    is_initialize_random = true;
+    printf("seed = %u\n", _seed);
+}
+
+void init_random() {
+    if (!is_initialize_random){
+        init_seed(0);
     }
+}
+void init_random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_float max) {
+    init_random();
     for (size_t i = 0; i < k->length; i++) {
         k->array[i] = min + (lemur_float)rand() / (lemur_float)RAND_MAX * (max - min);
     }
 }
+
+void init_random_normal_kernel_tensor(kernel_tensor *k, lemur_float mean, lemur_float std) {
+    init_random();
+    for (size_t i = 0; i < k->length; i++) {
+        lemur_float u1 = (lemur_float)rand() / (lemur_float)RAND_MAX;
+        lemur_float u2 = (lemur_float)rand() / (lemur_float)RAND_MAX;
+        k->array[i] = mean + std * sqrt(-2.0 * log(u1)) * cos(2.0 * M_PI * u2);
+    }
+}
+
 
