@@ -120,3 +120,5 @@ add openmp to readme and to makefile for easy install and to docs
 TODO fix call backward on tensors that does not require grad
 
 TODO DETERMINE THREADS FOR OMP (one per core)
+
+TODO grad should return a tensor! not a print
