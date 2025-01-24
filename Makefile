@@ -6,11 +6,12 @@ LIB_NAME = lightlemur
 SRC_DIR = backend/src
 SRCS = $(SRC_DIR)/tensor.c \
        $(SRC_DIR)/ops.c \
+       $(SRC_DIR)/interface.c \
+       $(SRC_DIR)/compiler.c \
        $(SRC_DIR)/kernels/binaryops.c \
        $(SRC_DIR)/kernels/unaryops.c \
        $(SRC_DIR)/kernels/reduceops.c \
-       $(SRC_DIR)/kernels/shapeops.c \
-       $(SRC_DIR)/interface.c
+       $(SRC_DIR)/kernels/shapeops.c 
 OBJS     = $(SRCS:.c=.o)
 UNAME_S := $(shell uname -s)
 
@@ -51,3 +52,6 @@ $(TEST_BIN): $(TEST_SRC)
 
 clean:
 	rm -f $(OBJS) $(TARGET) $(TEST_BIN)
+
+clean-compiled:
+	find . -type d -name lemurcompiled -exec rm -rf {} +

@@ -51,6 +51,9 @@ class Tensor(ctypes.Structure):
     ]
 
 #from interface.h
+lib.compile.argtypes = [ctypes.POINTER(Tensor)] 
+lib.compile.restype = None
+
 lib.is_contiguous.argtypes = [ctypes.POINTER(KernelTensor)] 
 lib.is_contiguous.restype = ctypes.c_bool 
 
