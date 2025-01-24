@@ -161,7 +161,34 @@ class LemurTensor:
     def sigmoid(self):
         c_result = lib.sigmoid(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
+            
+    def log(self):
+        c_result = lib.log(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
     
+    def neg(self):
+        c_result = lib.neg(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
+    
+    def sqrt(self):
+        c_result = lib.sqrt(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
+    
+    def abs(self):
+        c_result = lib.abs(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
+    
+    def sign(self):
+        c_result = lib.sign(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
+    
+    def reciprocal(self):
+        c_result = lib.reciprocal(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
+
+    def compile(self):
+        lib.compile(self._ptr)
+
     def compile(self):
         lib.compile(self._ptr)
 
