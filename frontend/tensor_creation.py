@@ -1,5 +1,6 @@
 from frontend.ptensor import *
 
+### Tensor Creation ###
 
 def full(shape, fill_value, requires_grad=False):
     t = empty(shape, requires_grad=requires_grad)
@@ -9,15 +10,12 @@ def full(shape, fill_value, requires_grad=False):
 def arange(end, start=0, step=1, requires_grad=False):
     if step == 0:
         raise ValueError("Step must not be zero.")
-
     steps = int((end - 1 - start) / step + 1)
-
     return linspace(start, start + (steps - 1) * step, steps, requires_grad=requires_grad)
 
 def linspace(start, end, steps, requires_grad=False):
     if steps <= 0:
         raise ValueError("Steps must be a positive integer.")
-
     if steps == 1:
         data = [start]
     else:
@@ -31,10 +29,9 @@ def zeros(shape, requires_grad=False):
 def ones(shape, requires_grad=False):
     return full(shape, 1.0, requires_grad=requires_grad)
 
+### Tensor Creation ###
 
-
-
-def init_seed(seed):
+def init_seed(seed): #TODO should this be moved?
     lib.init_seed(ctypes.c_uint(seed))
 
 def rand(shape, low=0.0, high=1.0, requires_grad=False):

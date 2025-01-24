@@ -152,7 +152,8 @@ extern backward_func backward_func_table[TOTAL_OPS];
 
 //helper macros
 
-#define KERNEL_TENSOR_5D_LOOP_START(k)                            \
+#define KERNEL_TENSOR_5D_LOOP_START(k)                     \
+  _Pragma("omp parallel for collapse(5)")                  \
   for (size_t d0 = 0; d0 < (k)->shape[0]; d0++)            \
     for (size_t d1 = 0; d1 < (k)->shape[1]; d1++)          \
       for (size_t d2 = 0; d2 < (k)->shape[2]; d2++)        \

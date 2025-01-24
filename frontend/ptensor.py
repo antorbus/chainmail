@@ -29,11 +29,7 @@ class LemurTensor:
                 raise RuntimeError("empty_tensor returned NULL.")
             self._ptr = t_ptr
 
-    def __del__(self):
-        if getattr(self, "_ptr", None) is not None:
-            lib.free_tensor(self._ptr)
-            self._ptr = None
-
+    ### helpers ###
     @staticmethod
     def _convert_to_tensor(obj):
         if isinstance(obj, (tuple, list)):
@@ -47,9 +43,25 @@ class LemurTensor:
             return self._convert_to_tensor(args[0])
         return self._convert_to_tensor(list(args))
     
-    def backward(self):
-        lib.backward(self._ptr)
-
+    ### garbage collection ###
+    def __del__(self):
+        if getattr(self, "_ptr", None) is not None:
+            lib.free_tensor(self._ptr)
+            self._ptr = None
+    
+    ### print ###
+    def __repr__(self):
+        return reprutils._tensor_repr(self._ptr)
+    
+    ### properties/utility methods ###
+    @property
+    def grad(self):
+        return reprutils._format_kernel_tensor(self._ptr.contents.grad)
+    
+    @property
+    def graph(self):
+        return reprutils.plot_tensor_graph_parents(self)
+    
     def stride(self):
         return [self._ptr.contents.k.contents.stride[i] for i in range(5)]
     
@@ -58,7 +70,7 @@ class LemurTensor:
 
     def is_contiguous(self):
         return lib.is_contiguous(self._ptr.contents.k)
-    
+        
     @property
     def memory_length(self):
         return self._ptr.contents.k.contents.length
@@ -74,20 +86,14 @@ class LemurTensor:
     def ndimension(self):  
         return 5
     
-    def flatten(self, dim=4):
-        total_elements = self.numel()
-        view_dim = [1,1,1,1,1]
-        view_dim[dim] = total_elements
-        return self.view(view_dim)
+    ### grad/compile ops###
+    def backward(self):
+        lib.backward(self._ptr)
 
-    @property
-    def grad(self):
-        return reprutils._format_kernel_tensor(self._ptr.contents.grad)
+    def compile(self):
+        lib.compile(self._ptr)
 
-    def relu(self):
-        c_result = lib.relu(self._ptr, False)
-        return LemurTensor(_ptr=c_result, _parents=(self,))
-
+    ### Binary ops ###
     def __add__(self, other):
         if not isinstance(other, LemurTensor):
             raise TypeError("Can't add LemurTensor with non-LemurTensor.")
@@ -112,19 +118,7 @@ class LemurTensor:
         c_result = lib.division(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
-    def exp(self):
-        c_result = lib.exponential(self._ptr, False)
-        return LemurTensor(_ptr=c_result, _parents=(self,))
-    
-    def __pow__(self, other):
-        if not isinstance(other, LemurTensor):
-            if isinstance(other, float) or isinstance(other, int):
-                other = tensor([float(other)])
-            else:
-                raise TypeError("Can't take LemurTensor to non-float or non-LemurTensor exponent.")
-        c_result = lib.power(self._ptr, other._ptr, False)
-        return LemurTensor(_ptr=c_result, _parents=(self, other))
-    
+    ### Reduce ops ###
     def sum(self, *args):
         if not args: 
             dims = [0,0,0,0,0]
@@ -136,28 +130,24 @@ class LemurTensor:
         c_result = lib.sum(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,other))
     
-    def view(self, *args):
-        other = self._process_args(*args)
-        c_result = lib.view(self._ptr, other._ptr)
-        return LemurTensor(_ptr=c_result, _parents=(self, other))
-
-    def expand(self, *args):
-        other = self._process_args(*args)
-        c_result = lib.expand(self._ptr, other._ptr)
-        return LemurTensor(_ptr=c_result, _parents=(self, other))
-
-    def permute(self, *args):
-        other = self._process_args(*args)
-        c_result = lib.permute(self._ptr, other._ptr)
+    ### Unary ops ###
+    def __pow__(self, other):
+        if not isinstance(other, LemurTensor):
+            if isinstance(other, float) or isinstance(other, int):
+                other = tensor([float(other)])
+            else:
+                raise TypeError("Can't take LemurTensor to non-float or non-LemurTensor exponent.")
+        c_result = lib.power(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
-    def __repr__(self):
-        return reprutils._tensor_repr(self._ptr)
+    def exp(self):
+        c_result = lib.exponential(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
     
-    @property
-    def graph(self):
-        return reprutils.plot_tensor_graph_parents(self)
-
+    def relu(self):
+        c_result = lib.relu(self._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self,))
+    
     def sigmoid(self):
         c_result = lib.sigmoid(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
@@ -185,9 +175,32 @@ class LemurTensor:
     def reciprocal(self):
         c_result = lib.reciprocal(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
+    
+    ### Shape ops ###
+    def flatten(self, dim=4):
+        total_elements = self.numel()
+        view_dim = [1,1,1,1,1]
+        view_dim[dim] = total_elements
+        return self.view(view_dim)
+    
+    def view(self, *args):
+        other = self._process_args(*args)
+        c_result = lib.view(self._ptr, other._ptr)
+        return LemurTensor(_ptr=c_result, _parents=(self, other))
 
-    def compile(self):
-        lib.compile(self._ptr)
+    def expand(self, *args):
+        other = self._process_args(*args)
+        c_result = lib.expand(self._ptr, other._ptr)
+        return LemurTensor(_ptr=c_result, _parents=(self, other))
+
+    def permute(self, *args):
+        other = self._process_args(*args)
+        c_result = lib.permute(self._ptr, other._ptr)
+        return LemurTensor(_ptr=c_result, _parents=(self, other))
+
+
+
+
 
 def empty(shape, requires_grad=False):
     t = LemurTensor(shape=shape, requires_grad=requires_grad)

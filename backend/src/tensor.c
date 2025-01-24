@@ -37,7 +37,7 @@ bool is_tensor_scalar(tensor *t){
     return false;
 }
 
-void backward(tensor * t){     //TODO: change name???
+void backward(tensor * t){     
     if (is_tensor_scalar(t) == true){
         kernel_tensor *seed = create_seed_kernel_tensor();
         //derive(t, seed);
@@ -121,6 +121,7 @@ kernel_tensor * kernel_tensor_shallow_copy(kernel_tensor *k){
 }
 
 void memset_kernel_tensor(kernel_tensor * k, lemur_float val){
+    #pragma omp parallel for simd
     for (size_t i = 0; i < k->length; i++){
         k->array[i] = val;
     }
@@ -337,7 +338,7 @@ void inplace_contiguous_kernel_tensor(kernel_tensor *k){
     set_contiguous_stride(k);
     k->length = get_alleged_length(k->shape);
     k->array = (lemur_float *)malloc(k->length*sizeof(lemur_float));
-
+    
     KERNEL_TENSOR_5D_LOOP_START(k){
         size_t offset_k = KERNEL_TENSOR_GET_OFFSET(k);
         size_t offset_prev_k = d0*prev_stride[0] + d1*prev_stride[1] 
@@ -381,6 +382,7 @@ void init_random() {
 }
 void init_random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_float max) {
     init_random();
+    #pragma omp parallel for
     for (size_t i = 0; i < k->length; i++) {
         k->array[i] = min + (lemur_float)rand() / (lemur_float)RAND_MAX * (max - min);
     }
@@ -388,6 +390,7 @@ void init_random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_
 
 void init_random_normal_kernel_tensor(kernel_tensor *k, lemur_float mean, lemur_float std) {
     init_random();
+    #pragma omp parallel for
     for (size_t i = 0; i < k->length; i++) {
         lemur_float u1 = (lemur_float)rand() / (lemur_float)RAND_MAX;
         lemur_float u2 = (lemur_float)rand() / (lemur_float)RAND_MAX;

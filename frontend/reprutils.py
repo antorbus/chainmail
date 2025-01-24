@@ -159,7 +159,6 @@ def _build_ascii_lines(t, prefix="", is_last=True, visited=None):
     lines.append(prefix + connector + _short_label(t))
 
     child_prefix = prefix + ("    " if is_last else "│   ")
-
    
     op_name = None
     ptr = getattr(t, "_ptr", None)
@@ -191,7 +190,6 @@ def _build_ascii_lines(t, prefix="", is_last=True, visited=None):
                                             visited=visited))
 
     return lines
-
 
 def plot_tensor_graph_parents(t):
     lines = _build_ascii_lines(t)
