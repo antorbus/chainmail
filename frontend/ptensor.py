@@ -161,7 +161,7 @@ class LemurTensor:
     def sigmoid(self):
         c_result = lib.sigmoid(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
-    
+        
     def log(self):
         c_result = lib.log(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
@@ -185,6 +185,9 @@ class LemurTensor:
     def reciprocal(self):
         c_result = lib.reciprocal(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
+
+    def compile(self):
+        lib.compile(self._ptr)
 
 def empty(shape, requires_grad=False):
     t = LemurTensor(shape=shape, requires_grad=requires_grad)
