@@ -124,3 +124,5 @@ TODO DETERMINE THREADS FOR OMP (one per core)
 TODO grad should return a tensor! not a print
 
 TODO aligned allocation for even faster performance
+
+TODO, maybe can call realloc?
