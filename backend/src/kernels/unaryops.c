@@ -1,5 +1,5 @@
-#include "../include/ops.h"
-#include "../include/tensor.h"
+#include "../../include/ops.h"
+#include "../../include/tensor.h"
 
 FORWARD_FUNC_DEF(u_op_exp_forward){
     (void) k1;

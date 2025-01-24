@@ -1,5 +1,5 @@
-#include "../include/ops.h"
-#include "../include/tensor.h"
+#include "../../include/ops.h"
+#include "../../include/tensor.h"
 
 
 FORWARD_FUNC_DEF(r_op_sum_forward){

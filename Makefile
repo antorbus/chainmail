@@ -6,10 +6,10 @@ LIB_NAME = lightlemur
 SRC_DIR = backend/src
 SRCS = $(SRC_DIR)/tensor.c \
        $(SRC_DIR)/ops.c \
-       $(SRC_DIR)/binaryops.c \
-       $(SRC_DIR)/unaryops.c \
-       $(SRC_DIR)/reduceops.c \
-       $(SRC_DIR)/shapeops.c \
+       $(SRC_DIR)/kernels/binaryops.c \
+       $(SRC_DIR)/kernels/unaryops.c \
+       $(SRC_DIR)/kernels/reduceops.c \
+       $(SRC_DIR)/kernels/shapeops.c \
        $(SRC_DIR)/interface.c
 OBJS     = $(SRCS:.c=.o)
 UNAME_S := $(shell uname -s)
