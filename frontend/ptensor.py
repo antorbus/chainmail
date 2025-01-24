@@ -189,9 +189,6 @@ class LemurTensor:
     def compile(self):
         lib.compile(self._ptr)
 
-    def compile(self):
-        lib.compile(self._ptr)
-
 def empty(shape, requires_grad=False):
     t = LemurTensor(shape=shape, requires_grad=requires_grad)
     return t
