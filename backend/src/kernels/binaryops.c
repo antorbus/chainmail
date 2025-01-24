@@ -1,5 +1,5 @@
-#include "../include/ops.h"
-#include "../include/tensor.h"
+#include "../../include/ops.h"
+#include "../../include/tensor.h"
 
 #define _add(a, b) a + b
 #define _mul(a, b) a * b

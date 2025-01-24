@@ -125,4 +125,4 @@ TODO grad should return a tensor! not a print
 
 TODO aligned allocation for even faster performance
 
-TODO, maybe can call realloc?
+TODO, maybe can call realloc? maybe not?
