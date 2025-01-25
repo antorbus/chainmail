@@ -153,7 +153,7 @@ class LemurTensor:
         return LemurTensor(_ptr=c_result, _parents=(self,))
             
     def log(self):
-        c_result = lib.log(self._ptr, False)
+        c_result = lib.logarithm(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
     def neg(self):

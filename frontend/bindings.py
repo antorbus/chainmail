@@ -118,8 +118,8 @@ lib.sigmoid.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.sigmoid.restype  = ctypes.POINTER(Tensor)
 
 # tensor* log(tensor* t0, bool retain_grad);
-lib.log.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
-lib.log.restype  = ctypes.POINTER(Tensor)
+lib.logarithm.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.logarithm.restype  = ctypes.POINTER(Tensor)
 
 # tensor* neg(tensor* t0, bool retain_grad);
 lib.neg.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
