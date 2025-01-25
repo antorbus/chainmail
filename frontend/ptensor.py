@@ -161,7 +161,7 @@ class LemurTensor:
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
     def sqrt(self):
-        c_result = lib.sqrt(self._ptr, False)
+        c_result = lib.square_root(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
     def abs(self):
