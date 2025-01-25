@@ -45,3 +45,4 @@ env/
 *.tmp
 
 lemurcompiled/*
+myenv/*
