@@ -117,7 +117,7 @@ lib.power.restype  = ctypes.POINTER(Tensor)
 lib.sigmoid.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.sigmoid.restype  = ctypes.POINTER(Tensor)
 
-# tensor* log(tensor* t0, bool retain_grad);
+# tensor* logarithm(tensor* t0, bool retain_grad);
 lib.logarithm.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.logarithm.restype  = ctypes.POINTER(Tensor)
 
@@ -125,9 +125,9 @@ lib.logarithm.restype  = ctypes.POINTER(Tensor)
 lib.neg.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.neg.restype  = ctypes.POINTER(Tensor)
 
-# tensor* sqrt(tensor* t0, bool retain_grad);
-lib.sqrt.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
-lib.sqrt.restype  = ctypes.POINTER(Tensor)
+# tensor* square_root(tensor* t0, bool retain_grad);
+lib.square_root.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.square_root.restype  = ctypes.POINTER(Tensor)
 
 # tensor* abs(tensor* t0, bool retain_grad);
 lib.abs.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
