@@ -60,6 +60,8 @@ DOUBLE_INPUT_FUNC_DEF(view);
 DOUBLE_INPUT_FUNC_DEF(expand);
 DOUBLE_INPUT_FUNC_DEF(permute);
 
+//matmul
+
 //compiler
 void compile(tensor *root_node);
 

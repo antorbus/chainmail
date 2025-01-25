@@ -169,18 +169,25 @@ extern backward_func backward_func_table[TOTAL_OPS];
       d4*(k)->stride[4] )
 
 #define BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, k1, operation) \
-    do {                                                                   \
-        _Pragma("omp parallel for simd")                                   \
-        for (size_t _i = 0; _i < (kr)->length; _i++) {                     \
-          (kr)->array[_i] = operation((k0)->array[_i], (k1)->array[_i]); \
-        }                                                                  \
-    } while (0)
+do {                                                                             \
+    if ((kr)->length > 1<<17) {                                                 \
+        _Pragma("omp parallel for simd")                                       \
+          for (size_t _i = 0; _i < (kr)->length; _i++) {                       \
+              (kr)->array[_i] = operation((k0)->array[_i], (k1)->array[_i]);   \
+          }                                                                    \
+    } else {                                                                     \
+        _Pragma("omp simd")                                                      \
+        for (size_t _i = 0; _i < (kr)->length; _i++) {                           \
+            (kr)->array[_i] = operation((k0)->array[_i], (k1)->array[_i]);       \
+        }                                                                        \
+    }                                                                            \
+} while(0)
 
 #define UNARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, operation) \
     do {                                                                   \
-        _Pragma("omp parallel for simd")                                   \
+        _Pragma("omp parallel for simd if((kr)->length > 1<<17)")          \
         for (size_t _i = 0; _i < (kr)->length; _i++) {                     \
-          (kr)->array[_i] = operation((k0)->array[_i]);                  \
+          (kr)->array[_i] = operation((k0)->array[_i]);                    \
         }                                                                  \
     } while (0)
 

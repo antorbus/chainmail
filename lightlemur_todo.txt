@@ -128,3 +128,9 @@ TODO aligned allocation for even faster performance
 TODO, maybe can call realloc? maybe not?
 
 ToDO: check includes in header files
+
+TODO make linspace in C to make it faster, check ALL operations are faster
+
+TODO: open blas? yes or no? does it allow for kernel fusion??
+
+TODO: add lemur alloc to docs

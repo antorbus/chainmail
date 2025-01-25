@@ -7,6 +7,7 @@ SRC_DIR = backend/src
 SRCS = $(SRC_DIR)/tensor.c \
        $(SRC_DIR)/ops.c \
        $(SRC_DIR)/interface.c \
+       $(SRC_DIR)/lemurinit.c \
        $(SRC_DIR)/compiler.c \
        $(SRC_DIR)/kernels/binaryops.c \
        $(SRC_DIR)/kernels/unaryops.c \

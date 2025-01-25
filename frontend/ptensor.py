@@ -239,7 +239,7 @@ def tensor(data, requires_grad=False):
     
     pad_length = 5 - len(inferred_shape)
     final_shape = [1] * pad_length + inferred_shape 
-
+    
     t = empty(shape=final_shape, requires_grad=requires_grad)
 
     flat_data = _flatten_data(data)

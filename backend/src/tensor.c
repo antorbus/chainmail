@@ -11,9 +11,22 @@ void set_contiguous_stride(kernel_tensor * k){
     }
 }
 
+lemur_float * lemur_alloc(size_t length){
+    size_t size_in_bytes = length*sizeof(lemur_float);
+    size_t alignment = (size_in_bytes > 1024) ? 64 : 16;  
+    size_t aligned_size = (size_in_bytes + alignment - 1) & ~(alignment - 1);
+    lemur_float * arr;
+    arr = (lemur_float *)aligned_alloc(alignment, aligned_size);
+    if (arr == NULL){
+        perror("aligned_alloc failed");
+    }
+    return arr;
+}
+
+
 kernel_tensor * create_seed_kernel_tensor(){
     kernel_tensor *seed = (kernel_tensor *) malloc(sizeof(kernel_tensor));
-    seed->array = (lemur_float *) malloc(sizeof(lemur_float));
+    seed->array = lemur_alloc(1);
     seed->length = 1;
     for (size_t i = 0; i < 5; i++){
         seed->shape[i] = 1;
@@ -88,7 +101,7 @@ kernel_tensor * empty_contiguous_kernel_tensor(size_t shape[5]){
     kernel_tensor *k = (kernel_tensor *)malloc(sizeof(kernel_tensor));
     memcpy(k->shape, shape, 5 * sizeof(size_t));
     k->length = get_alleged_length(shape);
-    k->array = (lemur_float *)malloc(k->length * sizeof(lemur_float));
+    k->array = lemur_alloc(k->length);
     set_contiguous_stride(k);
     k->computed = false;
     k->shallow = false;
@@ -102,7 +115,7 @@ kernel_tensor * empty_contiguous_kernel_tensor_like(kernel_tensor *k){
 
 kernel_tensor * empty_kernel_tensor_like(kernel_tensor *k){
     kernel_tensor *k1 = (kernel_tensor *)malloc(sizeof(kernel_tensor));
-    k1->array = (lemur_float *)malloc(k->length*sizeof(lemur_float));
+    k1->array = lemur_alloc(k->length);
     k1->length = k->length;
     memcpy(k1->shape, k->shape, 5 * sizeof(size_t));
     memcpy(k1->stride, k->stride, 5 * sizeof(size_t));
@@ -337,7 +350,7 @@ void inplace_contiguous_kernel_tensor(kernel_tensor *k){
     memcpy(prev_stride, k->stride, 5 * sizeof(int64_t));
     set_contiguous_stride(k);
     k->length = get_alleged_length(k->shape);
-    k->array = (lemur_float *)malloc(k->length*sizeof(lemur_float));
+    k->array = lemur_alloc(k->length);
     
     KERNEL_TENSOR_5D_LOOP_START(k){
         size_t offset_k = KERNEL_TENSOR_GET_OFFSET(k);
