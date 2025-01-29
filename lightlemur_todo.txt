@@ -11,14 +11,14 @@ TODO kernel forwards contiguous all the time, does not work for shape ops
 once that is done, can make special kernels optimized for contiguous
 
 *** u ops ***
-    - neg
+    - neg (done)
     - exp (done)
-    - log
+    - log (done)
     - relu (done)
-    - sqrt
-    - abs
-    - sign 
-    - reciprocal
+    - sqrt (done)
+    - abs (done)
+    - sign (done)
+    - reciprocal (done)
     - sigmoid (done)
 
 *** b ops ***
@@ -46,6 +46,8 @@ once that is done, can make special kernels optimized for contiguous
     - view  (done) NOTE add to docs, this is the only one which returns a shallow copy
     - permute (done)
     - expand (not done)
+    - select
+    - index select
     - slice (further down the line)
     - flip  (further down the line)
     - as_strided (further down the line)
@@ -134,3 +136,7 @@ TODO make linspace in C to make it faster, check ALL operations are faster
 TODO: open blas? yes or no? does it allow for kernel fusion??
 
 TODO: add lemur alloc to docs
+
+TODO: use mmap for compiler
+
+TODO: python tests
