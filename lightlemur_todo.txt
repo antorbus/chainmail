@@ -139,6 +139,6 @@ TODO: add lemur alloc to docs
 
 TODO: use mmap for compiler
 
-TODO: python tests
+TODO: python tests (python3 -m tests.pytests)
 
 add huge pages

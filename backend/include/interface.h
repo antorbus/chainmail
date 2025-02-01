@@ -23,6 +23,7 @@ void backward(tensor * t);
 void free_tensor(tensor *t);
 
 tensor * empty_tensor(size_t shape[5], bool retain_grad);
+tensor * tensor_from(kernel_tensor *k, expression *comes_from, bool requires_grad, kernel_tensor* grad);
 void memset_kernel_tensor(kernel_tensor * k, lemur_float val);
 bool is_contiguous(kernel_tensor *k);
 

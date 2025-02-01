@@ -366,10 +366,14 @@ void inplace_contiguous_kernel_tensor(kernel_tensor *k){
 
 kernel_tensor * contiguous_deepcopy_kernel_tensor(kernel_tensor *k){
     kernel_tensor *kc = empty_contiguous_kernel_tensor_like(k);
-    KERNEL_TENSOR_5D_LOOP_START(kc){
-        size_t offset_kc = KERNEL_TENSOR_GET_OFFSET(kc);
-        size_t offset_k= KERNEL_TENSOR_GET_OFFSET(k);
-        kc->array[offset_kc] =  k->array[offset_k];
+    if (is_contiguous(k) == false){
+        KERNEL_TENSOR_5D_LOOP_START(kc){
+            size_t offset_kc = KERNEL_TENSOR_GET_OFFSET(kc);
+            size_t offset_k= KERNEL_TENSOR_GET_OFFSET(k);
+            kc->array[offset_kc] =  k->array[offset_k];
+        }
+    } else {
+        memcpy(kc->array, k->array, k->length * sizeof(lemur_float));
     }
     return kc;
 }

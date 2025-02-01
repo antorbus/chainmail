@@ -54,6 +54,13 @@ class Tensor(ctypes.Structure):
 lib.compile.argtypes = [ctypes.POINTER(Tensor)] 
 lib.compile.restype = None
 
+
+lib.tensor_from.argtypes = [ctypes.POINTER(KernelTensor), ctypes.POINTER(Expression), ctypes.c_bool, ctypes.POINTER(KernelTensor)] 
+lib.tensor_from.restype = ctypes.POINTER(Tensor)
+
+lib.contiguous_deepcopy_kernel_tensor.argtypes = [ctypes.POINTER(KernelTensor)] 
+lib.contiguous_deepcopy_kernel_tensor.restype = ctypes.POINTER(KernelTensor)
+
 lib.is_contiguous.argtypes = [ctypes.POINTER(KernelTensor)] 
 lib.is_contiguous.restype = ctypes.c_bool 
 

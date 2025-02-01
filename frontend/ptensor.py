@@ -1,6 +1,6 @@
 from typing import Optional
 import ctypes
-from frontend.bindings import lib
+from frontend.bindings import lib, lemur_float
 import frontend.reprutils as reprutils
 
 
@@ -54,16 +54,33 @@ class LemurTensor:
         return reprutils._tensor_repr(self._ptr)
     
     ### properties/utility methods ###
+    @staticmethod
+    def _contiguous_deepcopy_k(kt_ptr):
+        return LemurTensor(_ptr=lib.tensor_from(lib.contiguous_deepcopy_kernel_tensor(kt_ptr), None, None, None))
+
+    def __getitem__(self, index): #Add slicing  
+        if index >= self.memory_length:
+            raise ValueError("Invalid memory access.")
+            return None
+        else:
+            return float(self._ptr.contents.k.contents.array[index].value)
+        
+    def __setitem__(self, index, value):
+        if index >= self.memory_length:
+            raise ValueError("Invalid memory access.")
+        else:
+            self._ptr.contents.k.contents.array[index] = lemur_float(value)
+
     @property
     def grad(self):
-        return reprutils._format_kernel_tensor(self._ptr.contents.grad)
+        return self._contiguous_deepcopy_k(self._ptr.contents.grad)
     
     @property
     def graph(self):
         return reprutils.plot_tensor_graph_parents(self)
     
     def stride(self):
-        return [self._ptr.contents.k.contents.stride[i] for i in range(5)]
+        return tensor([self._ptr.contents.k.contents.stride[i] for i in range(5)])
     
     def is_shallow(self):
         return self._ptr.contents.k.contents.shallow
@@ -77,7 +94,7 @@ class LemurTensor:
     
     @property
     def shape(self):
-        return [self._ptr.contents.k.contents.shape[i] for i in range(5)]
+        return tensor([self._ptr.contents.k.contents.shape[i] for i in range(5)])
 
     def numel(self):
         shape = self.shape
