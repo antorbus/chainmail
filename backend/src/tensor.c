@@ -393,7 +393,7 @@ void init_random() {
         init_seed(0);
     }
 }
-void init_random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_float max) {
+void random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_float max) {
     init_random();
     #pragma omp parallel for
     for (size_t i = 0; i < k->length; i++) {
@@ -401,7 +401,7 @@ void init_random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_
     }
 }
 
-void init_random_normal_kernel_tensor(kernel_tensor *k, lemur_float mean, lemur_float std) {
+void random_normal_kernel_tensor(kernel_tensor *k, lemur_float mean, lemur_float std) {
     init_random();
     #pragma omp parallel for
     for (size_t i = 0; i < k->length; i++) {
@@ -412,3 +412,13 @@ void init_random_normal_kernel_tensor(kernel_tensor *k, lemur_float mean, lemur_
 }
 
 
+void linspace_kernel_tensor(kernel_tensor *k, lemur_float start, lemur_float end){
+    if (k->length == 1){
+        k->array[0] = start;
+        return;
+    }
+    lemur_float step_size = (end - start) / (k->length - 1);
+    for (size_t i = 0; i < k->length; i++){
+        k->array[i] = start + i * step_size;
+    }
+}

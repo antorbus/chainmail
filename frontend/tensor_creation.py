@@ -16,12 +16,9 @@ def arange(end, start=0, step=1, requires_grad=False):
 def linspace(start, end, steps, requires_grad=False):
     if steps <= 0:
         raise ValueError("Steps must be a positive integer.")
-    if steps == 1:
-        data = [start]
-    else:
-        step_size = (end - start) / (steps - 1)
-        data = [start + i * step_size for i in range(steps)]
-    return tensor(data, requires_grad=requires_grad)
+    t = empty((1,1,1,1,steps), requires_grad=requires_grad)
+    lib.linspace_kernel_tensor(t._ptr.contents.k, ctypes.c_float(start), ctypes.c_float(end))
+    return t
 
 def zeros(shape, requires_grad=False):
     return full(shape, 0.0, requires_grad=requires_grad) 
@@ -36,12 +33,12 @@ def init_seed(seed): #TODO should this be moved?
 
 def rand(shape, low=0.0, high=1.0, requires_grad=False):
     t = empty(shape, requires_grad=requires_grad)
-    lib.init_random_uniform_kernel_tensor(t._ptr.contents.k, ctypes.c_float(low), ctypes.c_float(high))
+    lib.random_uniform_kernel_tensor(t._ptr.contents.k, ctypes.c_float(low), ctypes.c_float(high))
     return t
 
 def randn(shape, mean = 0.0, std = 1.0, requires_grad=False):
     t = empty(shape, requires_grad=requires_grad)
-    lib.init_random_normal_kernel_tensor(t._ptr.contents.k, ctypes.c_float(mean), ctypes.c_float(std))
+    lib.random_normal_kernel_tensor(t._ptr.contents.k, ctypes.c_float(mean), ctypes.c_float(std))
     return t
 
     

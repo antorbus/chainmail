@@ -2,6 +2,9 @@ import sys
 sys.path.append('../')
 import lemur
 
+
+
+
 def run_tests():
     print("Running tests")
 
