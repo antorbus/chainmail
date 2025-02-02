@@ -24,7 +24,7 @@ FORWARD_FUNC_DEF(r_op_sum_forward){
         size_t offset_kr = rd0*(kr)->stride[0] + rd1*(kr)->stride[1] 
                          + rd2*(kr)->stride[2] + rd3*(kr)->stride[3] 
                          + rd4*(kr)->stride[4];
-
+        #pragma omp atomic
         kr->array[offset_kr] += k0->array[offset_k0];
    }
     
