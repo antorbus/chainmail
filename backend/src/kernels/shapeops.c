@@ -1,4 +1,3 @@
-#include "../../include/ops.h"
 #include "../../include/tensor.h"
 
 // todo add checks for this
