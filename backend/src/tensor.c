@@ -342,6 +342,10 @@ bool is_contiguous(kernel_tensor *k) {
 }
 
 void inplace_contiguous_kernel_tensor(kernel_tensor *k){
+    if (k == NULL){
+        fprintf(stderr, "Error: attempting to call inplace_contiguous_kernel_tensor on NULL kernel tensor");
+        return;
+    }
     if (is_contiguous(k)){
         return;
     }

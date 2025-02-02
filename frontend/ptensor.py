@@ -56,6 +56,9 @@ class LemurTensor:
     ### properties/utility methods ###
     @staticmethod
     def _contiguous_deepcopy_k(kt_ptr):
+        if ctypes.cast(kt_ptr, ctypes.c_void_p).value is None:
+            raise ValueError("Attempting to call _contiguous_deepcopy_k on NULL kernel tensor")
+            return None
         return LemurTensor(_ptr=lib.tensor_from(lib.contiguous_deepcopy_kernel_tensor(kt_ptr), None, None, None))
 
     def __getitem__(self, index): #Add slicing  
@@ -73,6 +76,8 @@ class LemurTensor:
 
     @property
     def grad(self):
+        if ctypes.cast(self._ptr.contents.grad, ctypes.c_void_p).value is None:
+            return None
         return self._contiguous_deepcopy_k(self._ptr.contents.grad)
     
     @property
