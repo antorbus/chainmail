@@ -29,8 +29,11 @@ char* op_map[TOTAL_OPS] ={
 [OP_SUM] = "sum",
 //shape ops
 [OP_VIEW] = "view",
-[OP_EXPAND]= "expand",
-[OP_PERMUTE]= "permute",
+[OP_EXPAND] = "expand",
+[OP_PERMUTE] = "permute",
+//matmul
+[OP_BATCH_MATMUL] = "bmm",
+[OP_BROADCAST_MATMUL] = "bcmm",
 };
 
 
@@ -164,13 +167,25 @@ DOUBLE_INPUT_FUNC_DEF(permute){
 }
 
 //matmul
-
-DOUBLE_INPUT_FUNC_DEF(mm){
-    
-    return kernel_forward(OP_MATMUL, t0, t1, retain_grad);
+//mxn nxk --> nxk
+DOUBLE_INPUT_FUNC_DEF(bmm){
+    if ((t0->k->shape[0] != t1->k->shape[0]) ||
+        (t0->k->shape[1] != t1->k->shape[1]) ||
+        (t0->k->shape[2] != t1->k->shape[2]) ||
+        (t0->k->shape[4] != t1->k->shape[3])){
+        fprintf(stderr, "Error: Invalid input shapes.\n");
+        return NULL;
+    }
+    return kernel_forward(OP_BATCH_MATMUL, t0, t1, retain_grad);
 }
 
-DOUBLE_INPUT_FUNC_DEF(bmm){
-    
-    return kernel_forward(OP_BATCH_MATMUL, t0, t1, retain_grad);
+DOUBLE_INPUT_FUNC_DEF(bcmm){
+    if ((1 != t1->k->shape[0]) ||
+        (1 != t1->k->shape[1]) ||
+        (1 != t1->k->shape[2]) ||
+        (t0->k->shape[4] != t1->k->shape[3])){
+        fprintf(stderr, "Error: Invalid input shapes.\n");
+        return NULL;
+    }
+    return kernel_forward(OP_BROADCAST_MATMUL, t0, t1, retain_grad);
 }

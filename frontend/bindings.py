@@ -166,3 +166,11 @@ lib.expand.restype  = ctypes.POINTER(Tensor)
 #tensor * permute(tensor *t0, tensor *dim_data)
 lib.permute.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor)]
 lib.permute.restype  = ctypes.POINTER(Tensor)
+
+#tensor * mm(tensor *t0, tensor *t1, bool retain_grad)
+lib.mm.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.mm.restype  = ctypes.POINTER(Tensor)
+
+#tensor * bmm(tensor *t0, tensor *t1, bool retain_grad)
+lib.bmm.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.bmm.restype  = ctypes.POINTER(Tensor)

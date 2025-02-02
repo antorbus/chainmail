@@ -134,7 +134,7 @@ class LemurTensor:
             raise TypeError("Can't divide LemurTensor with non-LemurTensor.")
         c_result = lib.division(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
-    
+
     ### Reduce ops ###
     def sum(self, *args):
         if not args: 
@@ -203,7 +203,7 @@ class LemurTensor:
     def view(self, *args):
         other = self._process_args(*args)
         c_result = lib.view(self._ptr, other._ptr)
-        return LemurTensor(_ptr=c_result, _parents=(self, other))
+        return LemurTensor(_ptr=c_result, _parents=(self, other)) #TODO: maybe other should not be in shape ops
 
     def expand(self, *args):
         other = self._process_args(*args)
@@ -215,8 +215,13 @@ class LemurTensor:
         c_result = lib.permute(self._ptr, other._ptr)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
 
-
-
+    ### matmul ###
+    def __matmul__(self, other):
+        if (other.shape[0] == 1 and other.shape[1] == 1 and other.shape[2] == 1):
+            c_result = lib.bcmm(self._ptr, other._ptr, False)
+        else:
+            c_result = lib.bmm(self._ptr, other._ptr, False)
+        return LemurTensor(_ptr=c_result, _parents=(self, other))
 
 
 def empty(shape, requires_grad=False):

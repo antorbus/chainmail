@@ -144,3 +144,4 @@ TODO: python tests (python3 -m tests.pytests)
 TODO: add huge pages
 
 TODO: finish making unary faster and add unary mul, add, div, sub, remove reciprocal kernel, not neg one tho
+(for this look at right hand dunder methods)

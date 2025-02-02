@@ -212,8 +212,9 @@ forward_func forward_func_table[] = {
     [OP_PERMUTE] = s_op_permute_forward,
 
     //matmul ops
-    [OP_MATMUL] = m_op_mm_forward,
     [OP_BATCH_MATMUL] = m_op_bmm_forward,
+    [OP_BROADCAST_MATMUL] = m_op_bcmm_forward,
+
 };
 
 backward_func backward_func_table[] = {
@@ -244,8 +245,9 @@ backward_func backward_func_table[] = {
     [OP_PERMUTE] = s_op_permute_backward,
 
     //matmul ops
-    [OP_MATMUL] = m_op_mm_backward,
     [OP_BATCH_MATMUL] = m_op_bmm_backward,
+    [OP_BROADCAST_MATMUL] = m_op_bcmm_backward,
+
 };
 
 int type_table[] = { //TODO ADD TO DOCS
@@ -276,6 +278,6 @@ int type_table[] = { //TODO ADD TO DOCS
     [OP_PERMUTE] = TYPE_SHAPE,
 
     //matmul ops
-    [OP_MATMUL] = TYPE_MATMUL,
     [OP_BATCH_MATMUL] = TYPE_MATMUL,
+    [OP_BROADCAST_MATMUL] = TYPE_MATMUL,
 };

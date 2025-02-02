@@ -111,11 +111,11 @@ FORWARD_FUNC_DEF(s_op_permute_forward);
 BACKWARD_FUNC_DEF(s_op_permute_backward);
 
 //matmul ops
-FORWARD_FUNC_DEF(m_op_mm_forward);
-BACKWARD_FUNC_DEF(m_op_mm_backward);
-
 FORWARD_FUNC_DEF(m_op_bmm_forward);
 BACKWARD_FUNC_DEF(m_op_bmm_backward);
+
+FORWARD_FUNC_DEF(m_op_bcmm_forward);
+BACKWARD_FUNC_DEF(m_op_bcmm_backward);
 
 //function tables entries
 
@@ -151,7 +151,7 @@ enum OPS {
   OP_EXPAND,
   OP_PERMUTE,
   //matmul ops
-  OP_MATMUL,
+  OP_BROADCAST_MATMUL,
   OP_BATCH_MATMUL,
   //
   TOTAL_OPS,
