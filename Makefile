@@ -1,6 +1,6 @@
 CC     = clang
-CFLAGS = -Wall -Wextra -fPIC -O3 -march=native -ftree-vectorize -fopenmp -Iinclude $(CPPFLAGS)
-LDFLAGS = -L/opt/homebrew/opt/libomp/lib -lomp
+CFLAGS = -Wall -Wextra -fPIC -O3 -march=native -ftree-vectorize -fopenmp -flto -Iinclude $(CPPFLAGS)
+LDFLAGS = -L/opt/homebrew/opt/libomp/lib -lomp -flto
 
 LIB_NAME = lightlemur
 SRC_DIR = backend/src
