@@ -133,16 +133,21 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     }
 
     kernel_tensor *next_seed1 = NULL;
-    if (type_table[func] == TYPE_BINARY){ 
-        kernel_tensor *deepcopy_seed = contiguous_deepcopy_kernel_tensor(seed);
-        //binary backward should return deepcopy_seed, therefore this is safe and there are no leaks
-        next_seed1 = backward_func_table[func](kr, k0, k1, deepcopy_seed, 1);
+    if (t1->requires_grad == true){
+        if ((type_table[func] == TYPE_BINARY) || (type_table[func] == TYPE_MATMUL)){ 
+            kernel_tensor *deepcopy_seed = contiguous_deepcopy_kernel_tensor(seed);
+            //binary backward should return deepcopy_seed, therefore this is safe and there are no leaks
+            next_seed1 = backward_func_table[func](kr, k0, k1, deepcopy_seed, 1);
+        }
     }
     //TODO fix this
     //next_seed0 must be calculated AFTER next_seed1 since next_seed0 could be seed itself 
     //making the calculation of next_seed1 incorrect 
-    kernel_tensor *next_seed0 = backward_func_table[func](kr, k0, k1, seed, 0); 
-    inplace_contiguous_kernel_tensor(next_seed0);
+    kernel_tensor *next_seed0 = NULL;
+    if (t0->requires_grad == true){
+        next_seed0 = backward_func_table[func](kr, k0, k1, seed, 0); 
+        inplace_contiguous_kernel_tensor(next_seed0);
+    }
 
     if (next_seed1 == seed){
         fprintf(stderr, "next_seed1 cannot be seed\n");
@@ -157,7 +162,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     if (t0->grad != NULL){
         b_op_add_forward(t0->grad, t0->grad, next_seed0);
     }
-    if (t0->comes_from != NULL){
+    if ((t0->comes_from != NULL) && (t0->requires_grad == true)){
         kernel_backward(t0, next_seed0);
     } else {
         free_kernel_tensor(next_seed0); //frees leaf gradients
@@ -173,7 +178,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
         if (t1->grad != NULL){
             b_op_add_forward(t1->grad, t1->grad, next_seed1);
         }
-        if (t1->comes_from != NULL){
+        if ((t1->comes_from != NULL) && (t1->requires_grad == true)){
             kernel_backward(t1, next_seed1);
         } else {
             free_kernel_tensor(next_seed1); //frees leaf gradients
