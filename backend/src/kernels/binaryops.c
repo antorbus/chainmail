@@ -1,11 +1,5 @@
 #include "../../include/tensor.h"
 
-#define _add(a, b) a + b
-#define _mul(a, b) a * b
-#define _sub(a, b) a - b
-#define _div(a, b) a / b
-#define _neg(a) -1.0 * a
-
 FORWARD_FUNC_DEF(b_op_add_forward){
     BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, k1, _add);
 }

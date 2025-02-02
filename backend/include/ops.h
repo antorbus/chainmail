@@ -194,13 +194,26 @@ do {                                                                            
     }                                                                            \
 } while(0)
 
-#define UNARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, operation) \
-    do {                                                                   \
-        _Pragma("omp parallel for simd if((kr)->length > 1<<17)")          \
-        for (size_t _i = 0; _i < (kr)->length; _i++) {                     \
-          (kr)->array[_i] = operation((k0)->array[_i]);                    \
-        }                                                                  \
-    } while (0)
 
+#define UNARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, operation) \
+do {                                                                             \
+    if ((kr)->length > 1<<17) {                                                 \
+        _Pragma("omp parallel for simd")                                       \
+          for (size_t _i = 0; _i < (kr)->length; _i++) {                       \
+              (kr)->array[_i] = operation((k0)->array[_i]);   \
+          }                                                                    \
+    } else {                                                                     \
+        _Pragma("omp simd")                                                      \
+        for (size_t _i = 0; _i < (kr)->length; _i++) {                           \
+            (kr)->array[_i] = operation((k0)->array[_i]);       \
+        }                                                                        \
+    }                                                                            \
+} while(0)
+
+#define _add(a, b) a + b
+#define _mul(a, b) a * b
+#define _sub(a, b) a - b
+#define _div(a, b) a / b
+#define _neg(a) -1.0 * a
 
 #endif 

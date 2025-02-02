@@ -141,4 +141,6 @@ TODO: use mmap for compiler
 
 TODO: python tests (python3 -m tests.pytests)
 
-add huge pages
+TODO: add huge pages
+
+TODO: finish making unary faster and add unary mul, add, div, sub, remove reciprocal kernel, not neg one tho

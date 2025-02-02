@@ -2,42 +2,46 @@
 
 FORWARD_FUNC_DEF(u_op_exp_forward){
     (void) k1;
-    KERNEL_TENSOR_5D_LOOP_START(kr){
-        size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
-        size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        kr->array[offset_kr] = expf(k0->array[offset_k0]);
-    }
+    UNARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, expf);
 }
 
 BACKWARD_FUNC_DEF(u_op_exp_backward){
     (void) k0; (void) k1; (void) idx;
-    KERNEL_TENSOR_5D_LOOP_START(seed){
-        size_t offset_seed = KERNEL_TENSOR_GET_OFFSET(seed);
-        size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        seed->array[offset_seed] *= kr->array[offset_kr];
-    }
+    BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(seed, seed, kr, _mul);
     return seed;
 }
 
-
 FORWARD_FUNC_DEF(u_op_pow_forward){
     lemur_float x = k1->array[0];
-    KERNEL_TENSOR_5D_LOOP_START(kr){
-        size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
-        size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        kr->array[offset_kr] = pow(k0->array[offset_k0], x);
-    }
+    if (kr->length > 1<<17) {                                                 
+        #pragma omp parallel for simd                                     
+          for (size_t _i = 0; _i < kr->length; _i++) {                       
+            kr->array[_i] = powf(k0->array[_i], x);   
+          }                                                                    
+    } else {                                                                     
+        #pragma omp simd                                                  
+        for (size_t _i = 0; _i < kr->length; _i++) {                       
+            kr->array[_i] = powf(k0->array[_i], x);   
+        }                                                                        
+    }  
 }
 
 BACKWARD_FUNC_DEF(u_op_pow_backward){
     (void) kr; (void) idx;
     lemur_float x = k1->array[0];
-    KERNEL_TENSOR_5D_LOOP_START(seed){
-        size_t offset_seed = KERNEL_TENSOR_GET_OFFSET(seed);
-        size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
-        lemur_float val = x * pow(k0->array[offset_k0], x-1);
-        seed->array[offset_seed] *= val;
-    }
+    if (kr->length > 1<<17) {                                                 
+        #pragma omp parallel for simd                                     
+          for (size_t _i = 0; _i < kr->length; _i++) {
+            lemur_float val = x * powf(k0->array[_i], x-1.0);                       
+            seed->array[_i] *= val;
+          }                                                                    
+    } else {                                                                     
+        #pragma omp simd                                                  
+         for (size_t _i = 0; _i < kr->length; _i++) {
+            lemur_float val = x * powf(k0->array[_i], x-1.0);                       
+            seed->array[_i] *= val;
+          }                                                                          
+    }  
     return seed;
 }
 
@@ -120,7 +124,7 @@ FORWARD_FUNC_DEF(u_op_sqrt_forward){
     KERNEL_TENSOR_5D_LOOP_START(kr){
         size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
         size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        kr->array[offset_kr] = sqrt(k0->array[offset_k0]);
+        kr->array[offset_kr] = sqrtf(k0->array[offset_k0]);
     }
 }
 
@@ -140,7 +144,7 @@ FORWARD_FUNC_DEF(u_op_abs_forward){
     KERNEL_TENSOR_5D_LOOP_START(kr){
         size_t offset_k0 = KERNEL_TENSOR_GET_OFFSET(k0);
         size_t offset_kr = KERNEL_TENSOR_GET_OFFSET(kr);
-        kr->array[offset_kr] = fabs(k0->array[offset_k0]);
+        kr->array[offset_kr] = fabsf(k0->array[offset_k0]);
     }
 }
 
