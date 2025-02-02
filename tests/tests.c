@@ -10,7 +10,7 @@ typedef int (*test_func)(void);
 
 int test_basic_add_mul(){
 
-    int i = 0;
+    int errorval = 0;
 
     // relu(x * x + x*y)
     size_t shape[5] = {1,1,1,1,1};
@@ -25,12 +25,12 @@ int test_basic_add_mul(){
 
     backward(v); 
     
-    if (v->grad->array[0] != 1.0) i+= 1;
-    if (w->grad->array[0] != 1.0) i+= 2;
-    if (z->grad->array[0] != 1.0) i+= 4;
-    if (x->grad->array[0] != 6.0) i+= 8;
-    if (y->grad->array[0] != 1.0) i+= 16;
-    if (v->k->array[0] != 5.0) i+= 32;
+    if (v->grad->array[0] != 1.0) errorval+= 1;
+    if (w->grad->array[0] != 1.0) errorval+= 2;
+    if (z->grad->array[0] != 1.0) errorval+= 4;
+    if (x->grad->array[0] != 6.0) errorval+= 8;
+    if (y->grad->array[0] != 1.0) errorval+= 16;
+    if (v->k->array[0] != 5.0) errorval+= 32;
 
     free_tensor(x);
     free_tensor(y);
@@ -38,35 +38,42 @@ int test_basic_add_mul(){
     free_tensor(z);
     free_tensor(v);
 
-    return i;
+    return errorval;
 }
 
 int test_add(){
-    return -1;
+    int errorval = -1;
+    return errorval;
 }
 
 int test_div(){
-    return -1;
+    int errorval = -1;
+    return errorval;
 }
 
 int test_sum(){
-    return -1;
+    int errorval = -1;
+    return errorval;
 }
 
 int test_sigmoid(){
-    return -1;
+    int errorval = -1;
+    return errorval;
 }
 
 int test_view(){
-    return -1;
+    int errorval = -1;
+    return errorval;
 }
 
 int test_expand(){
-    return -1;
+    int errorval = -1;
+    return errorval;
 }
 
 int test_permute(){
-    return -1;
+    int errorval = -1;
+    return errorval;
 }
 
 test_func tests[] = {

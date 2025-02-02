@@ -125,21 +125,32 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     kernel_tensor *k0 = t0->k;
     kernel_tensor *k1 = (t1 != NULL) ? t1->k : NULL;
 
-    int func = tr->comes_from->backward_func;
+    if (seed == NULL){
+        fprintf(stderr, "seed is NULL, aborting backwards\n");
+        return;
+    }
 
+    if (tr == NULL){
+        fprintf(stderr, "tensor tr is NULL, aborting backwards\n");
+        return;
+    }
+    
+    int func = tr->comes_from->backward_func;
     if (is_contiguous(seed) == false){
         fprintf(stderr, "seed (kernel_backward %s call) is non-contiguous, aborting backwards\n", get_op_name(func));
         return;
     }
-
-    kernel_tensor *next_seed1 = NULL;
-    if (t1->requires_grad == true){
-        if ((type_table[func] == TYPE_BINARY) || (type_table[func] == TYPE_MATMUL)){ 
+    
+    kernel_tensor *next_seed1 = NULL;   
+    if ((type_table[func] == TYPE_BINARY) || (type_table[func] == TYPE_MATMUL)){ 
+        if (t1->requires_grad == true){
             kernel_tensor *deepcopy_seed = contiguous_deepcopy_kernel_tensor(seed);
             //binary backward should return deepcopy_seed, therefore this is safe and there are no leaks
             next_seed1 = backward_func_table[func](kr, k0, k1, deepcopy_seed, 1);
         }
     }
+    
+    
     //TODO fix this
     //next_seed0 must be calculated AFTER next_seed1 since next_seed0 could be seed itself 
     //making the calculation of next_seed1 incorrect 
