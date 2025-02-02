@@ -145,3 +145,5 @@ TODO: add huge pages
 
 TODO: finish making unary faster and add unary mul, add, div, sub, remove reciprocal kernel, not neg one tho
 (for this look at right hand dunder methods)
+
+TODO: race condition fixed with atomic in reduce ops, must see better solution
