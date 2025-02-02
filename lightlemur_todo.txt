@@ -147,3 +147,9 @@ TODO: finish making unary faster and add unary mul, add, div, sub, remove recipr
 (for this look at right hand dunder methods)
 
 TODO: race condition fixed with atomic in reduce ops, must see better solution
+
+TODO: on linux uop_exp,pow not vectorized
+
+TODO: run tests with and without openmp
+
+TODO: make tests of very big sizes
