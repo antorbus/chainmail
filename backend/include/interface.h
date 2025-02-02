@@ -64,6 +64,8 @@ DOUBLE_INPUT_FUNC_DEF(expand);
 DOUBLE_INPUT_FUNC_DEF(permute);
 
 //matmul
+DOUBLE_INPUT_FUNC_DEF(mm);
+DOUBLE_INPUT_FUNC_DEF(bmm);
 
 //compiler
 void compile(tensor *root_node);

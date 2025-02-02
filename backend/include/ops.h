@@ -110,6 +110,13 @@ BACKWARD_FUNC_DEF(s_op_expand_backward);
 FORWARD_FUNC_DEF(s_op_permute_forward);
 BACKWARD_FUNC_DEF(s_op_permute_backward);
 
+//matmul ops
+FORWARD_FUNC_DEF(m_op_mm_forward);
+BACKWARD_FUNC_DEF(m_op_mm_backward);
+
+FORWARD_FUNC_DEF(m_op_bmm_forward);
+BACKWARD_FUNC_DEF(m_op_bmm_backward);
+
 //function tables entries
 
 enum {
@@ -117,6 +124,7 @@ enum {
     TYPE_UNARY,
     TYPE_REDUCE,
     TYPE_SHAPE,
+    TYPE_MATMUL,
 };
 
 enum OPS {
@@ -142,6 +150,9 @@ enum OPS {
   OP_VIEW,
   OP_EXPAND,
   OP_PERMUTE,
+  //matmul ops
+  OP_MATMUL,
+  OP_BATCH_MATMUL,
   //
   TOTAL_OPS,
 };

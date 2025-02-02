@@ -12,7 +12,8 @@ SRCS = $(SRC_DIR)/tensor.c \
        $(SRC_DIR)/kernels/binaryops.c \
        $(SRC_DIR)/kernels/unaryops.c \
        $(SRC_DIR)/kernels/reduceops.c \
-       $(SRC_DIR)/kernels/shapeops.c 
+       $(SRC_DIR)/kernels/shapeops.c \
+       $(SRC_DIR)/kernels/matmul.c 
 OBJS     = $(SRCS:.c=.o)
 UNAME_S := $(shell uname -s)
 

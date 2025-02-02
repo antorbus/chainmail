@@ -95,6 +95,10 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
                 k = k_temp;
             }
             break;
+
+        case TYPE_MATMUL:
+            fprintf(stderr, "Error: matmul operation type not implemented.\n");
+            return NULL;
         
         default:
             fprintf(stderr, "Error: unknown operation type not in type table.\n");
@@ -206,6 +210,10 @@ forward_func forward_func_table[] = {
     [OP_VIEW] = s_op_view_forward,
     [OP_EXPAND] = s_op_expand_forward,
     [OP_PERMUTE] = s_op_permute_forward,
+
+    //matmul ops
+    [OP_MATMUL] = m_op_mm_forward,
+    [OP_BATCH_MATMUL] = m_op_bmm_forward,
 };
 
 backward_func backward_func_table[] = {
@@ -234,6 +242,10 @@ backward_func backward_func_table[] = {
     [OP_VIEW] = s_op_view_backward,
     [OP_EXPAND] = s_op_expand_backward,
     [OP_PERMUTE] = s_op_permute_backward,
+
+    //matmul ops
+    [OP_MATMUL] = m_op_mm_backward,
+    [OP_BATCH_MATMUL] = m_op_bmm_backward,
 };
 
 int type_table[] = { //TODO ADD TO DOCS
@@ -262,4 +274,8 @@ int type_table[] = { //TODO ADD TO DOCS
     [OP_VIEW] = TYPE_SHAPE, 
     [OP_EXPAND] = TYPE_SHAPE,
     [OP_PERMUTE] = TYPE_SHAPE,
+
+    //matmul ops
+    [OP_MATMUL] = TYPE_MATMUL,
+    [OP_BATCH_MATMUL] = TYPE_MATMUL,
 };

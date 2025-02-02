@@ -162,3 +162,15 @@ DOUBLE_INPUT_FUNC_DEF(permute){
     }
     return kernel_forward(OP_PERMUTE, t0, t1, false); 
 }
+
+//matmul
+
+DOUBLE_INPUT_FUNC_DEF(mm){
+    
+    return kernel_forward(OP_MATMUL, t0, t1, retain_grad);
+}
+
+DOUBLE_INPUT_FUNC_DEF(bmm){
+    
+    return kernel_forward(OP_BATCH_MATMUL, t0, t1, retain_grad);
+}
