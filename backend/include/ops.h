@@ -215,5 +215,8 @@ do {                                                                            
 #define _sub(a, b) a - b
 #define _div(a, b) a / b
 #define _neg(a) -1.0 * a
+#define _relu(v) ((v) > 0.0) ? (v) : 0.0
+#define _sigmoid(x) 1.0 / (1.0 + expf(-1.0 * x))
+#define _sigmoid_grad(s) s * (1.0 - s)
 
 #endif 
