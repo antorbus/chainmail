@@ -147,3 +147,5 @@ TODO: make tests of very big sizes
 TODO: add error when tensor returned is NULL
 
 TODO: gc tests for backward
+
+TODO: add docs that gc on python has weakref for inference (require grad =False) but strong for backward
