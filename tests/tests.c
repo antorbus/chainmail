@@ -51,6 +51,11 @@ int test_div(){
     return errorval;
 }
 
+int test_sum_simple(){
+    int errorval = -1;
+    return errorval;
+}
+
 int test_sum(){
     int errorval = -1;
     return errorval;
@@ -63,6 +68,47 @@ int test_sigmoid(){
 
 int test_view(){
     int errorval = -1;
+    return errorval;
+}
+
+int test_relu(){
+    int errorval = 0;
+    size_t size = 1<<19;
+    size_t shape[5] = {1,1,1,1,size};
+    size_t shape_dim[5] = {1,1,1,1,5};
+    tensor *dim_s = empty_tensor(shape_dim, false);
+    dim_s->k->array[0] = 0.0;
+    dim_s->k->array[1] = 0.0;
+    dim_s->k->array[2] = 0.0;
+    dim_s->k->array[3] = 0.0;
+    dim_s->k->array[4] = 0.0;
+    tensor *a = empty_tensor(shape, true);
+    linspace_kernel_tensor(a->k, -1.0, 1.0);
+    tensor *ar = relu(a, false);
+    tensor *c = sum(ar, dim_s, false);
+
+    size_t num_backward = 100;
+    for (size_t i =0; i < num_backward; i++){
+        backward(c);
+    }
+
+    for (size_t i =0; i < size/2; i++){
+        if (a->grad->array[i] != 0.0){
+            errorval = 1;
+        }
+    }
+
+    for (size_t i =size/2; i < size; i++){
+        if (a->grad->array[i] != (lemur_float) num_backward){
+            errorval = 1;
+        }
+    }
+
+    free_tensor(dim_s);
+    free_tensor(a);
+    free_tensor(ar);
+    free_tensor(c);
+
     return errorval;
 }
 
@@ -167,11 +213,6 @@ int test_permute(){
     
     backward(c_perm_sum);
 
-// a = lemur.linspace(1,32,32, requires_grad=True)
-// c = (a.view(2,2,2,2,2).permute(0,1,2,4,3) * a.view(2,2,2,2,2)).permute(4,3,2,1,0).sum()
-// c.backward()
-// a.grad.view(1,1,1,4,8)
-
     lemur_float correct_grad[32] = {2.,  6.,  4.,  8., 10., 14., 12., 16., 18., 22., 20., 24., 26., 30.,
         28., 32., 34., 38., 36., 40., 42., 46., 44., 48., 50., 54., 52., 56.,
         58., 62., 60., 64.};
@@ -201,11 +242,13 @@ test_func tests[] = {
     test_basic_add_mul,
     test_add,
     test_div,
+    test_sum_simple,
     test_sum,
     test_sigmoid,
     test_view,
     test_expand_sum,
     test_permute,
+    test_relu,
 
 };
 
