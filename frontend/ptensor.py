@@ -2,10 +2,10 @@ from typing import Optional
 import ctypes
 from frontend.bindings import lib, lemur_float
 import frontend.reprutils as reprutils
-
+import weakref
 
 class LemurTensor:
-    __slots__ = ("_ptr", "_parents")
+    __slots__ = ("_ptr", "_parents", "__weakref__")
     #TODO make note that _parents is needed so that when doing w = w.relu() or similar, GC doesnt mess us up
 
     def __init__(self, 
@@ -16,15 +16,19 @@ class LemurTensor:
         
         if _ptr is not None:
             self._ptr = _ptr
-            self._parents = _parents or ()
+            if self.requires_grad():
+                self._parents = tuple(p for p in _parents)
+            else:
+                self._parents = tuple(weakref.ref(p) for p in _parents) if _parents else ()
+
         else:
             if shape is None:
                 shape = (1,)
             c_shape = (ctypes.c_size_t * 5)(*([1]*5))
             for i, dim in enumerate(shape):
                 c_shape[i] = dim
-
-            t_ptr = lib.empty_tensor(c_shape, requires_grad)
+            retains_grad = requires_grad #because created by user.
+            t_ptr = lib.empty_tensor(c_shape, requires_grad, retains_grad)
             if not t_ptr:
                 raise RuntimeError("empty_tensor returned NULL.")
             self._ptr = t_ptr
@@ -48,6 +52,18 @@ class LemurTensor:
         if getattr(self, "_ptr", None) is not None:
             lib.free_tensor(self._ptr)
             self._ptr = None
+
+    def detach(self):
+        # manually detaches parent references to allow garbage collection.
+        self._parents = ()
+    
+    @property
+    def parents(self):
+        if self.requires_grad:
+            return self._parents
+        else:
+            #  weak references, so dereference them
+            return tuple(ref() for ref in self._parents)
     
     ### print ###
     def __repr__(self):
@@ -79,6 +95,9 @@ class LemurTensor:
         if ctypes.cast(self._ptr.contents.grad, ctypes.c_void_p).value is None:
             return None
         return self._contiguous_deepcopy_k(self._ptr.contents.grad)
+    
+    def requires_grad(self):
+        return self._ptr.contents.requires_grad
     
     @property
     def graph(self):

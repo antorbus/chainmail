@@ -14,9 +14,9 @@ int test_basic_add_mul(){
 
     // relu(x * x + x*y)
     size_t shape[5] = {1,1,1,1,1};
-    tensor *x = empty_tensor(shape, true);
+    tensor *x = empty_tensor(shape, true, true);
     x->k->array[0] = 1.0;
-    tensor *y = empty_tensor(shape, true);
+    tensor *y = empty_tensor(shape, true, true);
     y->k->array[0] = 4.0;
 
     tensor *z = add(x, y, true); 
@@ -76,13 +76,13 @@ int test_relu(){
     size_t size = 1<<19;
     size_t shape[5] = {1,1,1,1,size};
     size_t shape_dim[5] = {1,1,1,1,5};
-    tensor *dim_s = empty_tensor(shape_dim, false);
+    tensor *dim_s = empty_tensor(shape_dim, false, false);
     dim_s->k->array[0] = 0.0;
     dim_s->k->array[1] = 0.0;
     dim_s->k->array[2] = 0.0;
     dim_s->k->array[3] = 0.0;
     dim_s->k->array[4] = 0.0;
-    tensor *a = empty_tensor(shape, true);
+    tensor *a = empty_tensor(shape, true, true);
     linspace_kernel_tensor(a->k, -1.0, 1.0);
     tensor *ar = relu(a, false);
     tensor *c = sum(ar, dim_s, false);
@@ -117,21 +117,21 @@ int test_expand_sum(){
 
     size_t shape[5] = {1,1,1,1,4};
     size_t shape_dim[5] = {1,1,1,1,5};
-    tensor *dim_e = empty_tensor(shape_dim, false);
+    tensor *dim_e = empty_tensor(shape_dim, false, false);
     dim_e->k->array[0] = 2.0;
     dim_e->k->array[1] = 1.0;
     dim_e->k->array[2] = 1.0;
     dim_e->k->array[3] = 2.0;
     dim_e->k->array[4] = 4.0;
-    tensor *dim_s = empty_tensor(shape_dim, false);
+    tensor *dim_s = empty_tensor(shape_dim, false, false);
     dim_s->k->array[0] = 0.0;
     dim_s->k->array[1] = 0.0;
     dim_s->k->array[2] = 0.0;
     dim_s->k->array[3] = 0.0;
     dim_s->k->array[4] = 0.0;
 
-    tensor *a = empty_tensor(shape, true);
-    tensor *b = empty_tensor(shape, true);
+    tensor *a = empty_tensor(shape, true, true);
+    tensor *b = empty_tensor(shape, true, true);
     linspace_kernel_tensor(a->k, 0.0, 4.0-1.0);
     linspace_kernel_tensor(b->k, -4.0, 0.0-1.0);
     tensor *c = mul(a, b, false);
@@ -172,14 +172,14 @@ int test_permute(){
     int errorval = 0;
 
     size_t shape_view_perm[5] = {1,1,1,1,5};
-    tensor *dim = empty_tensor(shape_view_perm, false);
+    tensor *dim = empty_tensor(shape_view_perm, false, false);
     dim->k->array[0] = 2;
     dim->k->array[1] = 2;
     dim->k->array[2] = 2;
     dim->k->array[3] = 2;
     dim->k->array[4] = 2;
 
-    tensor *dim_perm0 = empty_tensor(shape_view_perm, false);
+    tensor *dim_perm0 = empty_tensor(shape_view_perm, false, false);
     dim_perm0->k->array[0] = 0;
     dim_perm0->k->array[1] = 1;
     dim_perm0->k->array[2] = 2;
@@ -187,14 +187,14 @@ int test_permute(){
     dim_perm0->k->array[4] = 3;
 
 
-    tensor *dim_perm1 = empty_tensor(shape_view_perm, false);
+    tensor *dim_perm1 = empty_tensor(shape_view_perm, false, false);
     dim_perm1->k->array[0] = 4;
     dim_perm1->k->array[1] = 3;
     dim_perm1->k->array[2] = 2;
     dim_perm1->k->array[3] = 1;
     dim_perm1->k->array[4] = 0;
 
-    tensor *dim_reduce = empty_tensor(shape_view_perm, false);
+    tensor *dim_reduce = empty_tensor(shape_view_perm, false, false);
     dim_reduce->k->array[0] = 0;
     dim_reduce->k->array[1] = 0;
     dim_reduce->k->array[2] = 0;
@@ -202,7 +202,7 @@ int test_permute(){
     dim_reduce->k->array[4] = 0;
 
     size_t shape[5] = {1,1,1,1,32};
-    tensor *a = empty_tensor(shape, true);
+    tensor *a = empty_tensor(shape, true, true);
     linspace_kernel_tensor(a->k, 1.0, 32.0);
     tensor *a_v0 = view(a, dim, false);
     tensor *a_v0_perm = permute(a_v0, dim_perm0, false);

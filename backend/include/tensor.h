@@ -34,7 +34,7 @@ void backward(tensor * t);
 
 expression * expression_from(int func, tensor *t0, tensor *t1);
 
-tensor * empty_tensor(size_t shape[5], bool retain_grad);
+tensor * empty_tensor(size_t shape[5], bool requires_grad, bool retains_grad);
 void memset_kernel_tensor(kernel_tensor * k, lemur_float val);
 void free_kernel_tensor(kernel_tensor *k);
 void free_tensor(tensor *t);

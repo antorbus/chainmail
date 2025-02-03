@@ -140,12 +140,17 @@ void memset_kernel_tensor(kernel_tensor * k, lemur_float val){
     }
 } 
 
-tensor * empty_tensor(size_t shape[5], bool retain_grad){
+tensor * empty_tensor(size_t shape[5], bool requires_grad, bool retains_grad){
     tensor *t = (tensor *)malloc(sizeof(tensor));
     t->comes_from = NULL;
-    t->requires_grad = true;
+    t->requires_grad = requires_grad;
     t->grad = NULL;
-    if (retain_grad){
+    if (retains_grad){
+        if (requires_grad == false){
+            fprintf(stderr, "Error. Requires_grad must be true if retains_grad is true.");
+            free_tensor(t);
+            return NULL;
+        }
         t->grad = empty_contiguous_kernel_tensor(shape);
         memset_kernel_tensor(t->grad, 0.0);
     }

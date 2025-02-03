@@ -83,8 +83,8 @@ lib.memset_kernel_tensor.restype = None
 lib.get_op_name.argtypes = [ctypes.c_int]
 lib.get_op_name.restype  = ctypes.c_char_p
 
-# tensor* empty_tensor(size_t shape[5], bool retain_grad);
-lib.empty_tensor.argtypes = [(ctypes.c_size_t * 5), ctypes.c_bool]
+# tensor* empty_tensor(size_t shape[5], bool requires_grad, bool retains_grad);
+lib.empty_tensor.argtypes = [(ctypes.c_size_t * 5), ctypes.c_bool, ctypes.c_bool]
 lib.empty_tensor.restype  = ctypes.POINTER(Tensor)
 
 # void free_tensor(tensor* t);
