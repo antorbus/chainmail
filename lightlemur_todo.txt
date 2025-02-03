@@ -155,3 +155,7 @@ TODO: run tests with and without openmp
 TODO: make tests of very big sizes
 
 TODO: add error when tensor returned is NULL
+
+TODO: gc tests for backward
+
+TODO: add error when backward called on tensor with no grad
