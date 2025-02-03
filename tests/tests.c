@@ -123,7 +123,77 @@ int test_expand_sum(){
 }
 
 int test_permute(){
-    int errorval = -1;
+    int errorval = 0;
+
+    size_t shape_view_perm[5] = {1,1,1,1,5};
+    tensor *dim = empty_tensor(shape_view_perm, false);
+    dim->k->array[0] = 2;
+    dim->k->array[1] = 2;
+    dim->k->array[2] = 2;
+    dim->k->array[3] = 2;
+    dim->k->array[4] = 2;
+
+    tensor *dim_perm0 = empty_tensor(shape_view_perm, false);
+    dim_perm0->k->array[0] = 0;
+    dim_perm0->k->array[1] = 1;
+    dim_perm0->k->array[2] = 2;
+    dim_perm0->k->array[3] = 4;
+    dim_perm0->k->array[4] = 3;
+
+
+    tensor *dim_perm1 = empty_tensor(shape_view_perm, false);
+    dim_perm1->k->array[0] = 4;
+    dim_perm1->k->array[1] = 3;
+    dim_perm1->k->array[2] = 2;
+    dim_perm1->k->array[3] = 1;
+    dim_perm1->k->array[4] = 0;
+
+    tensor *dim_reduce = empty_tensor(shape_view_perm, false);
+    dim_reduce->k->array[0] = 0;
+    dim_reduce->k->array[1] = 0;
+    dim_reduce->k->array[2] = 0;
+    dim_reduce->k->array[3] = 0;
+    dim_reduce->k->array[4] = 0;
+
+    size_t shape[5] = {1,1,1,1,32};
+    tensor *a = empty_tensor(shape, true);
+    linspace_kernel_tensor(a->k, 1.0, 32.0);
+    tensor *a_v0 = view(a, dim, false);
+    tensor *a_v0_perm = permute(a_v0, dim_perm0, false);
+    tensor *a_v1 = view(a, dim, false);
+    tensor *c = mul(a_v0_perm, a_v1, false);
+    tensor *c_perm = permute(c, dim_perm1, false);
+    tensor *c_perm_sum = sum(c_perm, dim_reduce, false);
+    
+    backward(c_perm_sum);
+
+// a = lemur.linspace(1,32,32, requires_grad=True)
+// c = (a.view(2,2,2,2,2).permute(0,1,2,4,3) * a.view(2,2,2,2,2)).permute(4,3,2,1,0).sum()
+// c.backward()
+// a.grad.view(1,1,1,4,8)
+
+    lemur_float correct_grad[32] = {2.,  6.,  4.,  8., 10., 14., 12., 16., 18., 22., 20., 24., 26., 30.,
+        28., 32., 34., 38., 36., 40., 42., 46., 44., 48., 50., 54., 52., 56.,
+        58., 62., 60., 64.};
+    
+    for (size_t i = 0; i<32; i++){
+        if (correct_grad[i] != a->grad->array[i]){
+            errorval++;
+        }
+    }
+
+    free_tensor(dim);
+    free_tensor(dim_perm0);
+    free_tensor(dim_perm1);
+    free_tensor(dim_reduce);
+    free_tensor(a);
+    free_tensor(a_v0);
+    free_tensor(a_v0_perm);
+    free_tensor(a_v1);
+    free_tensor(c);
+    free_tensor(c_perm);
+    free_tensor(c_perm_sum);
+
     return errorval;
 }
 

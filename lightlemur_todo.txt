@@ -153,3 +153,5 @@ TODO: on linux uop_exp,pow not vectorized
 TODO: run tests with and without openmp
 
 TODO: make tests of very big sizes
+
+TODO: add error when tensor returned is NULL
