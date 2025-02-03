@@ -119,19 +119,9 @@ add all methods torch has for tensor, like is_contiguous etc, update print to us
 
 add openmp to readme and to makefile for easy install and to docs
 
-TODO fix call backward on tensors that does not require grad
-
 TODO DETERMINE THREADS FOR OMP (one per core)
 
-TODO grad should return a tensor! not a print
-
-TODO aligned allocation for even faster performance
-
-TODO, maybe can call realloc? maybe not?
-
-ToDO: check includes in header files
-
-TODO make linspace in C to make it faster, check ALL operations are faster
+TODO check ALL C operations are faster than torch
 
 TODO: open blas? yes or no? does it allow for kernel fusion??
 
@@ -157,5 +147,3 @@ TODO: make tests of very big sizes
 TODO: add error when tensor returned is NULL
 
 TODO: gc tests for backward
-
-TODO: add error when backward called on tensor with no grad
