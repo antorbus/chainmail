@@ -52,6 +52,10 @@ bool is_tensor_scalar(tensor *t){
 
 void backward(tensor * t){     
     if (is_tensor_scalar(t) == true){
+        if (t->requires_grad == false){
+            fprintf(stderr, "backward can only be called on a tensors that require grad\n");
+            return;
+        }
         kernel_tensor *seed = create_seed_kernel_tensor();
         //derive(t, seed);
         if (t->grad != NULL){
@@ -63,7 +67,7 @@ void backward(tensor * t){
             free_kernel_tensor(seed); //frees leaf gradients
         }
     } else{
-        fprintf(stderr, "backwards can only be called on a leaf tensor\n");
+        fprintf(stderr, "backwards can only be called on a leaf (scalar) tensors\n");
     }
 }
 
