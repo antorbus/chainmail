@@ -70,6 +70,9 @@ DOUBLE_INPUT_FUNC_DEF(bcmm);
 //compiler
 void compile(tensor *root_node);
 
+//otherops
+tensor *isclose(tensor *a, tensor *b, lemur_float rtol, lemur_float atol);
+
 #ifdef __cplusplus
 }
 #endif

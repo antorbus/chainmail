@@ -22,6 +22,7 @@ class LemurTensor:
                 self._parents = tuple(weakref.ref(p) for p in _parents) if _parents else ()
 
         else:
+            self._parents = tuple()
             if shape is None:
                 shape = (1,)
             c_shape = (ctypes.c_size_t * 5)(*([1]*5))

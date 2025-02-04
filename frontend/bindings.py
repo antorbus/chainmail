@@ -174,3 +174,7 @@ lib.bmm.restype  = ctypes.POINTER(Tensor)
 #tensor * bcmm(tensor *t0, tensor *t1, bool retain_grad)
 lib.bcmm.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.bcmm.restype  = ctypes.POINTER(Tensor)
+
+#tensor *isclose(tensor *a, tensor *b, lemur_float rtol, lemur_float atol){
+lib.isclose.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_float,  ctypes.c_float]
+lib.isclose.restype = ctypes.POINTER(Tensor)

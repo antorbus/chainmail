@@ -1,7 +1,8 @@
 from frontend.ptensor import tensor, empty
 from frontend.reprutils import set_verbose_print, set_sci_print, print_lemur_version
 from frontend.version import __version__
-from frontend.loss import MSELoss
+from frontend.loss import *
+from frontend.ops import *
 from frontend.tensor_creation import *
 
 def main():
