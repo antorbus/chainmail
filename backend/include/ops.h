@@ -62,6 +62,8 @@ BACKWARD_FUNC_DEF(b_op_mul_backward);
 FORWARD_FUNC_DEF(b_op_division_forward);
 BACKWARD_FUNC_DEF(b_op_division_backward);
 
+FORWARD_FUNC_DEF(b_op_eq_forward);
+
 //unary ops
 FORWARD_FUNC_DEF(u_op_exp_forward);
 BACKWARD_FUNC_DEF(u_op_exp_backward);
@@ -91,7 +93,6 @@ FORWARD_FUNC_DEF(u_op_abs_forward);
 BACKWARD_FUNC_DEF(u_op_abs_backward);
 
 FORWARD_FUNC_DEF(u_op_sign_forward);
-BACKWARD_FUNC_DEF(u_op_sign_backward);
 
 FORWARD_FUNC_DEF(u_op_reciprocal_forward);
 BACKWARD_FUNC_DEF(u_op_reciprocal_backward);
@@ -133,6 +134,7 @@ enum OPS {
   OP_SUB,
   OP_MUL,
   OP_DIVISION,
+  OP_EQ,
   //unary ops
   OP_POW,
   OP_RELU,
@@ -214,6 +216,7 @@ do {                                                                            
 #define _mul(a, b) a * b
 #define _sub(a, b) a - b
 #define _div(a, b) a / b
+#define _eq(x, y) ((x) == (y) ? 1.0 : 0.0)
 #define _neg(a) -1.0 * a
 #define _relu(v) ((v) > 0.0) ? (v) : 0.0
 #define _sigmoid(x) 1.0 / (1.0 + expf(-1.0 * x))

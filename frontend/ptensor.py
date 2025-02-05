@@ -159,6 +159,12 @@ class LemurTensor:
             raise TypeError("Can't divide LemurTensor with non-LemurTensor.")
         c_result = lib.division(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
+    
+    def __eq__(self, other):
+        if not isinstance(other, LemurTensor):
+            raise TypeError("Can't divide LemurTensor with non-LemurTensor.")
+        c_result = lib.eq(self._ptr, other._ptr)
+        return LemurTensor(_ptr=c_result, _parents=(self, other))
 
     ### Reduce ops ###
     def sum(self, *args):

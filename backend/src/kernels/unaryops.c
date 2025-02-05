@@ -148,14 +148,6 @@ FORWARD_FUNC_DEF(u_op_sign_forward){
     }
 }
 
-BACKWARD_FUNC_DEF(u_op_sign_backward) {
-    (void) k1; (void) k0; (void) kr; (void) idx;
-    KERNEL_TENSOR_5D_LOOP_START(seed){
-        size_t offset_seed = KERNEL_TENSOR_GET_OFFSET(seed);
-        seed->array[offset_seed] *= 0;
-    }
-    return seed;
-}
 
 FORWARD_FUNC_DEF(u_op_reciprocal_forward){
     (void) k1;

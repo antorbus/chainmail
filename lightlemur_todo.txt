@@ -27,12 +27,10 @@ once that is done, can make special kernels optimized for contiguous
     - sub (done)
     - div (done)
     - pow (done)
-    - eq
+    - eq  (done)
     - neq
     - lt
     - gt
-    - minimum 
-    - maximum
 
 *** r ops ***
     - sum (done)

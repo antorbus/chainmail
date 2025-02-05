@@ -42,6 +42,7 @@ DOUBLE_INPUT_FUNC_DEF(add);
 DOUBLE_INPUT_FUNC_DEF(sub);
 DOUBLE_INPUT_FUNC_DEF(mul);
 DOUBLE_INPUT_FUNC_DEF(division);
+tensor * eq(tensor *t0, tensor *t1); //no retains grad
 
 //unary ops
 SINGLE_INPUT_FUNC_DEF(exponential);
@@ -52,7 +53,7 @@ SINGLE_INPUT_FUNC_DEF(logarithm);
 SINGLE_INPUT_FUNC_DEF(neg);
 SINGLE_INPUT_FUNC_DEF(square_root);
 SINGLE_INPUT_FUNC_DEF(absolute);
-SINGLE_INPUT_FUNC_DEF(sign);
+tensor * sign(tensor *t0); //no retains grad
 SINGLE_INPUT_FUNC_DEF(reciprocal);
 
 //reduce ops

@@ -111,6 +111,10 @@ lib.division.restype  = ctypes.POINTER(Tensor)
 lib.add.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.add.restype  = ctypes.POINTER(Tensor)
 
+# tensor* eq(tensor* t0, tensor* t1);
+lib.eq.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor)]
+lib.eq.restype  = ctypes.POINTER(Tensor)
+
 # tensor* relu(tensor* t0, bool retain_grad);
 lib.relu.argtypes = [ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.relu.restype  = ctypes.POINTER(Tensor)

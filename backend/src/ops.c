@@ -105,6 +105,10 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             return NULL;
     }
 
+    if (backward_func_table[func] == NULL){ //some operations are not diff
+        requires_grad = false;
+    }
+
     if (is_contiguous(k) == false){
         fprintf(stderr, "%s returned non-contiguous kernel tesnsor in forward\n", get_op_name(func));
         return NULL;
@@ -140,7 +144,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
         fprintf(stderr, "seed (kernel_backward %s call) is non-contiguous, aborting backwards\n", get_op_name(func));
         return;
     }
-    
+
     kernel_tensor *next_seed1 = NULL;   
     if ((type_table[func] == TYPE_BINARY) || (type_table[func] == TYPE_MATMUL)){ 
         if (t1->requires_grad == true){
@@ -206,6 +210,7 @@ forward_func forward_func_table[] = {
     [OP_SUB] = b_op_sub_forward,
     [OP_MUL] = b_op_mul_forward,
     [OP_DIVISION] = b_op_division_forward,
+    [OP_EQ] = b_op_eq_forward,
 
     //unary ops
     [OP_EXP] = u_op_exp_forward,
@@ -239,6 +244,7 @@ backward_func backward_func_table[] = {
     [OP_SUB] = b_op_sub_backward,
     [OP_MUL] = b_op_mul_backward,
     [OP_DIVISION] = b_op_division_backward,
+    [OP_EQ] = NULL,
 
     //unary ops
     [OP_EXP] = u_op_exp_backward,
@@ -249,7 +255,7 @@ backward_func backward_func_table[] = {
     [OP_NEG] = u_op_neg_backward,
     [OP_SQRT] = u_op_sqrt_backward,
     [OP_ABS] = u_op_abs_backward,
-    [OP_SIGN] = u_op_sign_backward,
+    [OP_SIGN] = NULL,
     [OP_RECIPROCAL] = u_op_reciprocal_backward,
 
     //reduce ops
@@ -272,6 +278,7 @@ int type_table[] = { //TODO ADD TO DOCS
     [OP_SUB] = TYPE_BINARY,
     [OP_MUL] = TYPE_BINARY,
     [OP_DIVISION] = TYPE_BINARY,
+    [OP_EQ] = TYPE_BINARY,
 
     //unary ops
     [OP_EXP] = TYPE_UNARY,

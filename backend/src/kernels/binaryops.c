@@ -59,3 +59,8 @@ BACKWARD_FUNC_DEF(b_op_division_backward){
     }
     return seed;
 }
+
+
+FORWARD_FUNC_DEF(b_op_eq_forward){
+    BINARY_CONTIGUOUS_ELEMENTWISE_OP_SIMD(kr, k0, k1, _eq);
+}

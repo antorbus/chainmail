@@ -14,6 +14,7 @@ char* op_map[TOTAL_OPS] ={
 [OP_SUB] = "sub",
 [OP_MUL] = "mul",
 [OP_DIVISION] = "div",
+[OP_EQ] = "eq",
 //unary ops
 [OP_EXP] = "exp",
 [OP_POW] = "pow",
@@ -55,6 +56,10 @@ DOUBLE_INPUT_FUNC_DEF(division){
     return kernel_forward(OP_DIVISION, t0, t1, retain_grad);  
 }
 
+tensor * eq(tensor *t0, tensor *t1){
+    return kernel_forward(OP_EQ, t0, t1, false);  
+}
+
 //unary ops
 
 SINGLE_INPUT_FUNC_DEF(exponential){
@@ -93,8 +98,8 @@ SINGLE_INPUT_FUNC_DEF(absolute){
     return kernel_forward(OP_ABS, t0, NULL, retain_grad);  
 }
 
-SINGLE_INPUT_FUNC_DEF(sign){
-    return kernel_forward(OP_SIGN, t0, NULL, retain_grad);  
+tensor * sign(tensor *t0){
+    return kernel_forward(OP_SIGN, t0, NULL, false);  
 }
 
 SINGLE_INPUT_FUNC_DEF(reciprocal){
