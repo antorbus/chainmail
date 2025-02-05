@@ -41,6 +41,32 @@ int test_basic_add_mul(){
     return errorval;
 }
 
+int test_free(){
+    int errorval = 0;
+    size_t shape_dim[5] = {1,1,1,1,5};
+    tensor *dim_s = empty_tensor(shape_dim, false, false);
+    dim_s->k->array[0] = 0.0;
+    dim_s->k->array[1] = 0.0;
+    dim_s->k->array[2] = 0.0;
+    dim_s->k->array[3] = 0.0;
+    dim_s->k->array[4] = 0.0;
+    for (size_t i = 0; i < 128; i++){
+        tensor *x = empty_tensor((size_t[5]){16,16,16,16,16}, true, true);
+        tensor *y = sum(x, dim_s, true);
+        backward(y);
+        if (y->grad->array[0] != 1.0){
+            errorval = 1;
+        }
+        if (x->grad->array[0] != 1.0){
+            errorval = 2;
+        }
+        free_tensor(y);
+        free_tensor(x);
+    }
+    free_tensor(dim_s);
+    return errorval;
+}
+
 int test_add(){
     int errorval = -1;
     return errorval;
@@ -245,6 +271,7 @@ test_func tests[] = {
     test_sum_simple,
     test_sum,
     test_sigmoid,
+    test_free,
     test_view,
     test_expand_sum,
     test_permute,
