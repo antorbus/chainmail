@@ -101,6 +101,10 @@ BACKWARD_FUNC_DEF(u_op_reciprocal_backward);
 FORWARD_FUNC_DEF(r_op_sum_forward);
 BACKWARD_FUNC_DEF(r_op_sum_backward);
 
+FORWARD_FUNC_DEF(r_op_all_forward);
+
+FORWARD_FUNC_DEF(r_op_any_forward);
+
 //shape ops
 FORWARD_FUNC_DEF(s_op_view_forward);
 BACKWARD_FUNC_DEF(s_op_view_backward);
@@ -148,6 +152,8 @@ enum OPS {
   OP_RECIPROCAL,
   //reduce ops
   OP_SUM,
+  OP_ALL,
+  OP_ANY,
   //shape ops
   OP_VIEW,
   OP_EXPAND,

@@ -58,6 +58,9 @@ SINGLE_INPUT_FUNC_DEF(reciprocal);
 
 //reduce ops
 DOUBLE_INPUT_FUNC_DEF(sum);
+tensor * all(tensor *t0, tensor *t1);
+tensor * any(tensor *t0, tensor *t1);
+
 
 //shape ops
 DOUBLE_INPUT_FUNC_DEF(view);

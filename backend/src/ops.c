@@ -226,6 +226,8 @@ forward_func forward_func_table[] = {
 
     //reduce ops
     [OP_SUM] = r_op_sum_forward,
+    [OP_ALL] = r_op_all_forward,
+    [OP_ANY] = r_op_any_forward,
 
     //shape ops
     [OP_VIEW] = s_op_view_forward,
@@ -260,6 +262,8 @@ backward_func backward_func_table[] = {
 
     //reduce ops
     [OP_SUM] = r_op_sum_backward,
+    [OP_ALL] = NULL,
+    [OP_ANY] = NULL,
 
     //shape ops
     [OP_VIEW] = s_op_view_backward,
@@ -294,6 +298,8 @@ int type_table[] = { //TODO ADD TO DOCS
 
     //reduce ops
     [OP_SUM] = TYPE_REDUCE, 
+    [OP_ALL] = TYPE_REDUCE, 
+    [OP_ANY] = TYPE_REDUCE, 
 
     //shape ops
     [OP_VIEW] = TYPE_SHAPE, 

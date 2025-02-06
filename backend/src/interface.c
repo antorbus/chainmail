@@ -28,6 +28,8 @@ char* op_map[TOTAL_OPS] ={
 [OP_RECIPROCAL] = "reciprocal",
 //reduce ops
 [OP_SUM] = "sum",
+[OP_ALL] = "all",
+[OP_ANY] = "any",
 //shape ops
 [OP_VIEW] = "view",
 [OP_EXPAND] = "expand",
@@ -110,6 +112,14 @@ SINGLE_INPUT_FUNC_DEF(reciprocal){
 
 DOUBLE_INPUT_FUNC_DEF(sum){
     return kernel_forward(OP_SUM, t0, t1, retain_grad); 
+}
+
+tensor * all(tensor *t0, tensor *t1){
+    return kernel_forward(OP_ALL, t0, t1, false);
+}
+
+tensor * any(tensor *t0, tensor *t1){
+    return kernel_forward(OP_ANY, t0, t1, false);
 }
 
 //shape ops

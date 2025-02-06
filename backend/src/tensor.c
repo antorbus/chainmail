@@ -138,6 +138,14 @@ kernel_tensor * kernel_tensor_shallow_copy(kernel_tensor *k){
 }
 
 void memset_kernel_tensor(kernel_tensor * k, lemur_float val){
+    if (k == NULL){
+        perror("Error: tried to memset NULL kernel tensor");
+        return;
+    }
+    if (val = 0.0){
+        memset(k->array, 0, k->length * sizeof(lemur_float));
+        return;
+    }
     #pragma omp parallel for simd
     for (size_t i = 0; i < k->length; i++){
         k->array[i] = val;

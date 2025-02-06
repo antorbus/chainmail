@@ -20,6 +20,8 @@ once that is done, can make special kernels optimized for contiguous
     - sign (done)
     - reciprocal (done)
     - sigmoid (done)
+    - floor
+    - ceil
 
 *** b ops ***
     - add (done)
@@ -149,3 +151,11 @@ TODO: gc tests for backward
 TODO: add docs that gc on python has weakref for inference (require grad =False) but strong for backward
 
 TODO: add to docs that graph will not print all graph if the tensor is require grad =False as intemediates will be freed. 
+
+TODO: add retains grad = TRUE to tensor python 
+
+TODO: all error message to perror?
+
+TODO: add if statement to kernel 5d loop start to remove overhead of collapse  
+
+TODO:: add dtype to TENSOR struct keep kernel tensor without
