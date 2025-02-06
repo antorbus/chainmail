@@ -65,7 +65,7 @@ FORWARD_FUNC_DEF(r_op_all_forward){
                         + rd2*(kr)->stride[2] + rd3*(kr)->stride[3] 
                         + rd4*(kr)->stride[4];
 
-        lemur_float new_val = ((k0->array[offset_k0] == 0.0) || (kr->array[offset_k0] == 0.0)) ? 0.0 : 1.0;
+        lemur_float new_val = ((k0->array[offset_k0] == 0.0) || (kr->array[offset_kr] == 0.0)) ? 0.0 : 1.0;
         #pragma omp atomic write
         kr->array[offset_kr] = new_val;
     }

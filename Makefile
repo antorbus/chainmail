@@ -1,5 +1,5 @@
 CC     = clang
-CFLAGS = -Wall -Wextra -fPIC -O3 -march=native -ftree-vectorize -fopenmp -flto -Iinclude $(CPPFLAGS)
+CFLAGS = -Wall -Wextra -Werror -Wparentheses -Wmisleading-indentation -Wshadow -fPIC -O3 -march=native -ftree-vectorize -fopenmp -flto -Iinclude $(CPPFLAGS)
 LDFLAGS = -L/opt/homebrew/opt/libomp/lib -lomp -flto
 
 LIB_NAME = lightlemur

@@ -24,7 +24,7 @@ lemur_float * lemur_alloc(size_t length){
 }
 
 
-kernel_tensor * create_seed_kernel_tensor(){
+kernel_tensor * create_seed_kernel_tensor(void){
     kernel_tensor *seed = (kernel_tensor *) malloc(sizeof(kernel_tensor));
     seed->array = lemur_alloc(1);
     seed->length = 1;
@@ -142,7 +142,7 @@ void memset_kernel_tensor(kernel_tensor * k, lemur_float val){
         perror("Error: tried to memset NULL kernel tensor");
         return;
     }
-    if (val = 0.0){
+    if (val == 0.0){
         memset(k->array, 0, k->length * sizeof(lemur_float));
         return;
     }
@@ -211,7 +211,7 @@ if (!k) {
         return;
     }
     
-    printf("  kernel_tensor: %p\n", k);
+    printf("  kernel_tensor: %p\n", (void *) k);
     printf("    length     = %zu\n", k->length);
     printf("    shape      = [");
     for (int i = 0; i < 5; i++) {
@@ -293,12 +293,12 @@ void print_expression(expression *e){
     printf("    backward_func = %d\n", e->backward_func);
     
     printf("    t0:");
-    if (e->t0) printf("      %p\n", e->t0); 
+    if (e->t0) printf("      %p\n", (void *) e->t0); 
     else
         printf("      [NULL tensor]\n");
     
     printf("    t1:");
-    if (e->t1) printf("      %p\n", e->t1);
+    if (e->t1) printf("      %p\n", (void *) e->t1);
     else
         printf("      [NULL tensor]\n");
     
@@ -311,7 +311,7 @@ void print_tensor(tensor *t){
         return;
     }
     
-    printf("tensor: %p\n", t);
+    printf("tensor: %p\n", (void *) t);
     printf("  requires_grad = %s\n", t->requires_grad ? "true" : "false");
     
     printf("  comes_from:\n");
@@ -413,7 +413,7 @@ void init_seed(unsigned int seed){
     printf("seed = %u\n", _seed);
 }
 
-void init_random() {
+void init_random(void) {
     if (!is_initialize_random){
         init_seed(0);
     }

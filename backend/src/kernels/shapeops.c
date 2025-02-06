@@ -77,9 +77,9 @@ BACKWARD_FUNC_DEF(s_op_permute_backward){
     int64_t temp_stride[5];
     memcpy(temp_stride, seed->stride, 5*sizeof(int64_t));
     for (size_t i = 0; i < 5; i++){
-        size_t idx = (size_t) k1->array[i];
-        seed->shape[i] = temp_shape[idx];
-        seed->stride[i] = temp_stride[idx];
+        size_t _idx = (size_t) k1->array[i];
+        seed->shape[i] = temp_shape[_idx];
+        seed->stride[i] = temp_stride[_idx];
     }
     return seed;
 }
