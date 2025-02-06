@@ -32,7 +32,7 @@ void random_normal_kernel_tensor(kernel_tensor * k, lemur_float mean, lemur_floa
 void init_seed(unsigned int seed);
 
 void linspace_kernel_tensor(kernel_tensor *k, lemur_float start, lemur_float end);
-
+void init_random(void); 
 
 extern char* op_map[TOTAL_OPS];
 char* get_op_name(int op_id);

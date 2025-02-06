@@ -147,3 +147,5 @@ TODO: add error when tensor returned is NULL
 TODO: gc tests for backward
 
 TODO: add docs that gc on python has weakref for inference (require grad =False) but strong for backward
+
+TODO: add to docs that graph will not print all graph if the tensor is require grad =False as intemediates will be freed. 

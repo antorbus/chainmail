@@ -411,7 +411,6 @@ void init_random() {
     }
 }
 void random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_float max) {
-    init_random();
     #pragma omp parallel for
     for (size_t i = 0; i < k->length; i++) {
         k->array[i] = min + (lemur_float)rand() / (lemur_float)RAND_MAX * (max - min);
@@ -419,7 +418,6 @@ void random_uniform_kernel_tensor(kernel_tensor *k, lemur_float min, lemur_float
 }
 
 void random_normal_kernel_tensor(kernel_tensor *k, lemur_float mean, lemur_float std) {
-    init_random();
     #pragma omp parallel for
     for (size_t i = 0; i < k->length; i++) {
         lemur_float u1 = (lemur_float)rand() / (lemur_float)RAND_MAX;
