@@ -90,7 +90,7 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             forward_func_table[func](k, t0->k, t1->k);
             if (func != OP_VIEW){   //view is the only one that keep the parent's memory
                 kernel_tensor *k_temp = contiguous_deepcopy_kernel_tensor(k);
-                free_kernel_tensor(k); //will not free parent's array because k is a shallow copy
+                free_kernel_tensor(&k); //will not free parent's array because k is a shallow copy
                                        //look at free_kernel_tensor
                 k = k_temp;
             }
@@ -170,7 +170,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     }
 
     if (next_seed0 != seed){ //some ops do not make a new gradient for next_seed0. one is always made for next_seed1
-        free_kernel_tensor(seed); 
+        free_kernel_tensor(&seed); 
     } 
 
     //derive(t0, next_seed0);
@@ -180,7 +180,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     if ((t0->comes_from != NULL) && (t0->requires_grad == true)){
         kernel_backward(t0, next_seed0);
     } else {
-        free_kernel_tensor(next_seed0); //frees leaf gradients
+        free_kernel_tensor(&next_seed0); //frees leaf gradients
     }
 
     if (type_table[func] == TYPE_BINARY){
@@ -196,7 +196,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
         if ((t1->comes_from != NULL) && (t1->requires_grad == true)){
             kernel_backward(t1, next_seed1);
         } else {
-            free_kernel_tensor(next_seed1); //frees leaf gradients
+            free_kernel_tensor(&next_seed1); //frees leaf gradients
         }
         
     }

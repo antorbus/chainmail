@@ -47,12 +47,13 @@ class LemurTensor:
     ### garbage collection ###
     def __del__(self):
         if getattr(self, "_ptr", None) is not None:
-            lib.free_tensor(self._ptr)
+            lib.free_tensor(ctypes.byref(self._ptr))
             self._ptr = None
 
     def detach(self):
         # manually detaches parent references to allow garbage collection.
         self._parents = ()
+        return self
     
     @property
     def parents(self):
@@ -83,7 +84,8 @@ class LemurTensor:
             raise ValueError("Invalid memory access.")
         else:
             self._ptr.contents.k.contents.array[index] = lemur_float(value)
-
+        return self
+    
     @property
     def grad(self):
         if ctypes.cast(self._ptr.contents.grad, ctypes.c_void_p).value is None:
@@ -91,7 +93,35 @@ class LemurTensor:
         return self._contiguous_deepcopy_k(self._ptr.contents.grad)
     
     def requires_grad(self):
-        return self._ptr.contents.requires_grad
+        return bool(self._ptr.contents.requires_grad)
+    
+    def requires_grad_(self, b):
+        self._ptr.contents.requires_grad = ctypes.c_bool(bool(b))  
+        return self
+
+    def retain_grad(self):
+        rg = ctypes.cast(self._ptr.contents.grad, ctypes.c_void_p).value
+        if rg is None:
+            return False
+        else:
+            return True
+
+    def retain_grad_(self, b):
+        if bool(b) == True:
+            if self.retain_grad() == True:
+                pass
+            else:
+                self.requires_grad_(True)
+                self._ptr.contents.grad = lib.empty_contiguous_kernel_tensor_like(self._ptr.contents.k)
+                lib.memset_kernel_tensor(self._ptr.contents.grad, ctypes.c_float(0.0))
+                
+            return self
+        else:
+            if (self.retain_grad() == False) or (self.requires_grad() == False):
+                pass
+            else:
+                lib.free_kernel_tensor(ctypes.byref(self._ptr.contents.grad))
+            return self
     
     @property
     def graph(self):
@@ -130,7 +160,8 @@ class LemurTensor:
     ### grad/compile ops###
     def backward(self):
         lib.backward(self._ptr)
-
+        return self
+    
     def compile(self):
         lib.compile(self._ptr)
 

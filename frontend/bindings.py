@@ -87,8 +87,8 @@ lib.get_op_name.restype  = ctypes.c_char_p
 lib.empty_tensor.argtypes = [(ctypes.c_size_t * 5), ctypes.c_bool, ctypes.c_bool]
 lib.empty_tensor.restype  = ctypes.POINTER(Tensor)
 
-# void free_tensor(tensor* t);
-lib.free_tensor.argtypes = [ctypes.POINTER(Tensor)]
+# void free_tensor(tensor **t);
+lib.free_tensor.argtypes = [ctypes.POINTER(ctypes.POINTER(Tensor))]
 lib.free_tensor.restype  = None
 
 # void backward(tensor* t);
@@ -188,3 +188,11 @@ lib.all.restype  = ctypes.POINTER(Tensor)
 
 lib.any.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor)]
 lib.any.restype  = ctypes.POINTER(Tensor)
+
+#kernel_tensor * empty_contiguous_kernel_tensor_like(kernel_tensor *k);
+lib.empty_contiguous_kernel_tensor_like.argtypes = [ctypes.POINTER(KernelTensor)]
+lib.empty_contiguous_kernel_tensor_like.restype  = ctypes.POINTER(KernelTensor)
+
+#void free_kernel_tensor(kernel_tensor **k);
+lib.free_kernel_tensor.argtypes = [ctypes.POINTER(ctypes.POINTER(KernelTensor))]
+lib.free_kernel_tensor.restype  = None
