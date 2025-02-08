@@ -15,7 +15,7 @@ class LemurTensor:
         
         if _ptr is not None:
             self._ptr = _ptr
-            self._parents = tuple(p for p in _parents)
+            self._parents = tuple(p for p in _parents) if _parents else tuple()
 
         else:
             self._parents = tuple()
