@@ -167,8 +167,10 @@ class LemurTensor:
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
     def __eq__(self, other):
+        if isinstance(other, bool):
+            return self.__bool__() == other
         if not isinstance(other, LemurTensor):
-            raise TypeError("Can't divide LemurTensor with non-LemurTensor.")
+            raise TypeError("Can't check equality of LemurTensor with non-LemurTensor.")
         c_result = lib.eq(self._ptr, other._ptr)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
 
