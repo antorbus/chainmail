@@ -128,6 +128,12 @@ class LemurTensor:
     def ndimension(self):  
         return 5
     
+        
+    def __bool__(self):
+        if self.numel() != 1:
+            raise RuntimeError("bool value of tensor with more than one value is ambiguous")
+        return bool(self[0])
+    
     ### grad/compile ops###
     def backward(self):
         lib.backward(self._ptr)
