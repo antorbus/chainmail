@@ -72,6 +72,8 @@ DOUBLE_INPUT_FUNC_DEF(permute);
 //matmul
 DOUBLE_INPUT_FUNC_DEF(bmm);
 DOUBLE_INPUT_FUNC_DEF(bcmm);
+DOUBLE_INPUT_FUNC_DEF(bmm_fast);
+DOUBLE_INPUT_FUNC_DEF(bcmm_fast);
 
 //compiler
 void compile(tensor *root_node);

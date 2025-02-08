@@ -37,6 +37,8 @@ char* op_map[TOTAL_OPS] ={
 //matmul
 [OP_BATCH_MATMUL] = "bmm",
 [OP_BROADCAST_MATMUL] = "bcmm",
+[OP_BATCH_MATMUL_FAST] = "bmm_fast",
+[OP_BROADCAST_MATMUL_FAST] = "bcmm_fast",
 };
 
 
@@ -182,7 +184,7 @@ DOUBLE_INPUT_FUNC_DEF(permute){
 }
 
 //matmul
-//mxn nxk --> nxk
+//mxn nxk --> mxk
 DOUBLE_INPUT_FUNC_DEF(bmm){
     if ((t0->k->shape[0] != t1->k->shape[0]) ||
         (t0->k->shape[1] != t1->k->shape[1]) ||
@@ -204,3 +206,28 @@ DOUBLE_INPUT_FUNC_DEF(bcmm){
     }
     return kernel_forward(OP_BROADCAST_MATMUL, t0, t1, retain_grad);
 }
+
+//mxn kxn --> mxk
+
+DOUBLE_INPUT_FUNC_DEF(bmm_fast){
+    if ((t0->k->shape[0] != t1->k->shape[0]) ||
+        (t0->k->shape[1] != t1->k->shape[1]) ||
+        (t0->k->shape[2] != t1->k->shape[2]) ||
+        (t0->k->shape[4] != t1->k->shape[4])){
+        fprintf(stderr, "Error: Invalid input shapes.\n");
+        return NULL;
+    }
+    return kernel_forward(OP_BATCH_MATMUL_FAST, t0, t1, retain_grad);
+}
+
+DOUBLE_INPUT_FUNC_DEF(bcmm_fast){
+    if ((1 != t1->k->shape[0]) ||
+        (1 != t1->k->shape[1]) ||
+        (1 != t1->k->shape[2]) ||
+        (t0->k->shape[4] != t1->k->shape[4])){
+        fprintf(stderr, "Error: Invalid input shapes.\n");
+        return NULL;
+    }
+    return kernel_forward(OP_BROADCAST_MATMUL_FAST, t0, t1, retain_grad);
+}
+

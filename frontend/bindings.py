@@ -60,7 +60,6 @@ TensorPtr = ctypes.POINTER(Tensor)
 lib.compile.argtypes = [ctypes.POINTER(Tensor)] 
 lib.compile.restype = None
 
-
 lib.tensor_from.argtypes = [ctypes.POINTER(KernelTensor), ctypes.POINTER(Expression), ctypes.c_bool, ctypes.POINTER(KernelTensor)] 
 lib.tensor_from.restype = ctypes.POINTER(Tensor)
 
@@ -184,6 +183,14 @@ lib.bmm.restype  = ctypes.POINTER(Tensor)
 #tensor * bcmm(tensor *t0, tensor *t1, bool retain_grad)
 lib.bcmm.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.bcmm.restype  = ctypes.POINTER(Tensor)
+
+#tensor * bmm_fast(tensor *t0, tensor *t1, bool retain_grad)
+lib.bmm_fast.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.bmm_fast.restype  = ctypes.POINTER(Tensor)
+
+#tensor * bcmm_fast(tensor *t0, tensor *t1, bool retain_grad)
+lib.bcmm_fast.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.bcmm_fast.restype  = ctypes.POINTER(Tensor)
 
 #tensor *isclose(tensor *a, tensor *b, lemur_float rtol, lemur_float atol){
 lib.isclose.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_float,  ctypes.c_float]
