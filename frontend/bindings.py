@@ -32,6 +32,8 @@ class KernelTensor(ctypes.Structure):
         ("shallow",       ctypes.c_bool),  
     ]
 
+KernelTensorPtr = ctypes.POINTER(KernelTensor)
+
 class Tensor(ctypes.Structure):
     pass 
 
@@ -42,6 +44,8 @@ class Expression(ctypes.Structure):
         ("backward_func", ctypes.c_int),            
     ] 
 
+ExpressionPtr = ctypes.POINTER(Expression)
+
 class Tensor(ctypes.Structure):
     _fields_ = [
         ("k",             ctypes.POINTER(KernelTensor)), 
@@ -49,6 +53,8 @@ class Tensor(ctypes.Structure):
         ("requires_grad", ctypes.c_bool),
         ("grad",          ctypes.POINTER(KernelTensor)),  
     ]
+
+TensorPtr = ctypes.POINTER(Tensor)
 
 #from interface.h
 lib.compile.argtypes = [ctypes.POINTER(Tensor)] 
