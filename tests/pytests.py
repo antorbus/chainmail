@@ -12,8 +12,16 @@ class TestLightLemur(unittest.TestCase):
         real_grad = lemur.full((1,1,1,1,10), 2)
         self.assertTrue((real_grad == a.grad).all(), "Grad check failed")
 
-    def test_add(self):
-        self.skipTest("Not implemented")
+    def test_gradient_accumulation_basic(self):
+        a = lemur.full((3, 3), 3, requires_grad=True)
+        loss1 = (a + a).sum()
+        loss1.backward()  
+        self.assertTrue((a.grad == lemur.full((3, 3), 2)).all(), "First backward call failed")
+        loss2 = (a + a + a).sum()
+        loss2.backward() 
+        expected_grad = lemur.full((3, 3), 2 + 3)  
+        self.assertTrue((expected_grad == a.grad).all(), "Gradient accumulation failed")
+
 
 
 if __name__ == "__main__":

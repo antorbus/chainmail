@@ -158,4 +158,6 @@ TODO: all error message to perror?
 
 TODO: add if statement to kernel 5d loop start to remove overhead of collapse  
 
-TODO:: add dtype to TENSOR struct keep kernel tensor without
+TODO: add dtype to TENSOR struct keep kernel tensor without
+
+TODO: broadcast for all ops 

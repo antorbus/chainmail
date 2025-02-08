@@ -2,10 +2,9 @@ from typing import Optional
 import ctypes
 from frontend.bindings import lib, lemur_float
 import frontend.reprutils as reprutils
-import weakref
 
 class LemurTensor:
-    __slots__ = ("_ptr", "_parents", "__weakref__")
+    __slots__ = ("_ptr", "_parents")
     #TODO make note that _parents is needed so that when doing w = w.relu() or similar, GC doesnt mess us up
 
     def __init__(self, 
@@ -16,10 +15,7 @@ class LemurTensor:
         
         if _ptr is not None:
             self._ptr = _ptr
-            if self.requires_grad():
-                self._parents = tuple(p for p in _parents)
-            else:
-                self._parents = tuple(weakref.ref(p) for p in _parents) if _parents else ()
+            self._parents = tuple(p for p in _parents)
 
         else:
             self._parents = tuple()
@@ -62,9 +58,6 @@ class LemurTensor:
     def parents(self):
         if self.requires_grad:
             return self._parents
-        else:
-            #  weak references, so dereference them
-            return tuple(ref() for ref in self._parents)
     
     ### print ###
     def __repr__(self):
@@ -83,7 +76,7 @@ class LemurTensor:
             raise ValueError("Invalid memory access.")
             return None
         else:
-            return float(self._ptr.contents.k.contents.array[index].value)
+            return float(self._ptr.contents.k.contents.array[index % self.memory_length].value)
         
     def __setitem__(self, index, value):
         if index >= self.memory_length:
