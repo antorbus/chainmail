@@ -22,7 +22,20 @@ class TestLightLemur(unittest.TestCase):
         expected_grad = lemur.full((3, 3), 2 + 3)  
         self.assertTrue((expected_grad == a.grad).all(), "Gradient accumulation failed")
 
-
+    def test_retains_grad(self):
+        a = lemur.randn((10,10,10,10,10))
+        self.assertTrue(a.grad == None, "tensor should not have gradient")
+        self.assertTrue(a.requires_grad() == False, "tensor should not have req grad being true")
+        self.assertTrue(a.retain_grad() == False, "tensor should not have ret grad being true")
+        a.retain_grad_(True)
+        expected_grad = lemur.zeros((10,10,10,10,10))  
+        self.assertTrue(a.requires_grad() == True, "tensor should not have req grad being false")
+        self.assertTrue(a.retain_grad() == True, "tensor should not have ret grad being false")
+        self.assertTrue((expected_grad == a.grad).all(), "Gradient is non zero")
+        a.retain_grad_(False)
+        self.assertTrue(a.grad == None, "tensor should not have gradient")
+        self.assertTrue(a.requires_grad() == True, "tensor should not have req grad being false")
+        self.assertTrue(a.retain_grad() == False, "tensor should not have ret grad being true")
 
 if __name__ == "__main__":
     unittest.main()

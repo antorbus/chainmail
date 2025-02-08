@@ -88,7 +88,7 @@ class LemurTensor:
         return self
     
     @property
-    def grad(self) -> LemurTensor:
+    def grad(self) -> Union[LemurTensor, None]:
         if ctypes.cast(self._ptr.contents.grad, ctypes.c_void_p).value is None:
             return None
         return self._contiguous_deepcopy_k(self._ptr.contents.grad)
