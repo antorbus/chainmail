@@ -114,13 +114,13 @@ class LemurTensor:
                 self.requires_grad_(True)
                 self._ptr.contents.grad = lib.empty_contiguous_kernel_tensor_like(self._ptr.contents.k)
                 lib.memset_kernel_tensor(self._ptr.contents.grad, ctypes.c_float(0.0))
-                self._ptr.contents.grad = None
             return self
         else:
             if (self.retain_grad() == False) or (self.requires_grad() == False):
                 pass
             else:
                 lib.free_kernel_tensor(ctypes.byref(self._ptr.contents.grad))
+                self._ptr.contents.grad = None
             return self
     
     @property
