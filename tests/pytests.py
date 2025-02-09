@@ -37,5 +37,14 @@ class TestLightLemur(unittest.TestCase):
         self.assertTrue(a.requires_grad() == True, "tensor should not have req grad being false")
         self.assertTrue(a.retain_grad() == False, "tensor should not have ret grad being true")
 
+    def test_sum(self):
+        a = lemur.rand((1,2,3,48,512), requires_grad=True)
+        c = a.sum(1,4).sum(2,3)
+        c.backward()
+        c.backward()
+        c.backward()
+        real_grad = lemur.full((1,2,3,48,512), 3)
+        self.assertTrue((real_grad == a.grad).all(), "Grad check failed")
+
 if __name__ == "__main__":
     unittest.main()

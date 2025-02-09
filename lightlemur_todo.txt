@@ -161,3 +161,5 @@ TODO: add dtype to TENSOR struct keep kernel tensor without
 TODO: broadcast for all ops 
 
 TODO: more type checking
+
+TODO: use pinned (page-locked) host memory (for gpu)
