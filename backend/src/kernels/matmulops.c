@@ -3,6 +3,16 @@
 #define TILE_SIZE 64
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
+//A --> i k
+//B --> k j
+//A @ B = C --> i j 
+//grad wrt A --> C @ B^T
+//grad wrt B --> A^T @ C
+
+//TODO: NEED TWO more kernels with transpose A and transpose B
+//make this by adding FLAGS to forward/backward func def (also stored in graph)
+//or just make more kernels (prob better KISS)
+
 FORWARD_FUNC_DEF(m_op_bmm_forward){
     size_t i = kr->shape[3];
     size_t j = kr->shape[4];
