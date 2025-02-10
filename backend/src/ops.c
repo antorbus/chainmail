@@ -43,7 +43,7 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             }
             k = empty_contiguous_kernel_tensor_like(t0->k);
             if (retain_grad == true){
-                grad = empty_contiguous_kernel_tensor_like(k);
+                grad = empty_contiguous_kernel_tensor_like(k); 
                 memset_kernel_tensor(grad, 0.0);
             }
             if (t1 == NULL){ 
@@ -97,9 +97,35 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             break;
 
         case TYPE_MATMUL:
-            fprintf(stderr, "Error: matmul operation type not implemented.\n");
-            //memset_kernel_tensor(k, 0.0);
-            return NULL;
+            if ((t0->requires_grad == true) || (t1->requires_grad == true)){
+                        requires_grad = true;
+                }
+
+            switch (func){
+                case OP_BATCH_MATMUL: {
+                    size_t bs0 = t0->k->shape[0];
+                    size_t bs1 = t0->k->shape[1];
+                    size_t bs2 = t0->k->shape[2];
+                    size_t i = t0->k->shape[3];
+                    size_t j = t1->k->shape[4];
+                    k = empty_contiguous_kernel_tensor((size_t[5]){bs0, bs1, bs2, i, j});
+                    memset_kernel_tensor(k, 0.0);
+
+                    if (retain_grad == true){
+                        grad = empty_contiguous_kernel_tensor_like(k);
+                        memset_kernel_tensor(grad, 0.0);
+                    }
+                    forward_func_table[func](k, t0->k, t1->k);
+
+                    break;
+                }
+                
+                default:
+                    fprintf(stderr, "Error: matmul operation type not implemented.\n");
+                    return NULL;
+                    break;
+                }
+            break;
         
         default:
             fprintf(stderr, "Error: unknown operation type not in type table.\n");

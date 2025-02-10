@@ -163,3 +163,5 @@ TODO: broadcast for all ops
 TODO: more type checking
 
 TODO: use pinned (page-locked) host memory (for gpu)
+
+TODO: make one op for malloc with memset 0

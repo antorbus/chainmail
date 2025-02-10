@@ -302,10 +302,10 @@ class LemurTensor:
 
     ### matmul ###
     def __matmul__(self, other):
-        if (other.shape[0] == 1 and other.shape[1] == 1 and other.shape[2] == 1):
-            c_result = lib.bcmm(self._ptr, other._ptr, False)
-        else:
+        if (other.shape[0] == self.shape[0] and other.shape[1] == self.shape[1] and other.shape[2] == self.shape[2]):
             c_result = lib.bmm(self._ptr, other._ptr, False)
+        else:
+            c_result = lib.bcmm(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
 
 
