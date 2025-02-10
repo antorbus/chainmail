@@ -1,6 +1,6 @@
 #include "../../include/tensor.h"
 
-#define TILE_SIZE 64
+#define TILE_SIZE 256
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 //A --> i k
