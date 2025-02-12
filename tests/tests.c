@@ -179,6 +179,7 @@ int test_expand_sum(){
     if (b->grad->array[3] != 12.0 * num_backward) errorval+= 1<<7;
 
     if (errorval != 0){
+        printf("%f %f \n", a->grad->array[3],  -4.0 * num_backward);
         print_tensor(a);
         print_tensor(b);
     }

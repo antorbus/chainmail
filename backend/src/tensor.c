@@ -19,6 +19,7 @@ lemur_float * lemur_alloc(size_t length){
     arr = (lemur_float *)aligned_alloc(alignment, aligned_size);
     if (arr == NULL){
         perror("aligned_alloc failed");
+        return NULL;
     }
     return arr;
 }
