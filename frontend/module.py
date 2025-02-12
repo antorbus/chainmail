@@ -78,12 +78,17 @@ class Module:
         self.collect_parameters()
         return iter(self._children.values())
     
-    def parameters(self):
+    def parameters(self, recurse=True):
         """
         Return an iterator over parameters.
         """
         self.collect_parameters()
-        return iter(self._parameters)
+        for param in self._parameters:
+            yield param
+        
+        if recurse:
+            for child in self._children.values():
+                yield from child.parameters()
     
     def train(self, mode):
         self._train_mode = mode
