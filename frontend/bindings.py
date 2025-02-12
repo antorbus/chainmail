@@ -54,16 +54,21 @@ class Tensor(ctypes.Structure):
         ("grad",          ctypes.POINTER(KernelTensor)),  
     ]
 
+TensorPtr = ctypes.POINTER(Tensor)
+
 class Parameter(ctypes.Structure):
     _fields_ = [
         ("tensor_ptr",    ctypes.POINTER(Tensor)), 
-        ("first_moment",  ctypes.c_float), 
-        ("second_moment", ctypes.c_float),
+        ("optim_data",    ctypes.POINTER(ctypes.POINTER(KernelTensor))), 
+        ("num_data",      ctypes.c_size_t),
     ]
 
 #from parameter.h
 lib.create_parameter.argtypes = [ctypes.POINTER(Tensor)]
 lib.create_parameter.restype = ctypes.POINTER(Parameter)
+
+lib.update_param_data.argtypes = [ctypes.POINTER(Parameter), ctypes.c_size_t, ctypes.POINTER(KernelTensor)]
+lib.update_param_data.restype = None
 
 lib.free_parameter.argtypes = [ctypes.POINTER(Parameter)]
 lib.free_parameter.restype = None

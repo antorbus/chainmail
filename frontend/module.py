@@ -8,7 +8,7 @@ from frontend.tensor_creation import rand
 class Parameter:
 
     def __init__(self, tensor: LemurTensor):
-        self._tensor = tensor
+        self.tensor = tensor
         self._ptr = lib.create_parameter(tensor._ptr)
 
         if not self._ptr:
@@ -16,30 +16,23 @@ class Parameter:
 
     def __del__(self):
         """
-        Automatically free C memory when garbage collected.
+        free memory when garbage collected.
         """
         if getattr(self, "_ptr", None) is not None:
             lib.free_parameter(self._ptr)
             self._ptr = None
-
-    @property
-    def tensor(self):
-        """
-        Return the tensor stored inside this parameter.
-        """
-        return self._tensor
-    
+        
     def __repr__(self):
         return f"Parameter(tensor={self.tensor})"
 
 
 class Module:
-    __slots__ = ("name", "training", "_children", "_parent", "_parameters") 
+    __slots__ = ("name", "_train_mode", "_children", "_parent", "_parameters") 
     
     def __init__(self,
              name: Optional[str] = None,
              training: bool = True,
-             _children: Optional[dict[str, "Module"]] = None, # 'MODULE' FIX
+             _children: Optional[dict[str, "Module"]] = None,
              _parent: Optional["Module"] = None,
              _parameters: Optional[list[Parameter]] = None
     ):
@@ -47,9 +40,9 @@ class Module:
         self._children = _children if _children is not None else {} 
         self._parent = _parent
         self._parameters = _parameters if _parameters is not None else []
-        self.training = training
+        self._train_mode = training
         self.name = name if name is not None else self.__class__.__name__
-
+        
     def collect_parameters(self):
         """
         Scan for specific attributes after subclass initialization.
@@ -57,9 +50,9 @@ class Module:
         for attr_name in dir(self):
             if not attr_name.startswith("__"):
                 attr_value = getattr(self, attr_name, None)
-                if isinstance(attr_value, Parameter):
+                if isinstance(attr_value, Parameter) and attr_value not in self._parameters:
                     self._parameters.append(attr_value)
-                elif isinstance(attr_value, Module):
+                elif isinstance(attr_value, Module) and attr_value not in self._children:
                     self._children[attr_name] = attr_value
 
     def add_module(self, name: str, model: "Module"):
@@ -87,19 +80,19 @@ class Module:
     
     def parameters(self):
         """
-        Return an iterator over immediate children modules.
+        Return an iterator over parameters.
         """
         self.collect_parameters()
         return iter(self._parameters)
     
     def train(self, mode):
-        self.train = mode
+        self._train_mode = mode
         for child in self._children.values():
-            child.train(mode)
+            child._train_mode(mode)
         return self
 
     def eval(self):
-        self._train(False)
+        self._train_mode(False)
 
     def forward(self, x: LemurTensor): 
         """
@@ -116,6 +109,20 @@ class Module:
         """
         output = self.forward(*args, **kwds)
         return output
+
+    def __del__(self):
+        """
+        free memory when garbage collected.
+        """
+        for _, child in self._children.items():
+            del child
+
+        for param in self._parameters:
+            del param
+
+        self._children.clear()
+        self._parameters.clear()
+        self._parent = None
 
     def __repr__(self, level=0):
         """
