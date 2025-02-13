@@ -20,12 +20,14 @@ extern "C" {
 
 void backward(tensor * t);
 
-void free_tensor(tensor *t);
+void free_tensor(tensor **t);
+void free_kernel_tensor(kernel_tensor **k);
 
 tensor * empty_tensor(size_t shape[5], bool requires_grad, bool retains_grad);
 tensor * tensor_from(kernel_tensor *k, expression *comes_from, bool requires_grad, kernel_tensor* grad);
 void memset_kernel_tensor(kernel_tensor * k, lemur_float val);
 bool is_contiguous(kernel_tensor *k);
+kernel_tensor * empty_contiguous_kernel_tensor_like(kernel_tensor *k);
 
 void random_uniform_kernel_tensor(kernel_tensor * k, lemur_float min, lemur_float max);
 void random_normal_kernel_tensor(kernel_tensor * k, lemur_float mean, lemur_float std);
@@ -70,6 +72,8 @@ DOUBLE_INPUT_FUNC_DEF(permute);
 //matmul
 DOUBLE_INPUT_FUNC_DEF(bmm);
 DOUBLE_INPUT_FUNC_DEF(bcmm);
+DOUBLE_INPUT_FUNC_DEF(bmm_fast);
+DOUBLE_INPUT_FUNC_DEF(bcmm_fast);
 
 //compiler
 void compile(tensor *root_node);

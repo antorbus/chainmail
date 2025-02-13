@@ -43,7 +43,7 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             }
             k = empty_contiguous_kernel_tensor_like(t0->k);
             if (retain_grad == true){
-                grad = empty_contiguous_kernel_tensor_like(k);
+                grad = empty_contiguous_kernel_tensor_like(k); 
                 memset_kernel_tensor(grad, 0.0);
             }
             if (t1 == NULL){ 
@@ -90,15 +90,42 @@ tensor * kernel_forward(int func, tensor * t0, tensor * t1, bool retain_grad){
             forward_func_table[func](k, t0->k, t1->k);
             if (func != OP_VIEW){   //view is the only one that keep the parent's memory
                 kernel_tensor *k_temp = contiguous_deepcopy_kernel_tensor(k);
-                free_kernel_tensor(k); //will not free parent's array because k is a shallow copy
+                free_kernel_tensor(&k); //will not free parent's array because k is a shallow copy
                                        //look at free_kernel_tensor
                 k = k_temp;
             }
             break;
 
         case TYPE_MATMUL:
-            fprintf(stderr, "Error: matmul operation type not implemented.\n");
-            return NULL;
+            if ((t0->requires_grad == true) || (t1->requires_grad == true)){
+                        requires_grad = true;
+                }
+
+            switch (func){
+                case OP_BATCH_MATMUL: {
+                    size_t bs0 = t0->k->shape[0];
+                    size_t bs1 = t0->k->shape[1];
+                    size_t bs2 = t0->k->shape[2];
+                    size_t i = t0->k->shape[3];
+                    size_t j = t1->k->shape[4];
+                    k = empty_contiguous_kernel_tensor((size_t[5]){bs0, bs1, bs2, i, j});
+                    memset_kernel_tensor(k, 0.0);
+
+                    if (retain_grad == true){
+                        grad = empty_contiguous_kernel_tensor_like(k);
+                        memset_kernel_tensor(grad, 0.0);
+                    }
+                    forward_func_table[func](k, t0->k, t1->k);
+
+                    break;
+                }
+                
+                default:
+                    fprintf(stderr, "Error: matmul operation type not implemented.\n");
+                    return NULL;
+                    break;
+                }
+            break;
         
         default:
             fprintf(stderr, "Error: unknown operation type not in type table.\n");
@@ -170,7 +197,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     }
 
     if (next_seed0 != seed){ //some ops do not make a new gradient for next_seed0. one is always made for next_seed1
-        free_kernel_tensor(seed); 
+        free_kernel_tensor(&seed); 
     } 
 
     //derive(t0, next_seed0);
@@ -180,7 +207,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
     if ((t0->comes_from != NULL) && (t0->requires_grad == true)){
         kernel_backward(t0, next_seed0);
     } else {
-        free_kernel_tensor(next_seed0); //frees leaf gradients
+        free_kernel_tensor(&next_seed0); //frees leaf gradients
     }
 
     if (type_table[func] == TYPE_BINARY){
@@ -196,7 +223,7 @@ void kernel_backward(tensor *tr, kernel_tensor *seed){
         if ((t1->comes_from != NULL) && (t1->requires_grad == true)){
             kernel_backward(t1, next_seed1);
         } else {
-            free_kernel_tensor(next_seed1); //frees leaf gradients
+            free_kernel_tensor(&next_seed1); //frees leaf gradients
         }
         
     }
@@ -237,6 +264,8 @@ forward_func forward_func_table[] = {
     //matmul ops
     [OP_BATCH_MATMUL] = m_op_bmm_forward,
     [OP_BROADCAST_MATMUL] = m_op_bcmm_forward,
+    [OP_BATCH_MATMUL_FAST] = m_op_bmm_fast_forward,
+    [OP_BROADCAST_MATMUL_FAST] = m_op_bcmm_fast_forward,
 
 };
 
@@ -273,7 +302,8 @@ backward_func backward_func_table[] = {
     //matmul ops
     [OP_BATCH_MATMUL] = m_op_bmm_backward,
     [OP_BROADCAST_MATMUL] = m_op_bcmm_backward,
-
+    [OP_BATCH_MATMUL_FAST] = m_op_bmm_fast_backward,
+    [OP_BROADCAST_MATMUL_FAST] = m_op_bcmm_fast_backward,
 };
 
 int type_table[] = { //TODO ADD TO DOCS
@@ -309,4 +339,6 @@ int type_table[] = { //TODO ADD TO DOCS
     //matmul ops
     [OP_BATCH_MATMUL] = TYPE_MATMUL,
     [OP_BROADCAST_MATMUL] = TYPE_MATMUL,
+    [OP_BATCH_MATMUL_FAST] = TYPE_MATMUL,
+    [OP_BROADCAST_MATMUL_FAST] = TYPE_MATMUL,
 };

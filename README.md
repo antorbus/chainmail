@@ -84,11 +84,11 @@ int main(){
     print_tensor(t2);
     print_tensor(t4);
 
-    free_tensor(t0);
-    free_tensor(t1);
-    free_tensor(t2);
-    free_tensor(t3);
-    free_tensor(t4);
+    free_tensor(&t0);
+    free_tensor(&t1);
+    free_tensor(&t2);
+    free_tensor(&t3);
+    free_tensor(&t4);
 
     return 0;
 }

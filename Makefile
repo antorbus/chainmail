@@ -1,5 +1,5 @@
 CC     = clang
-CFLAGS = -Wall -Wextra -Werror -Wparentheses -Wmisleading-indentation -Wshadow -fPIC -O3 -march=native -ftree-vectorize -fopenmp -flto -Iinclude $(CPPFLAGS)
+CFLAGS = -Wall -Wextra -Werror -Wparentheses -Wmisleading-indentation -Wshadow -fPIC -O3 -march=native -ffast-math -ftree-vectorize -fopenmp -flto -Iinclude $(CPPFLAGS)
 LDFLAGS = -L/opt/homebrew/opt/libomp/lib -lomp -flto
 
 LIB_NAME = lightlemur
@@ -9,6 +9,7 @@ SRCS = $(SRC_DIR)/tensor.c \
        $(SRC_DIR)/interface.c \
        $(SRC_DIR)/lemurinit.c \
        $(SRC_DIR)/compiler.c \
+       $(SRC_DIR)/parameter.c \
        $(SRC_DIR)/kernels/binaryops.c \
        $(SRC_DIR)/kernels/unaryops.c \
        $(SRC_DIR)/kernels/reduceops.c \

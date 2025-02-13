@@ -64,33 +64,35 @@ void backward(tensor * t){
         if (t->comes_from != NULL){
             kernel_backward(t, seed);
         } else {
-            free_kernel_tensor(seed); //frees leaf gradients
+            free_kernel_tensor(&seed); //frees leaf gradients
         }
     } else{
         fprintf(stderr, "backwards can only be called on a leaf (scalar) tensors\n");
     }
 }
 
-void free_kernel_tensor(kernel_tensor *k){
-    if (k != NULL){
+void free_kernel_tensor(kernel_tensor **k_ptr){
+    kernel_tensor *k = *k_ptr;
+    if (k_ptr != NULL && k != NULL){
         if ((k->array != NULL) && (k->shallow == false)){
             free(k->array);
         }
         free(k);
+        k = NULL; 
     }
 }
 
-void free_tensor(tensor *t){
-    if (t->k != NULL){
-        free_kernel_tensor(t->k);
+void free_tensor(tensor **t_ptr){
+    tensor *t = *t_ptr;
+    if ((t_ptr != NULL) && (t != NULL)){ 
+        free_kernel_tensor(&(t->k));
+        free_kernel_tensor(&(t->grad));
+        if (t->comes_from != NULL){
+            free(t->comes_from);
+        }
+        free(t);
+        t = NULL;
     }
-    if (t->grad != NULL){
-        free_kernel_tensor(t->grad);
-    }
-    if (t->comes_from != NULL){
-        free(t->comes_from);
-    }
-    free(t);
 }
 
 size_t get_alleged_length(size_t shape[5]){
@@ -160,7 +162,7 @@ tensor * empty_tensor(size_t shape[5], bool requires_grad, bool retains_grad){
     if (retains_grad){
         if (requires_grad == false){
             fprintf(stderr, "Error. Requires_grad must be true if retains_grad is true.");
-            free_tensor(t);
+            free_tensor(&t);
             return NULL;
         }
         t->grad = empty_contiguous_kernel_tensor(shape);

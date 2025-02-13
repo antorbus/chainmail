@@ -1,6 +1,7 @@
-from typing import Optional
+from __future__ import annotations
+from typing import Optional, Union
 import ctypes
-from frontend.bindings import lib, lemur_float
+from frontend.bindings import lib, lemur_float, KernelTensorPtr, TensorPtr, ExpressionPtr
 import frontend.reprutils as reprutils
 
 class LemurTensor:
@@ -10,16 +11,16 @@ class LemurTensor:
     def __init__(self, 
              shape: Optional[list[int]] = None, 
              requires_grad: Optional[bool] = False, 
-             _ptr = None, 
-             _parents = None):
+             _ptr : TensorPtr = None, 
+             _parents : tuple[TensorPtr, ...] = None):
         
         if _ptr is not None:
             self._ptr = _ptr
-            self._parents = tuple(p for p in _parents)
+            self._parents = tuple(p for p in _parents) if _parents else tuple()
 
         else:
             self._parents = tuple()
-            if shape is None:
+            if shape is None or shape[-1] is None:
                 shape = (1,)
             c_shape = (ctypes.c_size_t * 5)(*([1]*5))
             for i, dim in enumerate(shape):
@@ -32,14 +33,14 @@ class LemurTensor:
 
     ### helpers ###
     @staticmethod
-    def _convert_to_tensor(obj):
+    def _convert_to_tensor(obj : Union[LemurTensor, tuple, list]) -> LemurTensor:
         if isinstance(obj, (tuple, list)):
             obj = tensor(obj)
         if not isinstance(obj, LemurTensor):
             raise TypeError("Input must be a LemurTensor, tuple, or list.")
         return obj
     
-    def _process_args(self, *args):
+    def _process_args(self, *args : Union[LemurTensor, tuple, list]) -> LemurTensor:
         if len(args) == 1 and isinstance(args[0], (tuple, list, LemurTensor)):
             return self._convert_to_tensor(args[0])
         return self._convert_to_tensor(list(args))
@@ -47,15 +48,16 @@ class LemurTensor:
     ### garbage collection ###
     def __del__(self):
         if getattr(self, "_ptr", None) is not None:
-            lib.free_tensor(self._ptr)
+            lib.free_tensor(ctypes.byref(self._ptr))
             self._ptr = None
 
-    def detach(self):
+    def detach(self) -> LemurTensor:
         # manually detaches parent references to allow garbage collection.
         self._parents = ()
+        return self
     
     @property
-    def parents(self):
+    def parents(self) -> tuple[TensorPtr, ...]:
         if self.requires_grad:
             return self._parents
     
@@ -65,7 +67,7 @@ class LemurTensor:
     
     ### properties/utility methods ###
     @staticmethod
-    def _contiguous_deepcopy_k(kt_ptr):
+    def _contiguous_deepcopy_k(kt_ptr : KernelTensorPtr) -> LemurTensor:
         if ctypes.cast(kt_ptr, ctypes.c_void_p).value is None:
             raise ValueError("Attempting to call _contiguous_deepcopy_k on NULL kernel tensor")
             return None
@@ -83,42 +85,71 @@ class LemurTensor:
             raise ValueError("Invalid memory access.")
         else:
             self._ptr.contents.k.contents.array[index] = lemur_float(value)
-
+        return self
+    
     @property
-    def grad(self):
+    def grad(self) -> Union[LemurTensor, None]:
         if ctypes.cast(self._ptr.contents.grad, ctypes.c_void_p).value is None:
             return None
         return self._contiguous_deepcopy_k(self._ptr.contents.grad)
     
-    def requires_grad(self):
-        return self._ptr.contents.requires_grad
+    def requires_grad(self) -> bool:
+        return bool(self._ptr.contents.requires_grad)
+    
+    def requires_grad_(self, b : bool) -> LemurTensor:
+        self._ptr.contents.requires_grad = ctypes.c_bool(bool(b))  
+        return self
+
+    def retain_grad(self) -> bool:
+        rg = ctypes.cast(self._ptr.contents.grad, ctypes.c_void_p).value
+        if rg is None:
+            return False
+        else:
+            return True
+
+    def retain_grad_(self, b : bool) -> LemurTensor:
+        if bool(b) == True:
+            if self.retain_grad() == True:
+                pass
+            else:
+                self.requires_grad_(True)
+                self._ptr.contents.grad = lib.empty_contiguous_kernel_tensor_like(self._ptr.contents.k)
+                lib.memset_kernel_tensor(self._ptr.contents.grad, ctypes.c_float(0.0))
+            return self
+        else:
+            if (self.retain_grad() == False) or (self.requires_grad() == False):
+                pass
+            else:
+                lib.free_kernel_tensor(ctypes.byref(self._ptr.contents.grad))
+                self._ptr.contents.grad = None
+            return self
     
     @property
     def graph(self):
-        return reprutils.plot_tensor_graph_parents(self)
+        reprutils.plot_tensor_graph_parents(self)
     
-    def stride(self):
+    def stride(self) -> LemurTensor:
         return tensor([self._ptr.contents.k.contents.stride[i] for i in range(5)])
     
-    def is_shallow(self):
+    def is_shallow(self) -> bool:
         return self._ptr.contents.k.contents.shallow
 
-    def is_contiguous(self):
+    def is_contiguous(self) -> bool:
         return lib.is_contiguous(self._ptr.contents.k)
         
     @property
-    def memory_length(self):
+    def memory_length(self) -> int:
         return self._ptr.contents.k.contents.length
     
     @property
-    def shape(self):
+    def shape(self) -> LemurTensor:
         return tensor([self._ptr.contents.k.contents.shape[i] for i in range(5)])
 
-    def numel(self):
+    def numel(self) -> int:
         shape = self.shape
         return shape[0] * shape[1] * shape[2] * shape[3] * shape[4]
     
-    def ndimension(self):  
+    def ndimension(self) -> int:  
         return 5
     
         
@@ -130,36 +161,36 @@ class LemurTensor:
     ### grad/compile ops###
     def backward(self):
         lib.backward(self._ptr)
-
+    
     def compile(self):
         lib.compile(self._ptr)
 
     ### Binary ops ###
-    def __add__(self, other):
+    def __add__(self, other : LemurTensor) -> LemurTensor:
         if not isinstance(other, LemurTensor):
             raise TypeError("Can't add LemurTensor with non-LemurTensor.")
         c_result = lib.add(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
-    def __sub__(self, other):
+    def __sub__(self, other : LemurTensor) -> LemurTensor:
         if not isinstance(other, LemurTensor):
             raise TypeError("Can't subtract LemurTensor with non-LemurTensor.")
         c_result = lib.sub(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
 
-    def __mul__(self, other):
+    def __mul__(self, other : LemurTensor) -> LemurTensor:
         if not isinstance(other, LemurTensor):
             raise TypeError("Can't multiply LemurTensor with non-LemurTensor.")
         c_result = lib.mul(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
-    def __truediv__(self, other):
+    def __truediv__(self, other : LemurTensor) -> LemurTensor:
         if not isinstance(other, LemurTensor):
             raise TypeError("Can't divide LemurTensor with non-LemurTensor.")
         c_result = lib.division(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
-    def __eq__(self, other):
+    def __eq__(self, other : Union[LemurTensor, bool]) -> Union[LemurTensor, bool]:
         if isinstance(other, bool):
             return self.__bool__() == other
         if not isinstance(other, LemurTensor):
@@ -168,7 +199,7 @@ class LemurTensor:
         return LemurTensor(_ptr=c_result, _parents=(self, other))
 
     ### Reduce ops ###
-    def sum(self, *args):
+    def sum(self, *args) -> LemurTensor: #TODO type check here and you can input a lemur tensor or other 
         if not args: 
             dims = [0,0,0,0,0]
         else:
@@ -179,7 +210,7 @@ class LemurTensor:
         c_result = lib.sum(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,other))
     
-    def all(self, *args):
+    def all(self, *args) -> LemurTensor:  #TODO type check here and you can input a lemur tensor or other
         if not args: 
             dims = [0,0,0,0,0]
         else:
@@ -190,7 +221,7 @@ class LemurTensor:
         c_result = lib.all(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,other))
     
-    def any(self, *args):
+    def any(self, *args) -> LemurTensor:  #TODO type check here and you can input a lemur tensor or other
         if not args: 
             dims = [0,0,0,0,0]
         else:
@@ -202,7 +233,7 @@ class LemurTensor:
         return LemurTensor(_ptr=c_result, _parents=(self,other))
     
     ### Unary ops ###
-    def __pow__(self, other):
+    def __pow__(self, other : Union[lemur_float, int , LemurTensor]) -> LemurTensor:
         if not isinstance(other, LemurTensor):
             if isinstance(other, float) or isinstance(other, int):
                 other = tensor([float(other)])
@@ -211,44 +242,44 @@ class LemurTensor:
         c_result = lib.power(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
     
-    def exp(self):
+    def exp(self) -> LemurTensor:
         c_result = lib.exponential(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
-    def relu(self):
+    def relu(self) -> LemurTensor:
         c_result = lib.relu(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
-    def sigmoid(self):
+    def sigmoid(self) -> LemurTensor:
         c_result = lib.sigmoid(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
             
-    def log(self):
+    def log(self) -> LemurTensor:
         c_result = lib.logarithm(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
-    def neg(self):
+    def neg(self) -> LemurTensor:
         c_result = lib.neg(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
-    def sqrt(self):
+    def sqrt(self) -> LemurTensor:
         c_result = lib.square_root(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
-    def abs(self):
+    def abs(self) -> LemurTensor:
         c_result = lib.abs(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
-    def sign(self):
+    def sign(self) -> LemurTensor:
         c_result = lib.sign(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
-    def reciprocal(self):
+    def reciprocal(self) -> LemurTensor:
         c_result = lib.reciprocal(self._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self,))
     
     ### Shape ops ###
-    def flatten(self, dim=4):
+    def flatten(self, dim : int = 4) -> LemurTensor:
         total_elements = self.numel()
         view_dim = [1,1,1,1,1]
         view_dim[dim] = total_elements
@@ -271,14 +302,15 @@ class LemurTensor:
 
     ### matmul ###
     def __matmul__(self, other):
-        if (other.shape[0] == 1 and other.shape[1] == 1 and other.shape[2] == 1):
-            c_result = lib.bcmm(self._ptr, other._ptr, False)
-        else:
+        if (other.shape[0] == self.shape[0] and other.shape[1] == self.shape[1] and other.shape[2] == self.shape[2]):
             c_result = lib.bmm(self._ptr, other._ptr, False)
+        else:
+            c_result = lib.bcmm(self._ptr, other._ptr, False)
         return LemurTensor(_ptr=c_result, _parents=(self, other))
 
 
-def empty(shape, requires_grad=False):
+def empty(shape : tuple[int, int, int, int, int], 
+          requires_grad = False) -> LemurTensor:
     t = LemurTensor(shape=shape, requires_grad=requires_grad)
     return t
 

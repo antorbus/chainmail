@@ -32,11 +32,11 @@ int test_basic_add_mul(){
     if (y->grad->array[0] != 1.0) errorval+= 1<<4;
     if (v->k->array[0] != 5.0) errorval+= 1<<5;
 
-    free_tensor(x);
-    free_tensor(y);
-    free_tensor(w);
-    free_tensor(z);
-    free_tensor(v);
+    free_tensor(&x);
+    free_tensor(&y);
+    free_tensor(&w);
+    free_tensor(&z);
+    free_tensor(&v);
 
     return errorval;
 }
@@ -60,10 +60,10 @@ int test_free(){
         if (x->grad->array[0] != 1.0){
             errorval = 2;
         }
-        free_tensor(y);
-        free_tensor(x);
+        free_tensor(&y);
+        free_tensor(&x);
     }
-    free_tensor(dim_s);
+    free_tensor(&dim_s);
     return errorval;
 }
 
@@ -130,10 +130,10 @@ int test_relu(){
         }
     }
 
-    free_tensor(dim_s);
-    free_tensor(a);
-    free_tensor(ar);
-    free_tensor(c);
+    free_tensor(&dim_s);
+    free_tensor(&a);
+    free_tensor(&ar);
+    free_tensor(&c);
 
     return errorval;
 }
@@ -183,13 +183,13 @@ int test_expand_sum(){
         print_tensor(b);
     }
 
-    free_tensor(a);
-    free_tensor(b);
-    free_tensor(c);
-    free_tensor(d);
-    free_tensor(e);
-    free_tensor(dim_e);
-    free_tensor(dim_s);
+    free_tensor(&a);
+    free_tensor(&b);
+    free_tensor(&c);
+    free_tensor(&d);
+    free_tensor(&e);
+    free_tensor(&dim_e);
+    free_tensor(&dim_s);
 
     return errorval;
 }
@@ -249,17 +249,17 @@ int test_permute(){
         }
     }
 
-    free_tensor(dim);
-    free_tensor(dim_perm0);
-    free_tensor(dim_perm1);
-    free_tensor(dim_reduce);
-    free_tensor(a);
-    free_tensor(a_v0);
-    free_tensor(a_v0_perm);
-    free_tensor(a_v1);
-    free_tensor(c);
-    free_tensor(c_perm);
-    free_tensor(c_perm_sum);
+    free_tensor(&dim);
+    free_tensor(&dim_perm0);
+    free_tensor(&dim_perm1);
+    free_tensor(&dim_reduce);
+    free_tensor(&a);
+    free_tensor(&a_v0);
+    free_tensor(&a_v0_perm);
+    free_tensor(&a_v1);
+    free_tensor(&c);
+    free_tensor(&c_perm);
+    free_tensor(&c_perm_sum);
 
     return errorval;
 }

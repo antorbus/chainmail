@@ -122,6 +122,12 @@ BACKWARD_FUNC_DEF(m_op_bmm_backward);
 FORWARD_FUNC_DEF(m_op_bcmm_forward);
 BACKWARD_FUNC_DEF(m_op_bcmm_backward);
 
+FORWARD_FUNC_DEF(m_op_bmm_fast_forward);
+BACKWARD_FUNC_DEF(m_op_bmm_fast_backward);
+
+FORWARD_FUNC_DEF(m_op_bcmm_fast_forward);
+BACKWARD_FUNC_DEF(m_op_bcmm_fast_backward);
+
 //function tables entries
 
 enum {
@@ -161,6 +167,8 @@ enum OPS {
   //matmul ops
   OP_BROADCAST_MATMUL,
   OP_BATCH_MATMUL,
+  OP_BROADCAST_MATMUL_FAST,
+  OP_BATCH_MATMUL_FAST,
   //
   TOTAL_OPS,
 };

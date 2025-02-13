@@ -1,22 +1,23 @@
 import ctypes
-from frontend.bindings import lib
+from frontend.bindings import lib, KernelTensorPtr, TensorPtr, ExpressionPtr
 from frontend.version import __version__
 
 LEMUR_VERBOSE = False
 LEMUR_SCI_PRINT = False
 
-def set_verbose_print(value):
+def set_verbose_print(value : bool) -> None:
     global LEMUR_VERBOSE
     LEMUR_VERBOSE = value
 
-def set_sci_print(value):
+def set_sci_print(value : bool) -> None:
     global LEMUR_SCI_PRINT
     LEMUR_SCI_PRINT = value
 
-def get_op_name(i):
+def get_op_name(i : int) -> str:
     return lib.get_op_name(i)
 
-def _format_kernel_tensor(k_ptr, postfix = ""):
+def _format_kernel_tensor(k_ptr : KernelTensorPtr, 
+                          postfix : str = ""):
     if not k_ptr:
         return "[NULL kernel_tensor]\n"
 

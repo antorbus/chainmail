@@ -32,6 +32,8 @@ class KernelTensor(ctypes.Structure):
         ("shallow",       ctypes.c_bool),  
     ]
 
+KernelTensorPtr = ctypes.POINTER(KernelTensor)
+
 class Tensor(ctypes.Structure):
     pass 
 
@@ -42,6 +44,8 @@ class Expression(ctypes.Structure):
         ("backward_func", ctypes.c_int),            
     ] 
 
+ExpressionPtr = ctypes.POINTER(Expression)
+
 class Tensor(ctypes.Structure):
     _fields_ = [
         ("k",             ctypes.POINTER(KernelTensor)), 
@@ -50,10 +54,28 @@ class Tensor(ctypes.Structure):
         ("grad",          ctypes.POINTER(KernelTensor)),  
     ]
 
+TensorPtr = ctypes.POINTER(Tensor)
+
+class Parameter(ctypes.Structure):
+    _fields_ = [
+        ("tensor_ptr",    ctypes.POINTER(Tensor)), 
+        ("optim_data",    ctypes.POINTER(ctypes.POINTER(KernelTensor))), 
+        ("num_data",      ctypes.c_size_t),
+    ]
+
+#from parameter.h
+lib.create_parameter.argtypes = [ctypes.POINTER(Tensor)]
+lib.create_parameter.restype = ctypes.POINTER(Parameter)
+
+lib.update_param_data.argtypes = [ctypes.POINTER(Parameter), ctypes.c_size_t, ctypes.POINTER(KernelTensor)]
+lib.update_param_data.restype = None
+
+lib.free_parameter.argtypes = [ctypes.POINTER(Parameter)]
+lib.free_parameter.restype = None
+
 #from interface.h
 lib.compile.argtypes = [ctypes.POINTER(Tensor)] 
 lib.compile.restype = None
-
 
 lib.tensor_from.argtypes = [ctypes.POINTER(KernelTensor), ctypes.POINTER(Expression), ctypes.c_bool, ctypes.POINTER(KernelTensor)] 
 lib.tensor_from.restype = ctypes.POINTER(Tensor)
@@ -87,8 +109,8 @@ lib.get_op_name.restype  = ctypes.c_char_p
 lib.empty_tensor.argtypes = [(ctypes.c_size_t * 5), ctypes.c_bool, ctypes.c_bool]
 lib.empty_tensor.restype  = ctypes.POINTER(Tensor)
 
-# void free_tensor(tensor* t);
-lib.free_tensor.argtypes = [ctypes.POINTER(Tensor)]
+# void free_tensor(tensor **t);
+lib.free_tensor.argtypes = [ctypes.POINTER(ctypes.POINTER(Tensor))]
 lib.free_tensor.restype  = None
 
 # void backward(tensor* t);
@@ -179,6 +201,14 @@ lib.bmm.restype  = ctypes.POINTER(Tensor)
 lib.bcmm.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
 lib.bcmm.restype  = ctypes.POINTER(Tensor)
 
+#tensor * bmm_fast(tensor *t0, tensor *t1, bool retain_grad)
+lib.bmm_fast.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.bmm_fast.restype  = ctypes.POINTER(Tensor)
+
+#tensor * bcmm_fast(tensor *t0, tensor *t1, bool retain_grad)
+lib.bcmm_fast.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_bool]
+lib.bcmm_fast.restype  = ctypes.POINTER(Tensor)
+
 #tensor *isclose(tensor *a, tensor *b, lemur_float rtol, lemur_float atol){
 lib.isclose.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor), ctypes.c_float,  ctypes.c_float]
 lib.isclose.restype = ctypes.POINTER(Tensor)
@@ -188,3 +218,11 @@ lib.all.restype  = ctypes.POINTER(Tensor)
 
 lib.any.argtypes = [ctypes.POINTER(Tensor), ctypes.POINTER(Tensor)]
 lib.any.restype  = ctypes.POINTER(Tensor)
+
+#kernel_tensor * empty_contiguous_kernel_tensor_like(kernel_tensor *k);
+lib.empty_contiguous_kernel_tensor_like.argtypes = [ctypes.POINTER(KernelTensor)]
+lib.empty_contiguous_kernel_tensor_like.restype  = ctypes.POINTER(KernelTensor)
+
+#void free_kernel_tensor(kernel_tensor **k);
+lib.free_kernel_tensor.argtypes = [ctypes.POINTER(ctypes.POINTER(KernelTensor))]
+lib.free_kernel_tensor.restype  = None
