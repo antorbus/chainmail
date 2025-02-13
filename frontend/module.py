@@ -42,18 +42,17 @@ class Module:
         self._parameters = _parameters if _parameters is not None else []
         self._train_mode = training
         self.name = name if name is not None else self.__class__.__name__
-        
-    def collect_parameters(self):
+
+    def __setattr__(self, name, value):
         """
-        Scan for specific attributes after subclass initialization.
+        Automatically track parameters and submodules when assigned.
         """
-        for attr_name in dir(self):
-            if not attr_name.startswith("__"):
-                attr_value = getattr(self, attr_name, None)
-                if isinstance(attr_value, Parameter) and attr_value not in self._parameters:
-                    self._parameters.append(attr_value)
-                elif isinstance(attr_value, Module) and attr_value not in self._children:
-                    self._children[attr_name] = attr_value
+        super().__setattr__(name, value)
+
+        if isinstance(value, Parameter) and value not in self._parameters:
+            self._parameters.append(value)
+        elif isinstance(value, Module) and value not in self._children:
+            self._children[name] = value
 
     def add_module(self, name: str, model: "Module"):
         """
@@ -75,14 +74,12 @@ class Module:
         """
         Return an iterator over immediate children modules.
         """
-        self.collect_parameters()
         return iter(self._children.values())
     
     def parameters(self, recurse=True):
         """
         Return an iterator over parameters.
         """
-        self.collect_parameters()
         for param in self._parameters:
             yield param
         
@@ -133,7 +130,6 @@ class Module:
         """
         Represent the module hierarchy.
         """
-        self.collect_parameters()
         indent = "  " * level
         child_repr = "\n".join(child.__repr__(level + 1) for child in self._children.values())
         param_repr = ", ".join(f"Parameter({p.tensor.shape})" for p in self._parameters) if self._parameters else "No Parameters"
